@@ -1,25 +1,23 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Location from "expo-location";
-import {
-  Modal,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { updateLocation } from "../reducers/user";
 import Header from "../components/Header";
+import * as Astronomy from "astronomy-engine";
+import { Magnetometer } from "expo-sensors";
+
+// Liste des astres, pour l'instant système solaire pour test
+const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
 
 export default function ObservationScreen() {
   const dispatch = useDispatch();
 
-  // On récupère les infos du store (token, nickname, etc.)
-  const user = useSelector((state) => state.user.value);
+  const user = useSelector((state) => state.user.value); // On récupère les infos du store (token, nickname, etc.)
 
-  // État local pour afficher la position direct sur l'écran
-  const [currentPosition, setCurrentPosition] = useState(null);
+  const [currentPosition, setCurrentPosition] = useState(null); // État local pour afficher la position direct sur l'écran
+  const [heading, setHeading] = useState(0); // Direction du tel (0-360°)
+  const [target, setTarget] = useState("Rien en vue..."); // L'astre visé
 
   useEffect(() => {
     let subscription; // On prépare une variable pour pouvoir dire "quand je ne suis pas sur l'app, je n'actualise pas"
