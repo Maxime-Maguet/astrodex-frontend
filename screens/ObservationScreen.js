@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0B0F1A",
     alignItems: "center",
+    padding: 20,
   },
   content: {
     flex: 1,
@@ -141,6 +142,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#FFFFFF",
     fontFamily: "Inter",
+    marginBottom: 10,
   },
 
   body2: {
@@ -151,7 +153,9 @@ const styles = StyleSheet.create({
 
   card: {
     backgroundColor: "#151C2F",
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
     borderRadius: 15,
     width: "100%",
     marginTop: 20,
