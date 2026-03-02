@@ -5,8 +5,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Provider } from "react-redux";
 // import { PersistGate } from 'redux-persist/integration/react';
-import ObservationScreen from "./screens/ObservationScreen"; 
-import LoginScreen from "./screens/LoginScreen";           
+import ObservationScreen from "./screens/ObservationScreen";
+import LoginScreen from "./screens/LoginScreen";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 import SignupScreen from "./screens/signupScreen";
@@ -33,11 +33,9 @@ function TabNavigator() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false }}>
       <Tab.Screen name="Observation" component={ObservationScreen} />
-    
     </Tab.Navigator>
   );
 }
-
 
 function Navigation() {
   const userToken = useSelector((state) => state.user.value.token);
@@ -46,10 +44,8 @@ function Navigation() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!userToken ? (
-        
           <Stack.Screen name="Login" component={LoginScreen} />
         ) : (
-         
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         )}
       </Stack.Navigator>
@@ -60,7 +56,6 @@ function Navigation() {
 export default function App() {
   return (
     <Provider store={store}>
-          
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Inscription" component={SignupScreen} />

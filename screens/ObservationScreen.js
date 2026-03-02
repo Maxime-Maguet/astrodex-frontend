@@ -5,7 +5,7 @@ import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { updateLocation } from "../reducers/user";
 import Header from "../components/Header";
 import * as Astronomy from "astronomy-engine";
-import { Magnetometer } from "expo-sensors";
+//import { Magnetometer } from "expo-sensors";
 
 // Liste des astres, pour l'instant système solaire pour test
 const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];

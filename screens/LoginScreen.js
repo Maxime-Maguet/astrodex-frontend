@@ -1,29 +1,37 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { login } from '../reducers/user';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  ScrollView,
+} from "react-native";
+import { useDispatch } from "react-redux";
+import { login } from "../reducers/user";
 
 export default function LoginScreen() {
   const dispatch = useDispatch();
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = () => {
-    fetch('http://192.168.1.22:3000/users/signin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    fetch("http://192.168.1.6:3000/users/signin", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: `username=${username}&password=${password}`,
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data.result) {
           dispatch(login({ token: data.token, username: username }));
         } else {
-          alert('Identifiants incorrects');
+          alert("Identifiants incorrects");
         }
       })
-      .catch(err => alert("Erreur connexion : vérifie ton IP !"));
+      .catch((err) => alert("Erreur connexion : vérifie ton IP !"));
   };
 
   return (
@@ -59,25 +67,28 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1A1C20' },
-  inner: { flexGrow: 1, justifyContent: 'center', alignItems: 'center' },
-  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 40, color: '#FFFFFF' },
-  input: { 
-    width: '85%', 
-    backgroundColor: '#B0B5BC',
-    padding: 15, 
-    borderRadius: 10, 
-    marginBottom: 20, 
-    color: '#1A1C20',
-    
+  container: { flex: 1, backgroundColor: "#1A1C20" },
+  inner: { flexGrow: 1, justifyContent: "center", alignItems: "center" },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 40,
+    color: "#FFFFFF",
   },
-  button: { 
-    backgroundColor: '#3B6DED',
-    width: '85%', 
-    padding: 18, 
-    borderRadius: 10, 
-    alignItems: 'center',
-     
+  input: {
+    width: "85%",
+    backgroundColor: "#B0B5BC",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    color: "#1A1C20",
   },
-  buttonText: { color: '#FFFFFF', fontWeight: 'bold', fontSize: 16 }
+  button: {
+    backgroundColor: "#3B6DED",
+    width: "85%",
+    padding: 18,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  buttonText: { color: "#FFFFFF", fontWeight: "bold", fontSize: 16 },
 });
