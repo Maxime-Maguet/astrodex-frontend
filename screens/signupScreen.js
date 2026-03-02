@@ -23,9 +23,6 @@ export default function signupScreen() {
 
 
 
-
-
-
 };
 
 
@@ -52,9 +49,6 @@ alignItem: 'center',
 justifyContent: 'center',
 
 }
-
-
-
 
 })
 
