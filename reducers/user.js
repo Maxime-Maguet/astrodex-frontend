@@ -12,15 +12,16 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    // login: (state, action) => {
-    //   state.value.token = action.payload.token;
-    //   state.value.nickname = action.payload.nickname;
-    // },
-    // logout: (state) => {
-    //   state.value.token = null;
-    //   state.value.nickname = null;
-    //   state.value.location = null;
-    // },
+
+    login: (state, action) => {
+      state.value.token = action.payload.token;
+      state.value.username = action.payload.username;
+    },
+    logout: (state) => {
+      state.value.token = null;
+      state.value.username = null;
+      state.value.location = null;
+    },
 
     updateLocation: (state, action) => {
       state.value.location = action.payload;
