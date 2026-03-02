@@ -1,0 +1,181 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import * as Location from "expo-location";
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { updateLocation } from "../reducers/user";
+import Header from "../components/Header";
+
+export default function ObservationScreen() {
+  const dispatch = useDispatch();
+
+  // On récupère les infos du store (token, nickname, etc.)
+  const user = useSelector((state) => state.user.value);
+
+  // État local pour afficher la position direct sur l'écran
+  const [currentPosition, setCurrentPosition] = useState(null);
+
+  useEffect(() => {
+    let subscription; // On prépare une variable pour pouvoir dire "quand je ne suis pas sur l'app, je n'actualise pas"
+
+    (async () => {
+      // 1. On demande au téléphone la permission d'utiliser la loc
+      const result = await Location.requestForegroundPermissionsAsync();
+      const status = result?.status;
+
+      if (status === "granted") {
+        // 2. Si c'est OK("granted"), on lance le watcher
+        //on attend la réponse avec await
+        subscription = await Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.High, //si on ne met pas ça, Android ou IOS ne met pas en priorité notre app et donc n'actualise pas
+            timeInterval: 5000, // On check toutes les 5 secondes
+            distanceInterval: 1, // Ou dès qu'on bouge d'un mètre
+          },
+          (location) => {
+            // 3. À chaque fois que la position change :
+            const coords = {
+              lat: location.coords.latitude,
+              lon: location.coords.longitude,
+            };
+            console.log("📍 Update GPS :", coords);
+            // On met à jour l'état
+            setCurrentPosition(location.coords);
+            // On envoie les coordonnées dans Redux pour les utiliser partout dans l'app
+            dispatch(updateLocation(coords));
+          },
+        );
+      }
+    })();
+    // 4. LE NETTOYAGE (Super important) : (askip)
+    // Quand on quitte cet écran, on coupe le GPS pour ne pas flinguer la batterie du tel
+    return () => {
+      if (subscription) {
+        subscription.remove();
+      }
+    };
+    //         // On check si le user est bien connecté (s'il a un token) avant de lancer l'appel
+    // if (user.token) {
+    //         // 1. On va taper sur notre Backend pour récupérer tous les astres qu'il a déjà capturés
+    //         // On utilise le token pour être sûr que c'est bien sa collection
+    //   fetch(`${BACKEND_ADDRESS}/captures/${user.token}`)
+    //     .then((response) => response.json())
+    //     .then((data) => {
+    //         // 2. Si le backend nous répond "result: true", c'est que c'est tout bon
+    //       if (data.result) {
+
+    //         // On dispatch les astres déjà capturés dans le store Redux
+    //         //Comme ça, on peut afficher ses astres capturés sur n'importe quel écran de l'app !
+    //         dispatch(loadCaptures(data.captures));
+    //       }
+    //     });
+    // }
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <Header title="Observation" />
+      <View style={styles.card}>
+        <Text style={styles.body}>
+          Ta position :{" "}
+          {currentPosition ? (
+            <Text style={styles.body}>
+              Lat: {currentPosition.latitude.toFixed(6)} / Lon:{" "}
+              {currentPosition.longitude.toFixed(6)}
+            </Text>
+          ) : (
+            <Text>Récupération des coordonnées...</Text>
+          )}
+        </Text>
+        <View>
+          <Text style={styles.body}>Azimut : PlaceHolder</Text>
+          <Text style={styles.body}>Altitude : PlaceHolder</Text>
+          <Text style={styles.body}>Alignement : PlaceHolder</Text>
+        </View>
+      </View>
+      <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+        <Text style={styles.buttonText}>CAPTURER</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#0B0F1A",
+    alignItems: "center",
+  },
+  content: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  titre: {
+    fontSize: 48,
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontFamily: "Inter",
+  },
+
+  h2: {
+    fontSize: 32,
+    color: "#FFFFFF",
+    fontFamily: "Inter",
+  },
+
+  h3: {
+    fontSize: 24,
+    color: "#5B8CFF",
+    fontFamily: "Inter",
+  },
+
+  body: {
+    fontSize: 16,
+    color: "#FFFFFF",
+    fontFamily: "Inter",
+  },
+
+  body2: {
+    fontSize: 14,
+    color: "#ADB5BD",
+    fontFamily: "Inter",
+  },
+
+  card: {
+    backgroundColor: "#151C2F",
+    padding: 20,
+    borderRadius: 15,
+    width: "100%",
+    marginTop: 20,
+    borderWidth: 1,
+    borderColor: "#1D2F49",
+    color: "#FFFFFF",
+  },
+
+  button: {
+    width: "100%",
+    backgroundColor: "#5B8CFF",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    marginTop: 30,
+    alignItems: "center",
+  },
+
+  buttonPressed: {
+    backgroundColor: "#3E63DD",
+  },
+  buttonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+});
