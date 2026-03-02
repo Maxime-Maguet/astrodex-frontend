@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   value: {
     token: null,
-    nickname: null,
+    username: null,
     location: null,
   },
 };
@@ -12,16 +12,17 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    // login: (state, action) => {
-    //   state.value.token = action.payload.token;
-    //   state.value.nickname = action.payload.nickname;
-    // },
-    // logout: (state) => {
-    //   state.value.token = null;
-    //   state.value.nickname = null;
-    //   state.value.location = null;
-    // },
-
+    //LoginScreen après un fetch réussi
+    login: (state, action) => {
+      state.value.token = action.payload.token;
+      state.value.username = action.payload.username;
+    },
+    //suppression du token et redirection vers login
+    logout: (state) => {
+      state.value.token = null;
+      state.value.username = null;
+      state.value.location = null;
+    },
     updateLocation: (state, action) => {
       state.value.location = action.payload;
     },
