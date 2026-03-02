@@ -9,7 +9,7 @@ View,
 Platform
 } from "react-native";
 import { useDispatch } from "react-redux";
-
+import {login} from '../reducers/user'
 export default function SignupScreen() {
 
 
@@ -82,7 +82,7 @@ fontSize: 24,
 
 inputEmail: {
 backgroundcolor: "#ffffff",
-fontSize: 36,
+fontSize: 24,
 },
 
 })
