@@ -14,13 +14,12 @@ import { login } from "../reducers/user";
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
 
- 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
-  
-const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
   const EMAIL_REGEX =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -28,7 +27,6 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const handleSubmit = () => {
     if (email === "" || username === "" || password === "") return;
 
-<<<<<<< HEAD
     if (EMAIL_REGEX.test(email)) {
       dispatch(login(email));
       navigation.replace("TabNavigator", { screen: "observationScreen" });
@@ -37,12 +35,8 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
       setEmailError(true);
       return;
     }
-    
 
     fetch(`http://192.168.1.22:3000/users/signup`, {
-=======
-    fetch(`http://192.168.1.6:3000/users/signup`, {
->>>>>>> origin/carrousel-infini
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -53,8 +47,8 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
         password: password,
       }),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         console.log(data);
         if (data.token) {
           dispatch(login({ token: data.token, username: username }));
@@ -68,13 +62,14 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <View style={styles.container}>
         <Text style={styles.title}>Inscription</Text>
         <View style={styles.formContainer}>
           <TextInput
             placeholder="Email"
-            onChangeText={value => {
+            onChangeText={(value) => {
               setEmail(value);
               if (emailError) {
                 setEmailError(false);
@@ -88,13 +83,13 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
           )}
           <TextInput
             placeholder="username"
-            onChangeText={value => setUsername(value)}
+            onChangeText={(value) => setUsername(value)}
             value={username}
             style={styles.input}
           />
           <TextInput
             placeholder="password"
-            onChangeText={value => setPassword(value)}
+            onChangeText={(value) => setPassword(value)}
             value={password}
             style={styles.input}
           />
