@@ -18,8 +18,7 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
 
   const handleSubmit = () => {
-    const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-    fetch("http://192.168.1.6:3000/users/signin", {
+    fetch("http://192.168.1.22:3000/users/signin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username, password: password }),

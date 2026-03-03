@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
+
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
 
@@ -25,18 +26,19 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const handleSubmit = () => {
+    if (email === "" || username === "" || password === "") return;
 
-    if (email === "" || username === "" || password === "")
-      if (EMAIL_REGEX.test(email)) {
-        dispatch(updateEmail(email));
-        navigation.navigate("TabNavigator", { screen: "observationScreen" });
-      } else {
-        console.log("Email invalide");
-        setEmailError(true);
-        return;
-      }
+    if (EMAIL_REGEX.test(email)) {
+      dispatch(login(email));
+      navigation.replace("TabNavigator", { screen: "observationScreen" });
+    } else {
+      console.log("Email invalide");
+      setEmailError(true);
+      return;
+    }
+    
 
-    fetch(`http://192.168.1.6:3000/users/signup`, {
+    fetch(`http://192.168.1.22:3000/users/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,8 +49,8 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
         password: password,
       }),
     })
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         console.log(data);
         if (data.token) {
           dispatch(login({ token: data.token, username: username }));
@@ -62,29 +64,33 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+      behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <View style={styles.container}>
         <Text style={styles.title}>Inscription</Text>
         <View style={styles.formContainer}>
           <TextInput
             placeholder="Email"
-            onChangeText={(value) => setEmail(value)}
+            onChangeText={value => {
+              setEmail(value);
+              if (emailError) {
+                setEmailError(false);
+              }
+            }}
             value={email}
             style={styles.input}
           />
           {emailError && (
-            <Text style={styles.error}>Invalid email address</Text>
+            <Text style={styles.error}>Adresse e-mail non valide</Text>
           )}
           <TextInput
             placeholder="username"
-            onChangeText={(value) => setUsername(value)}
+            onChangeText={value => setUsername(value)}
             value={username}
             style={styles.input}
           />
           <TextInput
             placeholder="password"
-            onChangeText={(value) => setPassword(value)}
+            onChangeText={value => setPassword(value)}
             value={password}
             style={styles.input}
           />
@@ -100,13 +106,13 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1A1C20",
+    backgroundColor: "#0B0F1A",
     alignItems: "center",
   },
 
   title: {
     color: "#ffffff",
-    fontSize: 32,
+    fontSize: 48,
     marginTop: 70,
   },
 
@@ -145,9 +151,8 @@ const styles = StyleSheet.create({
   },
 
   error: {
-    fontSize: 24,
-    color: "#f548",
+    fontSize: 16,
+    color: "rgba(255, 21, 0, 0.53)",
     fontFamily: "Inter",
-    borderRadius: 10,
   },
 });
