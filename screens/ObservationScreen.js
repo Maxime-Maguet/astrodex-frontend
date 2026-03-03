@@ -12,7 +12,6 @@ const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
 
 export default function ObservationScreen() {
   const dispatch = useDispatch();
-
   const user = useSelector((state) => state.user.value); // On récupère les infos du store (token, nickname, etc.)
 
   const [currentPosition, setCurrentPosition] = useState(null); // État local pour afficher la position direct sur l'écran
@@ -87,7 +86,7 @@ export default function ObservationScreen() {
 
         if (isAvailable) {
           console.log("4. available :");
-          Magnetometer.setUpdateInterval(1000);
+          Magnetometer.setUpdateInterval(500);
           console.log("5. interval");
           magSub = Magnetometer.addListener((data) => {
             // console.log("6. DATA REÇUE :", data.x);
@@ -125,8 +124,8 @@ export default function ObservationScreen() {
           )}
         </Text>
         <View>
-          <Text style={styles.body}>Azimut : {heading}</Text>
-          <Text style={styles.body}>Altitude : PlaceHolder</Text>
+          <Text style={styles.body}>Boussole : {heading}°</Text>
+          <Text style={styles.body}>En vue : PlaceHolder</Text>
           <Text style={styles.body}>Alignement : PlaceHolder</Text>
         </View>
       </View>
