@@ -10,8 +10,6 @@ import LoginScreen from "./screens/LoginScreen";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 import SignupScreen from "./screens/signupScreen";
-
-import HomeScreen from "./screens/HomeScreen";
 // import {
 //   persistStore,
 //   persistReducer,
@@ -60,7 +58,7 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Inscription" component={HomeScreen} />
+          <Stack.Screen name="Inscription" component={SignupScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
