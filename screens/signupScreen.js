@@ -20,7 +20,7 @@ export default function SignupScreen({ navigation }) {
   const handleSubmit = () => {
     if (email === "" || username === "" || password === "") return;
 
-    fetch(`http://192.168.1.34:3000/users/signup`, {
+    fetch(`http://192.168.1.6:3000/users/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
