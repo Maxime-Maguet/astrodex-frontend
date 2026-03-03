@@ -10,39 +10,29 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
-export default function SignupScreen({navigation}) {
+export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-const [emailError, setEmailError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
 
-const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
+  const EMAIL_REGEX =
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const handleSubmit = () => {
-    if (email === "" || username === "" || password === "")  
+    if (email === "" || username === "" || password === "")
+      if (EMAIL_REGEX.test(email)) {
+        dispatch(updateEmail(email));
+        navigation.navigate("TabNavigator", { screen: "observationScreen" });
+      } else {
+        console.log("Email invalide");
+        setEmailError(true);
+        return;
+      }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
- if (EMAIL_REGEX.test(email)) {
-      dispatch(updateEmail(email));
-      navigation.navigate('TabNavigator', { screen: 'observationScreen' });
-    } else { console.log("Email invalide");
-      setEmailError(true);
-   return;
-    }
-
-
-
-    fetch(`http://192.168.1.6:3000/users/signup`, {
-=======
     fetch(`http://192.168.1.34:3000/users/signup`, {
->>>>>>> origin/navigation
-=======
-    fetch(`http://192.168.1.6:3000/users/signup`, {
->>>>>>> carrousel-infini
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -58,7 +48,7 @@ const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"
         console.log(data);
         if (data.token) {
           dispatch(login({ token: data.token, username: username }));
-          navigation.replace("TabNavigator")
+          navigation.replace("TabNavigator");
         } else {
           // console.log("utilisateur déjà existant.");
         }
@@ -79,7 +69,9 @@ const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"
             value={email}
             style={styles.input}
           />
-          {emailError && <Text style={styles.error}>Invalid email address</Text>}
+          {emailError && (
+            <Text style={styles.error}>Invalid email address</Text>
+          )}
           <TextInput
             placeholder="username"
             onChangeText={(value) => setUsername(value)}
@@ -148,11 +140,10 @@ const styles = StyleSheet.create({
     width: "100%",
   },
 
-error: {
-fontSize: 24,
-     color: "#f548",
+  error: {
+    fontSize: 24,
+    color: "#f548",
     fontFamily: "Inter",
     borderRadius: 10,
-
-}
+  },
 });
