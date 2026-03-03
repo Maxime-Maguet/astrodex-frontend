@@ -7,7 +7,11 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
+<<<<<<< HEAD
   Platform
+=======
+  Platform,
+>>>>>>> origin/carrousel-infini
 } from "react-native";
 import {useNavigation} from '@react-navigation/native';
 import { useDispatch } from "react-redux";
@@ -20,7 +24,11 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
 
   const handleSubmit = () => {
+<<<<<<< HEAD
     fetch("http://192.168.1.22:3000/users/signin", {
+=======
+    fetch("http://192.168.1.6:3000/users/signin", {
+>>>>>>> origin/carrousel-infini
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username, password: password }),
@@ -40,7 +48,14 @@ export default function LoginScreen({ navigation }) {
 
   return (
     // KeyboardAvoidingView évite de cacher les inputs
+<<<<<<< HEAD
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+=======
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+>>>>>>> origin/carrousel-infini
       <ScrollView contentContainerStyle={styles.inner}>
         <Text style={styles.Gtitle}>Explore le ciel et collecte les astres !</Text>
         <Text style={styles.title}>Connexion</Text>

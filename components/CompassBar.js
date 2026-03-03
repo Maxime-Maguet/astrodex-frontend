@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Animated, Dimensions } from "react-native";
-import { Magnetometer } from "expo-sensors";
+import { DeviceMotion } from "expo-sensors";
 //voir la difference avec useWindowDimensions
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const ZOOM_FACTOR = 4;
@@ -24,16 +24,17 @@ export default function CompassBar() {
   //console.log(Dimensions.get("window"));
 
   useEffect(() => {
-    const subscription = Magnetometer.addListener((data) => {
-      //retourne un angle en radians (entre -π et π). On multiplie par 180/π pour convertir en degrés.
-      let angle = Math.atan2(-data.x, data.y) * (180 / Math.PI);
+    const subscription = DeviceMotion.addListener((data) => {
+      //console.log(data.rotation);
+      if (!data.rotation) return;
 
-      if (angle < 0) angle += 360;
-      //atan2 peut retourner des valeurs négatives (ex: -90°). On les ramène dans l'intervalle [0, 360] en ajoutant 360. Math.round évite les décimales inutiles.
+      let angle = (data.rotation.alpha * (180 / Math.PI) + 360) % 360;
+
+      console.log("angle brut :", Math.round(angle));
       setDegree(Math.round(angle));
     });
     //On demande une mise à jour toutes les 16ms ≈ 60fps. C'est la fréquence d'un écran fluide.
-    Magnetometer.setUpdateInterval(16);
+    DeviceMotion.setUpdateInterval(16);
     //quand le composant est détruit, on désabonne le listener pour éviter les fuites mémoire.
     return () => subscription.remove();
   }, []);
@@ -41,6 +42,7 @@ export default function CompassBar() {
   // on part du principe que 1° = 1px
   //const translateX = degree - CONTENT_WIDTH;
   const translateX = -(degree * ZOOM_FACTOR) - CONTENT_WIDTH;
+  console.log(degree);
 
   return (
     <View style={styles.container}>

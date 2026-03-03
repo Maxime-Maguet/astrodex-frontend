@@ -28,6 +28,7 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
   const handleSubmit = () => {
     if (email === "" || username === "" || password === "") return;
 
+<<<<<<< HEAD
     if (EMAIL_REGEX.test(email)) {
       dispatch(login(email));
       navigation.replace("TabNavigator", { screen: "observationScreen" });
@@ -39,6 +40,9 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
     
 
     fetch(`http://192.168.1.22:3000/users/signup`, {
+=======
+    fetch(`http://192.168.1.6:3000/users/signup`, {
+>>>>>>> origin/carrousel-infini
       method: "POST",
       headers: {
         "Content-Type": "application/json",

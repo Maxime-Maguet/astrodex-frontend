@@ -10,6 +10,7 @@ import ObservationScreen from "./screens/ObservationScreen";
 import LoginScreen from "./screens/LoginScreen";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
+import astre from "./reducers/astre";
 import SignupScreen from "./screens/signupScreen";
 import HomeScreen from "./screens/HomeScreen";
 // import {
@@ -28,7 +29,7 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const store = configureStore({
-  reducer: { user },
+  reducer: { user, astre },
 });
 
 function TabNavigator() {
