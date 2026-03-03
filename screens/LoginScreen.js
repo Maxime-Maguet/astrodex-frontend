@@ -7,7 +7,9 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
+  Platform
 } from "react-native";
+import {useNavigation} from '@react-navigation/native';
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 
@@ -27,17 +29,20 @@ export default function LoginScreen({ navigation }) {
       .then((data) => {
         if (data.result) {
           dispatch(login({ token: data.token, username: username }));
-          navigation.navigate("TabNavigator");
+          navigation.replace("TabNavigator");
         } else {
           console.log("Error : ", data.error);
         }
       });
   };
 
+ 
+
   return (
     // KeyboardAvoidingView évite de cacher les inputs
-    <KeyboardAvoidingView style={styles.container} behavior="height">
+    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <ScrollView contentContainerStyle={styles.inner}>
+        <Text style={styles.Gtitle}>Explore le ciel et collecte les astres !</Text>
         <Text style={styles.title}>Connexion</Text>
 
         <TextInput
@@ -60,6 +65,11 @@ export default function LoginScreen({ navigation }) {
         <TouchableOpacity onPress={() => handleSubmit()} style={styles.button}>
           <Text style={styles.buttonText}>SE CONNECTER</Text>
         </TouchableOpacity>
+
+        <Text style={styles.Soustitle}>Vous n'avez pas de compte ?</Text>
+        <TouchableOpacity onPress={()=>navigation.navigate("Inscription" )} style={styles.button1}>
+         <Text style={styles.buttonSignin}>S'inscrire</Text> 
+          </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -90,4 +100,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: { color: "#FFFFFF", fontWeight: "bold", fontSize: 16 },
+  Soustitle : {
+    color : "white",
+  },
+  buttonSignin : {
+color : "#2f95dc",
+fontWeight: "bold"
+  },
+  button1:{
+    padding: 10,
+    borderRadius: 10,
+    alignItems: "center", 
+    backgroundColor: "transparent",
+    width: "50%",
+    borderWidth: 1,
+    borderColor: '#2f95dc'
+  },
+  Gtitle :{
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 40,
+    color: "#FFFFFF",
+  }
 });

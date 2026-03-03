@@ -63,16 +63,20 @@ function TabNavigator() {
 //</Stack.Navigator>
 //</NavigationContainer>
 //);
-//<Stack.Screen name="Inscription" component={SignupScreen} />
 
-//<Stack.Screen name="Login" component={LoginScreen} />
+
 
 export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+<<<<<<< HEAD
           <Stack.Screen name="Login" component={SignupScreen} />
+=======
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Inscription" component={SignupScreen} />
+>>>>>>> origin/navigation
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
