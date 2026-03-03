@@ -25,6 +25,7 @@ const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"
     if (email === "" || username === "" || password === "")  
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  if (EMAIL_REGEX.test(email)) {
       dispatch(updateEmail(email));
       navigation.navigate('TabNavigator', { screen: 'observationScreen' });
@@ -39,6 +40,9 @@ const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"
 =======
     fetch(`http://192.168.1.34:3000/users/signup`, {
 >>>>>>> origin/navigation
+=======
+    fetch(`http://192.168.1.6:3000/users/signup`, {
+>>>>>>> carrousel-infini
       method: "POST",
       headers: {
         "Content-Type": "application/json",

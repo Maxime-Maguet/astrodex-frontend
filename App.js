@@ -11,6 +11,7 @@ import LoginScreen from "./screens/LoginScreen";
 import { configureStore } from "@reduxjs/toolkit";
 import user from "./reducers/user";
 import SignupScreen from "./screens/signupScreen";
+import HomeScreen from "./screens/HomeScreen";
 // import {
 //   persistStore,
 //   persistReducer,
@@ -59,19 +60,31 @@ function TabNavigator() {
 //<NavigationContainer>
 //<Stack.Navigator screenOptions={{ headerShown: false }}>
 
+<<<<<<< HEAD
 //</Stack.Navigator>
 //</NavigationContainer>
 //);
 //<Stack.Screen name="Inscription" component={SignupScreen} />
 
 //<Stack.Screen name="Login" component={LoginScreen} />
+=======
+//<Stack.Screen name="Login" component={LoginScreen} />
+
+//</Stack.Navigator>
+//</NavigationContainer>
+//);
+>>>>>>> carrousel-infini
 
 export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+<<<<<<< HEAD
           <Stack.Screen name="Login" component={LoginScreen} />
+=======
+          <Stack.Screen name="Inscription" component={HomeScreen} />
+>>>>>>> carrousel-infini
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
