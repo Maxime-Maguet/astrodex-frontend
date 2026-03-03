@@ -20,11 +20,7 @@ export default function SignupScreen() {
   const handleSubmit = () => {
     if (email === "" || username === "" || password === "") return;
 
-<<<<<<< HEAD
-    fetch(`http://192.168.1.6:3000/users/signup`, {
-=======
     fetch(`http://192.168.1.22:3000/users/signup`, {
->>>>>>> 08712116b50021d236e6b88d18e6a3a5bdfb0982
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +32,7 @@ export default function SignupScreen() {
       }),
     })
       .then((response) => response.json())
-      .then((data) => { 
+      .then((data) => {
         dispatch(login({ token: data.token, username: username }));
       });
   };
