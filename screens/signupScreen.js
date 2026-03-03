@@ -34,7 +34,7 @@ const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"
 
 
 
-    fetch(`http://192.168.1.22:3000/users/signup`, {
+    fetch(`http://192.168.1.6:3000/users/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
