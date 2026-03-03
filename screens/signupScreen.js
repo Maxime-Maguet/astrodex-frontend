@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
-export default function SignupScreen() {
+export default function SignupScreen({navigation}) {
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState("");
@@ -20,7 +20,7 @@ export default function SignupScreen() {
   const handleSubmit = () => {
     if (email === "" || username === "" || password === "") return;
 
-    fetch(`http://192.168.1.22:3000/users/signup`, {
+    fetch(`http://192.168.1.34:3000/users/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,6 +31,7 @@ export default function SignupScreen() {
         password: password,
       }),
     })
+<<<<<<< HEAD
       .then(response => response.json())
       .then(data => { console.log(data); if (data.token === true) {
          
@@ -39,6 +40,14 @@ export default function SignupScreen() {
 // console.log("utilisateur déjà existant.")
 
 }});
+=======
+      .then((response) => response.json())
+      .then((data) => { 
+        dispatch(login({ token: data.token, username: username })
+      ); console.log(data.username)
+      navigation.replace('TabNavigator');
+    });
+>>>>>>> origin/navigation
   };
 
   return (
