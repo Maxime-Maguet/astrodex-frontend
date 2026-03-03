@@ -13,15 +13,19 @@ import { login } from "../reducers/user";
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
 
+ 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
+  
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
   const EMAIL_REGEX =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const handleSubmit = () => {
+
     if (email === "" || username === "" || password === "")
       if (EMAIL_REGEX.test(email)) {
         dispatch(updateEmail(email));
@@ -32,7 +36,7 @@ export default function SignupScreen({ navigation }) {
         return;
       }
 
-    fetch(`http://192.168.1.34:3000/users/signup`, {
+    fetch(`http://192.168.1.6:3000/users/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
