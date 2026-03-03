@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
-export default function SignupScreen({ navigation }) {
+export default function SignupScreen() {
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState("");
@@ -20,7 +20,7 @@ export default function SignupScreen({ navigation }) {
   const handleSubmit = () => {
     if (email === "" || username === "" || password === "") return;
 
-    fetch(`http://192.168.1.34:3000/users/signup`, {
+    fetch(`http://192.168.1.22:3000/users/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,10 +32,8 @@ export default function SignupScreen({ navigation }) {
       }),
     })
       .then((response) => response.json())
-      .then((data) => {
+      .then((data) => { 
         dispatch(login({ token: data.token, username: username }));
-        console.log(data.username);
-        navigation.replace("TabNavigator");
       });
   };
 
@@ -46,29 +44,27 @@ export default function SignupScreen({ navigation }) {
     >
       <View style={styles.container}>
         <Text style={styles.title}>Inscription</Text>
-        <View style={styles.formContainer}>
-          <TextInput
-            placeholder="Email"
-            onChangeText={(value) => setEmail(value)}
-            value={email}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="username"
-            onChangeText={(value) => setUsername(value)}
-            value={username}
-            style={styles.input}
-          />
-          <TextInput
-            placeholder="password"
-            onChangeText={(value) => setPassword(value)}
-            value={password}
-            style={styles.input}
-          />
-          <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-            <Text style={styles.textButton}>S'inscrire</Text>
-          </TouchableOpacity>
-        </View>
+        <TextInput
+          placeholder="Email"
+          onChangeText={(value) => setEmail(value)}
+          value={email}
+          style={styles.inputEmail}
+        />
+        <TextInput
+          placeholder="username"
+          onChangeText={(value) => setUsername(value)}
+          value={username}
+          style={styles.inputUsername}
+        />
+        <TextInput
+          placeholder="password"
+          onChangeText={(value) => setPassword(value)}
+          value={password}
+          style={styles.inputPassword}
+        />
+        <TouchableOpacity onPress={handleSubmit}>
+          <Text style={styles.textButton}>S'inscrire</Text>
+        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );
@@ -77,47 +73,24 @@ export default function SignupScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1A1C20",
-    alignItems: "center",
-  },
-
-  title: {
-    color: "#ffffff",
-    fontSize: 32,
-    marginTop: 70,
-  },
-
-  button: {
-    backgroundColor: "#5B8CFF",
-    fontSize: 16,
-    alignItems: "center",
-    borderRadius: 10,
-    width: "85%",
-    justifyContent: "center",
-    padding: 10,
-    marginTop: 20,
-  },
-
-  input: {
-    width: "85%",
     backgroundColor: "#ffffff",
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 20,
-    color: "#1A1C20",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   textButton: {
     fontSize: 24,
-    color: "#ffffff",
+    color: "#5B8CFF",
     fontFamily: "Inter",
-    borderRadius: 10,
   },
 
-  formContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
+  title: {
+    color: "rgb(255, 116, 91)",
+    fontSize: 24,
+  },
+
+  inputEmail: {
+    backgroundcolor: "#ffffff",
+    fontSize: 24,
   },
 });
