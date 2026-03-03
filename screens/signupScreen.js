@@ -20,7 +20,7 @@ export default function SignupScreen() {
   const handleSubmit = () => {
     if (email === "" || username === "" || password === "") return;
 
-    fetch(`http://192.168.1.22:3000/users/signup`, {
+    fetch(`http://192.168.1.6:3000/users/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +34,7 @@ export default function SignupScreen() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        if (data.token === true) {
+        if (data.token) {
           dispatch(login({ token: data.token, username: username }));
         } else {
           console.log("utilisateur déjà existant.");
