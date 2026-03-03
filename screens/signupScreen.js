@@ -16,9 +16,23 @@ export default function SignupScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+const [emailError, setEmailError] = useState(false);
+
+const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 
   const handleSubmit = () => {
-    if (email === "" || username === "" || password === "") return;
+    if (email === "" || username === "" || password === "")  
+
+ if (EMAIL_REGEX.test(email)) {
+      dispatch(updateEmail(email));
+      navigation.navigate('TabNavigator', { screen: 'observationScreen' });
+    } else { console.log("Email invalide");
+      setEmailError(true);
+   return;
+    }
+
+
 
     fetch(`http://192.168.1.22:3000/users/signup`, {
       method: "POST",
@@ -34,10 +48,10 @@ export default function SignupScreen() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        if (data.token === true) {
+        if (data.token) {
           dispatch(login({ token: data.token, username: username }));
         } else {
-          console.log("utilisateur déjà existant.");
+          // console.log("utilisateur déjà existant.");
         }
       });
   };
@@ -56,6 +70,7 @@ export default function SignupScreen() {
             value={email}
             style={styles.input}
           />
+          {emailError && <Text style={styles.error}>Invalid email address</Text>}
           <TextInput
             placeholder="username"
             onChangeText={(value) => setUsername(value)}
@@ -123,4 +138,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
+
+error: {
+fontSize: 24,
+     color: "#f548",
+    fontFamily: "Inter",
+    borderRadius: 10,
+
+}
 });
