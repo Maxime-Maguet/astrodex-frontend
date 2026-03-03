@@ -58,7 +58,10 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Inscription" component={SignupScreen} />
+          <Stack.Screen
+            name="ObservationScreen"
+            component={ObservationScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

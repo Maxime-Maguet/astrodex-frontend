@@ -5,7 +5,7 @@ import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { updateLocation } from "../reducers/user";
 import Header from "../components/Header";
 import * as Astronomy from "astronomy-engine";
-//import { Magnetometer } from "expo-sensors";
+import { Magnetometer } from "expo-sensors";
 
 // Liste des astres, pour l'instant système solaire pour test
 const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
@@ -76,6 +76,39 @@ export default function ObservationScreen() {
     // }
   }, []);
 
+  useEffect(() => {
+    let magSub;
+    console.log("1. Entrée dans le useEffect");
+    const startMagnetometer = async () => {
+      try {
+        console.log("2. Vérification disponibilité...");
+        const isAvailable = await Magnetometer.isAvailableAsync();
+        console.log("3. Disponibilité :", isAvailable);
+
+        if (isAvailable) {
+          console.log("4. available :");
+          Magnetometer.setUpdateInterval(1000);
+          console.log("5. interval");
+          magSub = Magnetometer.addListener((data) => {
+            console.log("6. DATA REÇUE :", data.x);
+            let angle = Math.atan2(data.y, data.x) * (180 / Math.PI);
+            let degree = Math.round((angle - 90 + 360) % 360);
+            setHeading(degree);
+          });
+        }
+      } catch (error) {
+        console.log("ERREUR CAPTEUR :", error);
+      }
+    };
+
+    startMagnetometer();
+
+    return () => {
+      console.log("7. Nettoyage");
+      magSub?.remove();
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
       <Header title="Observation" />
@@ -92,7 +125,7 @@ export default function ObservationScreen() {
           )}
         </Text>
         <View>
-          <Text style={styles.body}>Azimut : PlaceHolder</Text>
+          <Text style={styles.body}>Azimut : {heading}</Text>
           <Text style={styles.body}>Altitude : PlaceHolder</Text>
           <Text style={styles.body}>Alignement : PlaceHolder</Text>
         </View>
