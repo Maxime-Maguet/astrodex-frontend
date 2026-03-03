@@ -63,9 +63,8 @@ function TabNavigator() {
 //</Stack.Navigator>
 //</NavigationContainer>
 //);
-//<Stack.Screen name="Inscription" component={SignupScreen} />
 
-//<Stack.Screen name="Login" component={LoginScreen} />
+
 
 export default function App() {
   return (
@@ -73,6 +72,7 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Inscription" component={SignupScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
