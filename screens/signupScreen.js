@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
-export default function SignupScreen({navigation}) {
+export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState("");
@@ -31,47 +31,37 @@ export default function SignupScreen({navigation}) {
         password: password,
       }),
     })
-<<<<<<< HEAD
-      .then(response => response.json())
-      .then(data => { console.log(data); if (data.token === true) {
-         
-        dispatch(login({ token: data.token, username: username }));
-} else {
-// console.log("utilisateur déjà existant.")
-
-}});
-=======
       .then((response) => response.json())
-      .then((data) => { 
-        dispatch(login({ token: data.token, username: username })
-      ); console.log(data.username)
-      navigation.replace('TabNavigator');
-    });
->>>>>>> origin/navigation
+      .then((data) => {
+        dispatch(login({ token: data.token, username: username }));
+        console.log(data.username);
+        navigation.replace("TabNavigator");
+      });
   };
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <View style={styles.container}>
         <Text style={styles.title}>Inscription</Text>
         <View style={styles.formContainer}>
           <TextInput
             placeholder="Email"
-            onChangeText={value => setEmail(value)}
+            onChangeText={(value) => setEmail(value)}
             value={email}
             style={styles.input}
           />
           <TextInput
             placeholder="username"
-            onChangeText={value => setUsername(value)}
+            onChangeText={(value) => setUsername(value)}
             value={username}
             style={styles.input}
           />
           <TextInput
             placeholder="password"
-            onChangeText={value => setPassword(value)}
+            onChangeText={(value) => setPassword(value)}
             value={password}
             style={styles.input}
           />
@@ -105,8 +95,7 @@ const styles = StyleSheet.create({
     width: "85%",
     justifyContent: "center",
     padding: 10,
-marginTop: 20,
-
+    marginTop: 20,
   },
 
   input: {
@@ -130,6 +119,5 @@ marginTop: 20,
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-   
   },
 });
