@@ -14,10 +14,13 @@ import { login } from "../reducers/user";
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
 
+ 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
+  
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 // utilisation des regex pour les email
 
