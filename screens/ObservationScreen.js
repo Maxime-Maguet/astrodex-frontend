@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Location from "expo-location";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { updateLocation } from "../reducers/user";
 import Header from "../components/Header";
+import CompassBar from "../components/CompassBar";
 import * as Astronomy from "astronomy-engine";
-import { Magnetometer } from "expo-sensors";
+import { DeviceMotion } from "expo-sensors";
 
 // Liste des astres, pour l'instant système solaire pour test
 const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
@@ -17,6 +18,10 @@ export default function ObservationScreen() {
   const [currentPosition, setCurrentPosition] = useState(null); // État local pour afficher la position direct sur l'écran
   const [heading, setHeading] = useState(0); // Direction du tel (0-360°)
   const [target, setTarget] = useState("Rien en vue..."); // L'astre visé
+
+  const locationRef = useRef(null); // Pour stocker la position GPS
+  const lastCalc = useRef(0); // Pour brider le calcul Astro à 1 seconde
+  const currentTargetRef = useRef(null);
 
   useEffect(() => {
     let subscription; // On prépare une variable pour pouvoir dire "quand je ne suis pas sur l'app, je n'actualise pas"
@@ -76,48 +81,70 @@ export default function ObservationScreen() {
   }, []);
 
   useEffect(() => {
-    let magSub;
-    console.log("1. Entrée dans le useEffect");
-    const startMagnetometer = async () => {
+    let dmSub;
+
+    const startMotion = async () => {
       try {
-        console.log("2. Vérification disponibilité...");
-        const isAvailable = await Magnetometer.isAvailableAsync();
-        console.log("3. Disponibilité :", isAvailable);
+        console.log("Vérification");
+        const isAvailable = await DeviceMotion.isAvailableAsync();
+        console.log("Disponibilité :", isAvailable);
 
         if (isAvailable) {
-          console.log("4. available :");
-          Magnetometer.setUpdateInterval(500);
-          console.log("5. interval");
-          magSub = Magnetometer.addListener((data) => {
-            // console.log("6. DATA REÇUE :", data.x);
-            let angle = Math.atan2(data.y, data.x) * (180 / Math.PI);
-            let degree = Math.round((angle - 90 + 360) % 360);
-            setHeading(degree);
+          // 16ms pour une fluidité maximale (60 FPS)
+          DeviceMotion.setUpdateInterval(16);
+
+          dmSub = DeviceMotion.addListener((data) => {
+            //Utiliser 'heading' pour le Nord magnétique (0 = Nord)
+            // Si 'heading' est disponible, donne la boussole réelle
+            if (data.heading !== undefined && data.heading !== -1) {
+              // décalage de 90° avec heading, on ajoute l'offset ici
+              let degree = Math.round((data.heading + 360) % 360);
+              setHeading(degree);
+            }
+            // heading n'est pas dispo, on utilise la rotation alpha
+            else if (data.rotation) {
+              let alpha = data.rotation.alpha * (180 / Math.PI);
+              // Correction des 90° : on transforme le 270° en 0° (Nord)
+              let degree = Math.round((360 - alpha - 90) % 360);
+              setHeading(degree);
+              let pitch = Math.round(data.rotation.beta * (180 / Math.PI));
+              console.log("Pitch / Altitude du tel :", pitch);
+            }
+
+            //Logique Astro Bridée (1 fois par seconde)
+            const now = Date.now();
+            if (locationRef.current && now - lastCalc.current > 1000) {
+              lastCalc.current = now;
+              // On peut aussi récupérer l'inclinaison (Altitude) avec rotation.beta
+            }
           });
         }
       } catch (error) {
-        console.log("ERREUR CAPTEUR :", error);
+        console.log("ERREUR DEVICE MOTION :", error);
       }
     };
 
-    startMagnetometer();
+    startMotion();
 
     return () => {
-      console.log("7. Nettoyage");
-      magSub?.remove();
+      console.log("7. Nettoyage DeviceMotion");
+      if (dmSub) {
+        dmSub.remove();
+      }
     };
   }, []);
 
   return (
     <View style={styles.container}>
       <Header title="Observation" />
+      <CompassBar />
       <View style={styles.card}>
         <Text style={styles.body}>
           Ta position :{" "}
           {currentPosition ? (
             <Text style={styles.body}>
-              Lat: {currentPosition.latitude.toFixed(6)} / Lon:{" "}
-              {currentPosition.longitude.toFixed(6)}
+              Lat: {currentPosition.latitude.toFixed(1)} / Lon:{" "}
+              {currentPosition.longitude.toFixed(1)}
             </Text>
           ) : (
             <Text>Récupération des coordonnées...</Text>
