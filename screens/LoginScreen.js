@@ -17,21 +17,20 @@ export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = () => {
+const handleSubmit = () => {
     fetch("http://192.168.1.6:3000/users/signin", {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: `username=${username}&password=${password}`,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: username, password: password }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
           dispatch(login({ token: data.token, username: username }));
         } else {
-          alert("Identifiants incorrects");
+          console.log("Error : ", data.error);
         }
-      })
-      .catch((err) => alert("Erreur connexion : vérifie ton IP !"));
+      });
   };
 
   return (
@@ -46,7 +45,6 @@ export default function LoginScreen() {
           onChangeText={(value) => setUsername(value)}
           value={username}
           style={styles.input}
-          autoCapitalize="none"
         />
 
         <TextInput
