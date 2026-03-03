@@ -32,8 +32,13 @@ export default function SignupScreen() {
       }),
     })
       .then((response) => response.json())
-      .then((data) => { 
-        dispatch(login({ token: data.token, username: username }));
+      .then((data) => {
+        console.log(data);
+        if (data.token === true) {
+          dispatch(login({ token: data.token, username: username }));
+        } else {
+          console.log("utilisateur déjà existant.");
+        }
       });
   };
 
@@ -44,27 +49,29 @@ export default function SignupScreen() {
     >
       <View style={styles.container}>
         <Text style={styles.title}>Inscription</Text>
-        <TextInput
-          placeholder="Email"
-          onChangeText={(value) => setEmail(value)}
-          value={email}
-          style={styles.inputEmail}
-        />
-        <TextInput
-          placeholder="username"
-          onChangeText={(value) => setUsername(value)}
-          value={username}
-          style={styles.inputUsername}
-        />
-        <TextInput
-          placeholder="password"
-          onChangeText={(value) => setPassword(value)}
-          value={password}
-          style={styles.inputPassword}
-        />
-        <TouchableOpacity onPress={handleSubmit}>
-          <Text style={styles.textButton}>S'inscrire</Text>
-        </TouchableOpacity>
+        <View style={styles.formContainer}>
+          <TextInput
+            placeholder="Email"
+            onChangeText={(value) => setEmail(value)}
+            value={email}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="username"
+            onChangeText={(value) => setUsername(value)}
+            value={username}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="password"
+            onChangeText={(value) => setPassword(value)}
+            value={password}
+            style={styles.input}
+          />
+          <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+            <Text style={styles.textButton}>S'inscrire</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -73,24 +80,47 @@ export default function SignupScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#1A1C20",
     alignItems: "center",
+  },
+
+  title: {
+    color: "#ffffff",
+    fontSize: 32,
+    marginTop: 70,
+  },
+
+  button: {
+    backgroundColor: "#5B8CFF",
+    fontSize: 16,
+    alignItems: "center",
+    borderRadius: 10,
+    width: "85%",
     justifyContent: "center",
+    padding: 10,
+    marginTop: 20,
+  },
+
+  input: {
+    width: "85%",
+    backgroundColor: "#ffffff",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    color: "#1A1C20",
   },
 
   textButton: {
     fontSize: 24,
-    color: "#5B8CFF",
+    color: "#ffffff",
     fontFamily: "Inter",
+    borderRadius: 10,
   },
 
-  title: {
-    color: "rgb(255, 116, 91)",
-    fontSize: 24,
-  },
-
-  inputEmail: {
-    backgroundcolor: "#ffffff",
-    fontSize: 24,
+  formContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%",
   },
 });
