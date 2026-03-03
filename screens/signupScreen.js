@@ -18,7 +18,7 @@ export default function SignupScreen() {
   const [email, setEmail] = useState("");
 
   const handleSubmit = () => {
-    if (email === "" || username === "" || password === "") console.log("error") return;
+    if (email === "" || username === "" || password === "")  return;
 
     fetch(`http://192.168.1.22:3000/users/signup`, {
       method: "POST",
