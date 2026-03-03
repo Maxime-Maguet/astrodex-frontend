@@ -87,10 +87,10 @@ export default function ObservationScreen() {
 
         if (isAvailable) {
           console.log("4. available :");
-          Magnetometer.setUpdateInterval(1000);
+          Magnetometer.setUpdateInterval(500);
           console.log("5. interval");
           magSub = Magnetometer.addListener((data) => {
-            console.log("6. DATA REÇUE :", data.x);
+            // console.log("6. DATA REÇUE :", data.x);
             let angle = Math.atan2(data.y, data.x) * (180 / Math.PI);
             let degree = Math.round((angle - 90 + 360) % 360);
             setHeading(degree);
