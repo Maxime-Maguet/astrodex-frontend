@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
-export default function SignupScreen() {
+export default function SignupScreen({navigation}) {
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState("");
@@ -24,6 +24,7 @@ const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"
   const handleSubmit = () => {
     if (email === "" || username === "" || password === "")  
 
+<<<<<<< HEAD
  if (EMAIL_REGEX.test(email)) {
       dispatch(updateEmail(email));
       navigation.navigate('TabNavigator', { screen: 'observationScreen' });
@@ -35,6 +36,9 @@ const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"
 
 
     fetch(`http://192.168.1.6:3000/users/signup`, {
+=======
+    fetch(`http://192.168.1.34:3000/users/signup`, {
+>>>>>>> origin/navigation
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -50,6 +54,7 @@ const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"
         console.log(data);
         if (data.token) {
           dispatch(login({ token: data.token, username: username }));
+          navigation.replace("TabNavigator")
         } else {
           // console.log("utilisateur déjà existant.");
         }

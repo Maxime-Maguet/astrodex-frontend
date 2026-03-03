@@ -11,14 +11,18 @@ import {
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 
-export default function LoginScreen() {
+export default function LoginScreen({navigation}) {
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
 const handleSubmit = () => {
+<<<<<<< HEAD
     fetch(`http://192.168.1.6:3000/users/signin`, {
+=======
+    fetch("http://192.168.1.34:3000/users/signin", {
+>>>>>>> origin/navigation
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username, password: password }),
@@ -27,6 +31,7 @@ const handleSubmit = () => {
       .then((data) => {
         if (data.result) {
           dispatch(login({ token: data.token, username: username }));
+          navigation.navigate('TabNavigator')
         } else {
           console.log("Error : ", data.error);
         }
