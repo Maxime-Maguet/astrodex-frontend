@@ -9,7 +9,7 @@ import * as Astronomy from "astronomy-engine";
 
 // Liste des astres, pour l'instant système solaire pour test
 const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
-
+let astreFocus = "Mars";
 export default function BoussoleIOS() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value); // On récupère les infos du store (token, nickname, etc.)
@@ -127,10 +127,15 @@ export default function BoussoleIOS() {
       const diff = Math.abs(locationHeading - hor.azimuth);
       const distanceHorizontale = Math.min(diff, 360 - diff);
 
-      // Si l'astre est au-dessus de l'horizon et aligné (marge de 10°)
-      if (hor.altitude > 0 && distanceHorizontale < 10) {
-        found = `${body} (Alt: ${hor.altitude.toFixed(1)}°)`;
-        break; // On s'arrête au premier trouvé
+      // Si l'astre est au-dessus de l'horizon et aligné
+      if (hor.altitude > 0) {
+        if (distanceHorizontale <= 4 && astreFocus === body) {
+          found = `${body}`;
+
+          break;
+        } else if (distanceHorizontale <= 10 && body === astreFocus) {
+          found = `Tu y es presque !`;
+        }
       }
     }
 
@@ -142,6 +147,9 @@ export default function BoussoleIOS() {
   return (
     <View style={styles.container}>
       <Text style={styles.h2}>Pour IOS</Text>
+      <View>
+        <Text style={styles.body}>Astre Focus: {astreFocus}</Text>
+      </View>
       <View style={styles.card}>
         <Text style={styles.body}>
           Ta position :{" "}

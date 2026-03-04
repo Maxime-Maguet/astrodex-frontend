@@ -1,7 +1,14 @@
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Location from "expo-location";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from "react-native";
 import { updateLocation } from "../reducers/user";
 import Header from "../components/Header";
 import CompassBar from "../components/CompassBar";
@@ -13,13 +20,15 @@ import { DeviceMotion } from "expo-sensors";
 
 export default function ObservationScreen() {
   return (
-    <View style={styles.container}>
-      <Header title="Observation" />
-      {/* <CompassBar /> */}
-      <BoussoleIOS />
-      <BoussoleAndroid />
-      <BoussoleAndroid2 />
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <Header title="Observation" />
+        {/* <CompassBar /> */}
+        <BoussoleIOS />
+        <BoussoleAndroid />
+        <BoussoleAndroid2 />
+      </View>
+    </ScrollView>
   );
 }
 

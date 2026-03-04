@@ -10,7 +10,7 @@ import { DeviceMotion } from "expo-sensors";
 
 // Liste des astres, pour l'instant système solaire pour test
 const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
-
+let astreFocus = "Sun";
 export default function BoussoleAndroid() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value); // On récupère les infos du store (token, nickname, etc.)
@@ -91,7 +91,7 @@ export default function BoussoleAndroid() {
 
       let locationSubscription = await Location.watchHeadingAsync(
         (locationHeading) => {
-          setLocationHeading(locationHeading.trueHeading.toFixed(0));
+          setLocationHeading(locationHeading.magHeading.toFixed(0));
         },
       );
 
@@ -129,9 +129,14 @@ export default function BoussoleAndroid() {
       const distanceHorizontale = Math.min(diff, 360 - diff);
 
       // Si l'astre est au-dessus de l'horizon et aligné (marge de 10°)
-      if (hor.altitude > 0 && distanceHorizontale < 10) {
-        found = `${body} (Alt: ${hor.altitude.toFixed(1)}°)`;
-        break; // On s'arrête au premier trouvé
+      if (hor.altitude > 0) {
+        if (distanceHorizontale <= 4 && astreFocus === body) {
+          found = `${body}`;
+
+          break;
+        } else if (distanceHorizontale <= 10 && body === astreFocus) {
+          found = `Tu y es presque !`;
+        }
       }
     }
 
