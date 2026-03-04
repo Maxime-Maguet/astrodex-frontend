@@ -6,9 +6,9 @@ export default function ObservationModal(props) {
 
   useEffect(() => {
     if (props.visible) {
-      fetch("http://192.168.1.22:3000/astres")
-        .then(response => response.json())
-        .then(data => {
+      fetch("http://192.168.1.6:3000/astres")
+        .then((response) => response.json())
+        .then((data) => {
           console.log(data);
           setObservation(data.astres[0]);
         });
@@ -25,7 +25,7 @@ export default function ObservationModal(props) {
               <Text style={styles.description}>{observation.description} </Text>
               <Image
                 source={{
-                   uri: observation.imageUrl
+                  uri: observation.imageUrl,
                 }}
                 style={styles.image}
               />

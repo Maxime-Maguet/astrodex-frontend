@@ -14,6 +14,7 @@ import Header from "../components/Header";
 
 export default function AstrodexScreen() {
   const [astres, setAstres] = useState([]);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -38,6 +39,7 @@ export default function AstrodexScreen() {
         description={data.description}
         imageUrl={data.imageUrl}
         rarity={data.rarity_level}
+        type={data.type}
       />
     );
   });

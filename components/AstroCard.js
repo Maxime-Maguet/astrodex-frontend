@@ -4,7 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { AddAstres } from "../reducers/astre";
 
 export default function AstroCard(props) {
-  const [astres, setAstres] = useState([]);
+  const [isLocked, setIslocked] = useState(true);
+
+  const capturedList = ["Venus", "Mars", "Lune"];
+
   const rarityStyle = {
     Commune: "#22C55E",
     Rare: "#3B82F6",
@@ -22,27 +25,40 @@ export default function AstroCard(props) {
       />
       <View style={styles.container}>
         <Text style={styles.astreName}>{props.name}</Text>
-        <Text style={styles.description}>{props.description}</Text>
+        <Text style={styles.type}>{props.type}</Text>
+        <Text style={styles.rarity}>{props.rarity}</Text>
       </View>
-      <TouchableOpacity style={styles.button} activeOpacity={0.8} />
-      <Text>Détails</Text>
+      <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+        <Text style={styles.buttonText}>Détails</Text>
+      </TouchableOpacity>
+      {isLocked && (
+        <View style={styles.lockedCard}>
+          <Text style={styles.lockedText}>NON CAPTURÉ</Text>
+        </View>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   astreName: {
-    fontSize: 16,
+    fontSize: 15,
     color: "#FFFFFF",
     fontWeight: 600,
     fontFamily: "Inter",
     marginBottom: 10,
   },
 
-  description: {
+  rarity: {
     fontSize: 14,
     color: "#AAB3C5",
     fontFamily: "Inter",
+  },
+  type: {
+    fontSize: 14,
+    color: "#AAB3C5",
+    fontFamily: "Inter",
+    marginBottom: 10,
   },
   image: {
     width: 100,
@@ -51,6 +67,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   card: {
+    position: "relative",
+    overflow: "hidden",
     width: "100%",
     flexDirection: "row",
     backgroundColor: "#151C2F",
@@ -69,11 +87,35 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    width: "10%",
-    height: "20%",
+    width: "20%",
+    height: 40,
     alignItems: "center",
-    paddingTop: 8,
-    backgroundColor: "#7C7979",
-    borderRadius: 10,
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#AAB3C5",
+    borderRadius: 5,
+    marginRight: 10,
+    marginTop: 10,
+  },
+
+  buttonText: {
+    color: "#AAB3C5",
+    fontFamily: "Inter",
+    fontSize: 14,
+    textAlign: "center",
+  },
+
+  lockedCard: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(58, 58, 58, 0.95)",
+    borderRadius: 15,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  lockedText: {
+    fontSize: 14,
+    color: "#AAB3C5",
+    fontFamily: "Inter",
+    fontWeight: "bold",
   },
 });
