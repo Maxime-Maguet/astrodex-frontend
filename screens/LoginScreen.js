@@ -20,7 +20,7 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
 
   const handleSubmit = () => {
-    fetch("http://192.168.1.22:3000/users/signin", {
+    fetch("http://192.168.1.34:3000/users/signin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username, password: password }),

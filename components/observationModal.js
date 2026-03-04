@@ -6,7 +6,7 @@ export default function ObservationModal(props) {
 
   useEffect(() => {
     if (props.visible) {
-      fetch("http://192.168.1.22:3000/astres")
+      fetch("http://192.168.1.34:3000/astres")
         .then(response => response.json())
         .then(data => {
           console.log(data);

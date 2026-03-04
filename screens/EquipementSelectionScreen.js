@@ -9,74 +9,73 @@ import {
   Platform,
 } from "react-native";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function EquipementSelectionScreen() {
     const Dispatch = useDispatch();
+    const user = useSelector((state) => state.user.value);
  
 const [Equipement, setEquipement]= useState('');
 
   const Equipement_LIMITS = {
-    EYE: { maxMagnitude: 4, label: "Œil nu", xpBonus: 100 }, //Configuration basé sur la magnétude
-    BINOCULARS: { maxMagnitude: 8, label: "Jumelles", xpBonus: 250 },
-    TELESCOPE: { maxMagnitude: 15, label: "Télescope", xpBonus: 500 },
+   "Oeil nue": { maxMagnitude: 4, label: "Œil nu", xpBonus: 100 }, //Configuration basé sur la magnétude
+    "Jumelles": { maxMagnitude: 8, label: "Jumelle", xpBonus: 250 },
+    "Lunette astronomique": { maxMagnitude: 15, label: "Télescope", xpBonus: 500 },
   };
 
-  const Observation = (equipement) => {
-    if(!equipement){
+  const Observation = () => {
+    if(Equipement === ""||Equipement === undefined){
       console.log("pas d'équipement selectionné")
         return; 
     }
-    
+
     fetch("http://192.168.1.34:3000/users/updateUser", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({equipement : Equipement, token : user.token }),
     })
     .then((response) => response.json())
-   .then((data) => {
-    if (data.result ) {
+   .then((data) => {console.log(data)
+    if (data ) {
       console.log("Succès", data.equipement);
-      Dispatch()
-      setEquipement(equipement)
-    } else console.log("Echec non visible");
+      
+  setEquipement(Equipement)
+    } else console.log(" déjà équipé");
   });
 }
   return (
+    <Modal>
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={() => setEquipement()}
-        style={styles.button}
+        onPress={() => setEquipement('Oeil nue')}
+
+        style={[styles.button, Equipement === "Oeil nue" && { backgroundColor: 'blue'} ]}
         activeOpacity={0.8}
       >
         <Text style={styles.buttonText}>Oeil nue</Text>
-        <Text>
-          (Idéal pour observer les planètes les plus proches visible à l'oeil
-          nu)
-        </Text>
+        
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() =>setEquipement()}
-        style={styles.button}
+        onPress={() =>setEquipement("Jumelles")}
+        style={[styles.button, Equipement === "Jumelles" && { backgroundColor: 'blue'} ]}
         activeOpacity={0.8}
       >
         <Text style={styles.buttonText}>Jumelles</Text>
-        <Text>(Idéal pour les amas d'étoiles et les planètes lointaines)</Text>
+       
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => setEquipement()}
-        style={styles.button}
+        onPress={() => setEquipement("Lunette astronomique")}
+        style={[styles.button, Equipement === "Lunette astronomique" && { backgroundColor: 'blue'} ]}
         activeOpacity={0.8}
       >
         <Text style={styles.buttonText}>Télescope</Text>
-        <Text>
-          (Débusquez les astres les plus sombres et les galaxies les plus lointaines.)
-        </Text>
+        
       </TouchableOpacity>
 <TouchableOpacity onPress={() => Observation()}>
       <Text style={styles.buttonConfirmer}>Confirmer</Text>
         </TouchableOpacity>
     </View>
+    </Modal>
   );
 }
 
@@ -88,29 +87,34 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   button: {
-    width: "100%",
-    backgroundColor: "#8a8b8e",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    width: "70%",
+   
+    backgroundColor: "#6C768F",
+    padding: 25,
+    paddingLeft : 25,
+   
     borderRadius: 8,
-    marginTop: 30,
+    marginTop: 45,
     alignItems: "center",
+   
+    
   },
   buttonText: {
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
   },
-  buttonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
-  },
+ 
   buttonConfirmer:{
-      backgroundColor: "#3B6DED",
-    width: "85%",
-    padding: 18,
-    borderRadius: 10,
+   backgroundColor: "#3B82F6",
+   color: "#FFFFFF",
+    fontSize: 16,
     alignItems: "center",
+    borderRadius: 10,
+    width: "70%",
+ paddingLeft: 70,
+ paddingRight: 70,
+    padding: 10,
+    marginTop: 30,
   }
 });
