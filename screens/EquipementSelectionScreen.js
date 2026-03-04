@@ -12,9 +12,9 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 
 export default function EquipementSelectionScreen() {
-    const Dispatch = useDispatch();
+  const Dispatch = useDispatch();
   const [astre, setAstre] = useState(null);
-const [Equipement, setEquipement]= useState('');
+  const [Equipement, setEquipement] = useState("");
 
   const Equipement_LIMITS = {
     EYE: { maxMagnitude: 4, label: "Œil nu", xpBonus: 100 }, //Configuration basé sur la magnétude
@@ -23,25 +23,25 @@ const [Equipement, setEquipement]= useState('');
   };
 
   const Observation = (equipement) => {
-    if(!equipement){
-      console.log("pas d'équipement selectionné")
-        return; 
+    if (!equipement) {
+      console.log("pas d'équipement selectionné");
+      return;
     }
-    
-    fetch("http://192.168.1.34:3000/users/updateUser", {
+
+    fetch("http://192.168.1.67:3000/users/updateUser", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({equipement : Equipement, token : user.token }),
+      body: JSON.stringify({ equipement: Equipement, token: user.token }),
     })
-    .then((response) => response.json())
-   .then((data) => {
-    if (data.result ) {
-      console.log("Succès");
-      Dispatch()
-      setEquipement(equipement)
-    } else console.log("Echec non visible");
-  });
-}
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          console.log("Succès");
+          Dispatch();
+          setEquipement(equipement);
+        } else console.log("Echec non visible");
+      });
+  };
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -56,7 +56,7 @@ const [Equipement, setEquipement]= useState('');
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() =>setEquipement()}
+        onPress={() => setEquipement()}
         style={styles.button}
         activeOpacity={0.8}
       >
@@ -70,12 +70,13 @@ const [Equipement, setEquipement]= useState('');
       >
         <Text style={styles.buttonText}>Télescope</Text>
         <Text>
-          (Débusquez les astres les plus sombres et les galaxies les plus lointaines.)
+          (Débusquez les astres les plus sombres et les galaxies les plus
+          lointaines.)
         </Text>
       </TouchableOpacity>
-<TouchableOpacity onPress={() => Observation()}>
-      <Text style={styles.buttonConfirmer}>Confirmer</Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={() => Observation()}>
+        <Text style={styles.buttonConfirmer}>Confirmer</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -106,11 +107,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-  buttonConfirmer:{
-      backgroundColor: "#3B6DED",
+  buttonConfirmer: {
+    backgroundColor: "#3B6DED",
     width: "85%",
     padding: 18,
     borderRadius: 10,
     alignItems: "center",
-  }
+  },
 });
