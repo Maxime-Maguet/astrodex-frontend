@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -9,6 +9,12 @@ import {
 import CompassBar from "../components/CompassBar";
 import * as Location from "expo-location";
 import { fetchWeather } from "../services/weatherService";
+
+const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
+const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
+
+const visibilityToPercent = (meters) =>
+  Math.min(Math.round((meters / MAX_VISIBILITY) * 100), 100);
 
 export default function HomeScreen() {
   const [weather, setWeather] = useState(null);
@@ -23,21 +29,36 @@ export default function HomeScreen() {
       }
 
       const location = await Location.getCurrentPositionAsync({});
-      try {
-        const data = await fetchWeather(location.coords.latitude, location.coords.longitude);
-        setWeather(data);
-
-        if (data.clouds > 70) {
-          setMessage("Too cloudy to observe the sky");
-        } else {
-          setMessage("Clear sky for observation");
+      const fetchAndUpdate = async () => {
+        try {
+          const data = await fetchWeather(
+            location.coords.latitude,
+            location.coords.longitude
+          );
+          setWeather({
+            ...data,
+            clartePercent: visibilityToPercent(data.visibility),
+          });
+          if (data.clouds > 70) {
+            setMessage("Too cloudy to observe the sky");
+          } else {
+            setMessage("Clear sky for observation");
+          }
+        } catch (err) {
+          setMessage("Unable to fetch weather");
         }
-      } catch (err) {
-        setMessage("Unable to fetch weather");
-      }
+      };
+
+//appel immédiat puis toutes les 30 min
+      await fetchAndUpdate();
+      interval = setInterval(fetchAndUpdate, REFRESH_INTERVAL);
     };
 
     loadWeather();
+//nettoyage au démontage
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, []);
 
   return (
@@ -64,7 +85,7 @@ export default function HomeScreen() {
                 Clouds: {weather.clouds}%
               </Text>
               <Text style={{ color: "white", fontSize: 16 }}>
-                Visibility: {weather.visibility} m
+                Visibility: {weather.clartePercent}%
               </Text>
               <Text style={{ color: "#5B8CFF", marginTop: 10 }}>{message}</Text>
             </>
