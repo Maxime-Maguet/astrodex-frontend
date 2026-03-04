@@ -11,6 +11,7 @@ import { DeviceMotion } from "expo-sensors";
 // Liste des astres, pour l'instant système solaire pour test
 const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
 let astreFocus = "Venus";
+let Alignement = "Pas aligné";
 
 export default function BoussoleAndroid2() {
   const dispatch = useDispatch();
@@ -133,12 +134,14 @@ export default function BoussoleAndroid2() {
 
       // Si l'astre est au-dessus de l'horizon et aligné (marge de 10°)
       if (hor.altitude > 0) {
-        if (distanceHorizontale <= 4 && astreFocus === body) {
+        if (distanceHorizontale <= 2 && astreFocus === body) {
           found = `${body}`;
-
+          Alignement = "Alignement parfait";
           break;
-        } else if (distanceHorizontale <= 10 && body === astreFocus) {
-          found = `Tu y es presque !`;
+        } else if (distanceHorizontale < 10 && body === astreFocus) {
+          Alignement = "Presque aligné";
+        } else if (distanceHorizontale > 10 && body === astreFocus) {
+          Alignement = "Pas aligné";
         }
       }
     }
@@ -151,6 +154,9 @@ export default function BoussoleAndroid2() {
   return (
     <View style={styles.container}>
       <Text style={styles.h2}>Pour ANDROID avec DeviceMotion</Text>
+      <View>
+        <Text style={styles.body}>Astre Focus: {astreFocus}</Text>
+      </View>
       <View style={styles.card}>
         <Text style={styles.body}>
           Ta position :{" "}
@@ -166,7 +172,7 @@ export default function BoussoleAndroid2() {
         <View>
           <Text style={styles.body}>Boussole : {deviceMotionHeading}°</Text>
           <Text style={styles.body}>En vue : {target}</Text>
-          <Text style={styles.body}>Alignement : PlaceHolder</Text>
+          <Text style={styles.body}>Alignement : {Alignement}</Text>
         </View>
       </View>
     </View>
