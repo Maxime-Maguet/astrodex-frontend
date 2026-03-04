@@ -4,9 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AddAstres } from "../reducers/astre";
 
 export default function AstroCard(props) {
-  const [isLocked, setIslocked] = useState(true);
-
-  const capturedList = ["Venus", "Mars", "Lune"];
+  const [isLocked, setIslocked] = useState(!props.isCaptured);
 
   const rarityStyle = {
     Commune: "#22C55E",

@@ -14,6 +14,8 @@ import Header from "../components/Header";
 
 export default function AstrodexScreen() {
   const [astres, setAstres] = useState([]);
+  const [astresCapture, setAstresCapture] = useState([]);
+  const userToken = "FOhjtgEWySnHAccR1oIiRI8ahdLysji0";
 
   const dispatch = useDispatch();
 
@@ -29,9 +31,24 @@ export default function AstrodexScreen() {
       });
   }, []);
 
-  const astresList = astres.map((data, i) => {
-    console.log(data.rarity_level);
+  useEffect(() => {
+    fetch(`http://192.168.1.6:3000/users/profile/${userToken}`)
+      .then((res) => res.json())
+      .then((userData) => {
+        if (userData.result) {
+          //console.log(userData.user.capturedAstres);
+          setAstresCapture(userData.user.capturedAstres);
+        }
+      });
+  }, []);
+  //console.log(astresCapture);
+  console.log("tous les astres : ", astres[0]);
+  console.log("astres capturés: ", astresCapture[0]);
 
+  const astresList = astres.map((data, i) => {
+    //console.log(data.rarity_level);
+
+    const isCaptured = astresCapture.some((astre) => astre._id === data._id);
     return (
       <AstroCard
         key={i}
@@ -40,6 +57,7 @@ export default function AstrodexScreen() {
         imageUrl={data.imageUrl}
         rarity={data.rarity_level}
         type={data.type}
+        isCaptured={isCaptured}
       />
     );
   });
