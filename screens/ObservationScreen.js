@@ -31,6 +31,7 @@ export default function ObservationScreen() {
   const closeModal = () => {
     setModalVisible(false);
   };
+
   function platformIOS() {
     if (Platform.OS === "ios") {
       return <BoussoleIOS />;
