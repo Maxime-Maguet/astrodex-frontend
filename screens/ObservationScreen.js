@@ -17,16 +17,39 @@ import BoussoleAndroid from "../components/CompAndroid";
 import BoussoleAndroid2 from "../components/CompAndroidAvecDeviceMotion";
 import * as Astronomy from "astronomy-engine";
 import { DeviceMotion } from "expo-sensors";
+import ButtonCapture from "../components/buttonCapture";
+import ObservationModal from "../components/observationModal";
+import { ScrollView } from "react-native";
 
 export default function ObservationScreen() {
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleCapture = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   return (
     <ScrollView>
       <View style={styles.container}>
         <Header title="Observation" />
-        {/* <CompassBar /> */}
-        <BoussoleIOS />
-        <BoussoleAndroid />
-        <BoussoleAndroid2 />
+        <View style={styles.container}>
+          <Header title="Observation" />
+          {/* <CompassBar /> */}
+          <BoussoleIOS />
+          <BoussoleAndroid />
+          <BoussoleAndroid2 />
+        </View>
+
+        <ButtonCapture
+          style={styles.button}
+          textStyle={styles.buttonText}
+          onPress={handleCapture}
+        />
+        <ObservationModal visible={modalVisible} closeModal={closeModal} />
       </View>
     </ScrollView>
   );
