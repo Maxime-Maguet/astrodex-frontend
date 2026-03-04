@@ -32,7 +32,7 @@ export default function ObservationScreen() {
     setModalVisible(false);
   };
 
-  function platformIOS() {
+  function platformOS() {
     if (Platform.OS === "ios") {
       return <BoussoleIOS />;
     } else if (Platform.OS === "android") {
@@ -46,7 +46,7 @@ export default function ObservationScreen() {
         contentContainerStyle={styles.scrollContent}
       >
         <Header title="Observation" />
-        {platformIOS()}
+        {platformOS()}
         <ButtonCapture
           style={styles.button}
           textStyle={styles.buttonText}

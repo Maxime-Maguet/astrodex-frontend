@@ -8,7 +8,7 @@ import * as Astronomy from "astronomy-engine";
 
 // Liste des astres, pour l'instant système solaire pour test
 const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
-let astreFocus = "Mars";
+let astreFocus = "Saturn";
 let Alignement;
 
 export default function BoussoleIOS() {
