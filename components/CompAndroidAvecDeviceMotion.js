@@ -11,7 +11,7 @@ import { DeviceMotion } from "expo-sensors";
 // Liste des astres, pour l'instant système solaire pour test
 const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
 
-export default function BoussoleAndroid() {
+export default function BoussoleAndroid2() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value); // On récupère les infos du store (token, nickname, etc.)
 
@@ -79,26 +79,28 @@ export default function BoussoleAndroid() {
     // }
   }, []);
 
-  const [locationHeading, setLocationHeading] = useState(0);
+  const [deviceMotionHeading, setDeviceMotionHeading] = useState(0);
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
-        return;
+    let deviceMotionSubscription = DeviceMotion.addListener(({ rotation }) => {
+      // Extract rotation data
+      const { alpha } = rotation;
+
+      // Calculate heading
+      let calculatedHeading = 360 - (alpha * 180) / Math.PI;
+      if (calculatedHeading < 0) {
+        calculatedHeading += 360;
+      }
+      if (calculatedHeading > 360) {
+        calculatedHeading -= 360;
       }
 
-      let locationSubscription = await Location.watchHeadingAsync(
-        (locationHeading) => {
-          setLocationHeading(locationHeading.trueHeading.toFixed(0));
-        },
-      );
+      setDeviceMotionHeading(calculatedHeading.toFixed(0));
+    });
 
-      return () => {
-        locationSubscription && locationSubscription.remove();
-      };
-    })();
+    return () => {
+      deviceMotionSubscription && deviceMotionSubscription.remove();
+    };
   }, []);
 
   useEffect(() => {
@@ -125,7 +127,7 @@ export default function BoussoleAndroid() {
       );
 
       // Calcul de l'écart entre le téléphone et l'astre
-      const diff = Math.abs(locationHeading - hor.azimuth);
+      const diff = Math.abs(deviceMotionHeading - hor.azimuth);
       const distanceHorizontale = Math.min(diff, 360 - diff);
 
       // Si l'astre est au-dessus de l'horizon et aligné (marge de 10°)
@@ -138,11 +140,11 @@ export default function BoussoleAndroid() {
     setTarget(found);
 
     // On relance le calcul dès que la position ou la boussole change
-  }, [currentPosition, locationHeading]);
+  }, [currentPosition, deviceMotionHeading]);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.h2}>Pour ANDROID</Text>
+      <Text style={styles.h2}>Pour ANDROID avec DeviceMotion</Text>
       <View style={styles.card}>
         <Text style={styles.body}>
           Ta position :{" "}
@@ -156,7 +158,7 @@ export default function BoussoleAndroid() {
           )}
         </Text>
         <View>
-          <Text style={styles.body}>Boussole : {locationHeading}°</Text>
+          <Text style={styles.body}>Boussole : {deviceMotionHeading}°</Text>
           <Text style={styles.body}>En vue : {target}</Text>
           <Text style={styles.body}>Alignement : PlaceHolder</Text>
         </View>

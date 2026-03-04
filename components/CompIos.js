@@ -90,7 +90,7 @@ export default function BoussoleIOS() {
 
       let locationSubscription = await Location.watchHeadingAsync(
         (locationHeading) => {
-          setLocationHeading(locationHeading.trueHeading);
+          setLocationHeading(locationHeading.trueHeading.toFixed(0));
         },
       );
 
@@ -99,6 +99,45 @@ export default function BoussoleIOS() {
       };
     })();
   }, []);
+
+  useEffect(() => {
+    // On ne calcule que si on a la position ET l'orientation
+    if (!currentPosition) return;
+
+    const observer = new Astronomy.Observer(
+      currentPosition.latitude,
+      currentPosition.longitude,
+      currentPosition.altitude ?? 0,
+    );
+
+    const date = new Date();
+    let found = "Rien en vue...";
+
+    for (let body of bodies) {
+      const equ_ofdate = Astronomy.Equator(body, date, observer, true, true);
+      const hor = Astronomy.Horizon(
+        date,
+        observer,
+        equ_ofdate.ra,
+        equ_ofdate.dec,
+        "normal",
+      );
+
+      // Calcul de l'écart entre le téléphone et l'astre
+      const diff = Math.abs(locationHeading - hor.azimuth);
+      const distanceHorizontale = Math.min(diff, 360 - diff);
+
+      // Si l'astre est au-dessus de l'horizon et aligné (marge de 10°)
+      if (hor.altitude > 0 && distanceHorizontale < 10) {
+        found = `${body} (Alt: ${hor.altitude.toFixed(1)}°)`;
+        break; // On s'arrête au premier trouvé
+      }
+    }
+
+    setTarget(found);
+
+    // On relance le calcul dès que la position ou la boussole change
+  }, [currentPosition, locationHeading]);
 
   return (
     <View style={styles.container}>
@@ -116,10 +155,8 @@ export default function BoussoleIOS() {
           )}
         </Text>
         <View>
-          <Text style={styles.body}>
-            Boussole : {locationHeading.toFixed(1)}°
-          </Text>
-          <Text style={styles.body}>En vue : PlaceHolder</Text>
+          <Text style={styles.body}>Boussole : {locationHeading}°</Text>
+          <Text style={styles.body}>En vue : {target}</Text>
           <Text style={styles.body}>Alignement : PlaceHolder</Text>
         </View>
       </View>

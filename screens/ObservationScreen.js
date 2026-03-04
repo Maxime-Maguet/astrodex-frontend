@@ -7,11 +7,9 @@ import Header from "../components/Header";
 import CompassBar from "../components/CompassBar";
 import BoussoleIOS from "../components/CompIos";
 import BoussoleAndroid from "../components/CompAndroid";
+import BoussoleAndroid2 from "../components/CompAndroidAvecDeviceMotion";
 import * as Astronomy from "astronomy-engine";
 import { DeviceMotion } from "expo-sensors";
-
-// Liste des astres, pour l'instant système solaire pour test
-const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
 
 export default function ObservationScreen() {
   return (
@@ -20,6 +18,7 @@ export default function ObservationScreen() {
       {/* <CompassBar /> */}
       <BoussoleIOS />
       <BoussoleAndroid />
+      <BoussoleAndroid2 />
     </View>
   );
 }
