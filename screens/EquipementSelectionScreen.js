@@ -33,7 +33,7 @@ export default function EquipementSelectionScreen() {
       return;
     }
 
-    fetch("http://192.168.1.34:3000/users/updateUser", {
+    fetch("http://192.168.1.6:3000/users/updateUser", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ equipement: Equipement, token: user.token }),
