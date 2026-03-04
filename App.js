@@ -14,6 +14,7 @@ import astre from "./reducers/astre";
 import SignupScreen from "./screens/signupScreen";
 import HomeScreen from "./screens/HomeScreen";
 import AstrodexScreen from "./screens/AstrodexScreen";
+import EquipementSelectionScreen from "./screens/EquipementSelectionScreen";
 // import {
 //   persistStore,
 //   persistReducer,
@@ -54,6 +55,7 @@ function TabNavigator() {
       })}
     >
       <Tab.Screen name="Observation" component={ObservationScreen} />
+      <Tab.Screen name="Equipement" component={EquipementSelectionScreen} />
     </Tab.Navigator>
   );
 }
@@ -71,7 +73,7 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Login" component={ObservationScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Inscription" component={SignupScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>

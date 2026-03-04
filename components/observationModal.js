@@ -6,9 +6,15 @@ export default function ObservationModal(props) {
 
   useEffect(() => {
     if (props.visible) {
+<<<<<<< HEAD
       fetch("http://192.168.1.67:3000/astres")
         .then((response) => response.json())
         .then((data) => {
+=======
+      fetch("http://192.168.1.34:3000/astres")
+        .then(response => response.json())
+        .then(data => {
+>>>>>>> origin/equipement
           console.log(data);
           setObservation(data.astres[0]);
         });
