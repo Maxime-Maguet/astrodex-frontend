@@ -1,9 +1,18 @@
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  Modal,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import { useEffect, useState } from "react";
 import { Image } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 export default function ObservationModal(props) {
   const [observation, setObservation] = useState(null);
-
+  const navigation = useNavigation();
   useEffect(() => {
     if (props.visible) {
 <<<<<<< HEAD
@@ -14,8 +23,12 @@ export default function ObservationModal(props) {
       fetch("http://192.168.1.34:3000/astres")
         .then(response => response.json())
         .then(data => {
+<<<<<<< HEAD
 >>>>>>> origin/equipement
           console.log(data);
+=======
+          //   console.log(data.astres);
+>>>>>>> origin/homescreen
           setObservation(data.astres[0]);
         });
     }
@@ -27,17 +40,34 @@ export default function ObservationModal(props) {
         <View style={styles.container}>
           {observation && (
             <>
-              <Text style={styles.title}>{observation.name}</Text>
-              <Text style={styles.description}>{observation.description} </Text>
               <Image
+<<<<<<< HEAD
                 source={{
                   uri: observation.imageUrl,
                 }}
+=======
+                source={{ uri: observation.imageUrl }}
+>>>>>>> origin/homescreen
                 style={styles.image}
               />
+              <Text style={styles.title}>{observation.name}</Text>
+
+              <Text style={styles.rarity}>{observation.rarity_level}</Text>
+
+              <ScrollView>
+                <Text style={styles.description}>
+                  {observation.description}
+                </Text>
+              </ScrollView>
             </>
           )}
-          <TouchableOpacity onPress={props.closeModal} style={styles.button}>
+
+          <TouchableOpacity
+            onPress={() => {
+              props.closeModal();
+              navigation.navigate("TabNavigator", {screen: "Astrodex"});
+            }}
+            style={styles.button}>
             <Text style={styles.buttonText}>Astrodex</Text>
           </TouchableOpacity>
         </View>
@@ -59,25 +89,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
+    padding: 20,
   },
   title: {
-    fontSize: 15,
-    color: "#0B0F1A",
+    fontSize: 32,
+    color: "#090909",
     fontWeight: "bold",
     fontFamily: "Inter",
   },
   description: {
     fontSize: 15,
-    color: "#0B0F1A",
+    color: "#090909",
     fontWeight: "bold",
     fontFamily: "Inter",
+    backgroundColor: "#D9DEE3",
+    borderRadius: 10,
+    textAlign: "center",
   },
 
   image: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
     marginBottom: 10,
-    bordercolor: "red",
   },
 
   button: {
@@ -90,7 +123,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
-    color: "#3E63DD",
+    color: "#FFFFFF",
     fontWeight: "600",
+  },
+  rarity: {
+    fontSize: 28,
+    color: "#090909",
+    fontWeight: "bold",
+    fontFamily: "Inter",
   },
 });
