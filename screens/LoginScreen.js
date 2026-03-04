@@ -7,13 +7,9 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   ScrollView,
-<<<<<<< HEAD
-  Platform
-=======
   Platform,
->>>>>>> origin/carrousel-infini
 } from "react-native";
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 
@@ -24,11 +20,7 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
 
   const handleSubmit = () => {
-<<<<<<< HEAD
-    fetch("http://192.168.1.22:3000/users/signin", {
-=======
     fetch("http://192.168.1.6:3000/users/signin", {
->>>>>>> origin/carrousel-infini
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username, password: password }),
@@ -44,20 +36,16 @@ export default function LoginScreen({ navigation }) {
       });
   };
 
- 
-
   return (
     // KeyboardAvoidingView évite de cacher les inputs
-<<<<<<< HEAD
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-=======
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
->>>>>>> origin/carrousel-infini
       <ScrollView contentContainerStyle={styles.inner}>
-        <Text style={styles.Gtitle}>Explore le ciel et collecte les astres !</Text>
+        <Text style={styles.Gtitle}>
+          Explore le ciel et collecte les astres !
+        </Text>
         <Text style={styles.title}>Connexion</Text>
 
         <TextInput
@@ -82,9 +70,12 @@ export default function LoginScreen({ navigation }) {
         </TouchableOpacity>
 
         <Text style={styles.Soustitle}>Vous n'avez pas de compte ?</Text>
-        <TouchableOpacity onPress={()=>navigation.navigate("Inscription" )} style={styles.button1}>
-         <Text style={styles.buttonSignin}>S'inscrire</Text> 
-          </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Inscription")}
+          style={styles.button1}
+        >
+          <Text style={styles.buttonSignin}>S'inscrire</Text>
+        </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -115,26 +106,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: { color: "#FFFFFF", fontWeight: "bold", fontSize: 16 },
-  Soustitle : {
-    color : "white",
+  Soustitle: {
+    color: "white",
   },
-  buttonSignin : {
-color : "#2f95dc",
-fontWeight: "bold"
+  buttonSignin: {
+    color: "#2f95dc",
+    fontWeight: "bold",
   },
-  button1:{
+  button1: {
     padding: 10,
     borderRadius: 10,
-    alignItems: "center", 
+    alignItems: "center",
     backgroundColor: "transparent",
     width: "50%",
     borderWidth: 1,
-    borderColor: '#2f95dc'
+    borderColor: "#2f95dc",
   },
-  Gtitle :{
+  Gtitle: {
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 40,
     color: "#FFFFFF",
-  }
+  },
 });
