@@ -19,7 +19,6 @@ import * as Astronomy from "astronomy-engine";
 import { DeviceMotion } from "expo-sensors";
 import ButtonCapture from "../components/buttonCapture";
 import ObservationModal from "../components/observationModal";
-import { ScrollView } from "react-native";
 
 export default function ObservationScreen() {
   const [modalVisible, setModalVisible] = useState(false);
