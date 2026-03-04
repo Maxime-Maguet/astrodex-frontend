@@ -15,20 +15,13 @@ export default function ObservationModal(props) {
   const navigation = useNavigation();
   useEffect(() => {
     if (props.visible) {
-<<<<<<< HEAD
       fetch("http://192.168.1.67:3000/astres")
         .then((response) => response.json())
         .then((data) => {
-=======
-      fetch("http://192.168.1.34:3000/astres")
-        .then(response => response.json())
-        .then(data => {
-<<<<<<< HEAD
->>>>>>> origin/equipement
           console.log(data);
-=======
+
           //   console.log(data.astres);
->>>>>>> origin/homescreen
+
           setObservation(data.astres[0]);
         });
     }
@@ -41,13 +34,9 @@ export default function ObservationModal(props) {
           {observation && (
             <>
               <Image
-<<<<<<< HEAD
                 source={{
                   uri: observation.imageUrl,
                 }}
-=======
-                source={{ uri: observation.imageUrl }}
->>>>>>> origin/homescreen
                 style={styles.image}
               />
               <Text style={styles.title}>{observation.name}</Text>
@@ -65,9 +54,10 @@ export default function ObservationModal(props) {
           <TouchableOpacity
             onPress={() => {
               props.closeModal();
-              navigation.navigate("TabNavigator", {screen: "Astrodex"});
+              navigation.navigate("TabNavigator", { screen: "Astrodex" });
             }}
-            style={styles.button}>
+            style={styles.button}
+          >
             <Text style={styles.buttonText}>Astrodex</Text>
           </TouchableOpacity>
         </View>
