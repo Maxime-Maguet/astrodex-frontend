@@ -9,74 +9,85 @@ import {
   Platform,
 } from "react-native";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function EquipementSelectionScreen() {
-    const Dispatch = useDispatch();
-  const [astre, setAstre] = useState(null);
-const [Equipement, setEquipement]= useState('');
+  const Dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
+
+  const [Equipement, setEquipement] = useState("");
 
   const Equipement_LIMITS = {
-    EYE: { maxMagnitude: 4, label: "Œil nu", xpBonus: 100 }, //Configuration basé sur la magnétude
-    BINOCULARS: { maxMagnitude: 8, label: "Jumelles", xpBonus: 250 },
-    TELESCOPE: { maxMagnitude: 15, label: "Télescope", xpBonus: 500 },
+    "Oeil nue": { maxMagnitude: 4, label: "Œil nu", xpBonus: 100 }, //Configuration basé sur la magnétude
+    Jumelles: { maxMagnitude: 8, label: "Jumelle", xpBonus: 250 },
+    "Lunette astronomique": {
+      maxMagnitude: 15,
+      label: "Télescope",
+      xpBonus: 500,
+    },
   };
 
-  const Observation = (equipement) => {
-    if(!equipement){
-      console.log("pas d'équipement selectionné")
-        return; 
+  const Observation = () => {
+    if (Equipement === "" || Equipement === undefined) {
+      console.log("pas d'équipement selectionné");
+      return;
     }
-    
+
     fetch("http://192.168.1.34:3000/users/updateUser", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({equipement : Equipement, token : user.token }),
+      body: JSON.stringify({ equipement: Equipement, token: user.token }),
     })
-    .then((response) => response.json())
-   .then((data) => {
-    if (data.result ) {
-      console.log("Succès");
-      Dispatch()
-      setEquipement(equipement)
-    } else console.log("Echec non visible");
-  });
-}
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        if (data) {
+          console.log("Succès", data.equipement);
+
+          setEquipement(Equipement);
+        } else console.log(" déjà équipé");
+      });
+  };
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        onPress={() => setEquipement()}
-        style={styles.button}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.buttonText}>Oeil nue</Text>
-        <Text>
-          (Idéal pour observer les planètes les plus proches visible à l'oeil
-          nu)
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() =>setEquipement()}
-        style={styles.button}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.buttonText}>Jumelles</Text>
-        <Text>(Idéal pour les amas d'étoiles et les planètes lointaines)</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => setEquipement()}
-        style={styles.button}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.buttonText}>Télescope</Text>
-        <Text>
-          (Débusquez les astres les plus sombres et les galaxies les plus lointaines.)
-        </Text>
-      </TouchableOpacity>
-<TouchableOpacity onPress={() => Observation()}>
-      <Text style={styles.buttonConfirmer}>Confirmer</Text>
+    <Modal>
+      <View style={styles.container}>
+        <TouchableOpacity
+          onPress={() => setEquipement("Oeil nue")}
+          style={[
+            styles.button,
+            Equipement === "Oeil nue" && { backgroundColor: "blue" },
+          ]}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonText}>Oeil nue</Text>
         </TouchableOpacity>
-    </View>
+        <TouchableOpacity
+          onPress={() => setEquipement("Jumelles")}
+          style={[
+            styles.button,
+            Equipement === "Jumelles" && { backgroundColor: "blue" },
+          ]}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonText}>Jumelles</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setEquipement("Lunette astronomique")}
+          style={[
+            styles.button,
+            Equipement === "Lunette astronomique" && {
+              backgroundColor: "blue",
+            },
+          ]}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonText}>Télescope</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => Observation()}>
+          <Text style={styles.buttonConfirmer}>Confirmer</Text>
+        </TouchableOpacity>
+      </View>
+    </Modal>
   );
 }
 
@@ -88,12 +99,14 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   button: {
-    width: "100%",
-    backgroundColor: "#8a8b8e",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
+    width: "70%",
+
+    backgroundColor: "#6C768F",
+    padding: 25,
+    paddingLeft: 25,
+
     borderRadius: 8,
-    marginTop: 30,
+    marginTop: 45,
     alignItems: "center",
   },
   buttonText: {
@@ -101,16 +114,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
-  buttonText: {
+
+  buttonConfirmer: {
+    backgroundColor: "#3B82F6",
     color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "600",
-  },
-  buttonConfirmer:{
-      backgroundColor: "#3B6DED",
-    width: "85%",
-    padding: 18,
+    alignItems: "center",
     borderRadius: 10,
-    alignItems: "center",
-  }
+    width: "70%",
+    paddingLeft: 70,
+    paddingRight: 70,
+    padding: 10,
+    marginTop: 30,
+  },
 });

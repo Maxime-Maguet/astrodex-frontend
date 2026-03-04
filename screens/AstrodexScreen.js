@@ -20,7 +20,7 @@ export default function AstrodexScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    fetch("http://192.168.1.6:3000/astres")
+    fetch("http://192.168.1.67:3000/astres")
       .then((res) => res.json())
       .then((astresData) => {
         //console.log(astresData.astres[0].name);

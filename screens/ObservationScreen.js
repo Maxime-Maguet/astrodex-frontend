@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  Platform,
 } from "react-native";
 import { updateLocation } from "../reducers/user";
 import Header from "../components/Header";
@@ -31,26 +32,29 @@ export default function ObservationScreen() {
     setModalVisible(false);
   };
 
+  function platformIOS() {
+    if (Platform.OS === "ios") {
+      return <BoussoleIOS />;
+    } else if (Platform.OS === "android") {
+      return <BoussoleAndroid />;
+    }
+  }
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <ScrollView
+        style={{ width: "100%" }}
+        contentContainerStyle={styles.scrollContent}
+      >
         <Header title="Observation" />
-        <View style={styles.container}>
-          <Header title="Observation" />
-          {/* <CompassBar /> */}
-          <BoussoleIOS />
-          <BoussoleAndroid />
-          <BoussoleAndroid2 />
-        </View>
-
+        {platformIOS()}
         <ButtonCapture
           style={styles.button}
           textStyle={styles.buttonText}
           onPress={handleCapture}
         />
         <ObservationModal visible={modalVisible} closeModal={closeModal} />
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -58,68 +62,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0B0F1A",
-    alignItems: "center",
-    padding: 20,
-  },
-  content: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
 
-  titre: {
-    fontSize: 48,
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontFamily: "Inter",
-  },
-
-  h2: {
-    fontSize: 32,
-    color: "#FFFFFF",
-    fontFamily: "Inter",
-  },
-
-  h3: {
-    fontSize: 24,
-    color: "#5B8CFF",
-    fontFamily: "Inter",
-  },
-
-  body: {
-    fontSize: 16,
-    color: "#FFFFFF",
-    fontFamily: "Inter",
-    marginBottom: 10,
-  },
-
-  body2: {
-    fontSize: 14,
-    color: "#ADB5BD",
-    fontFamily: "Inter",
-  },
-
-  card: {
-    backgroundColor: "#151C2F",
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 10,
-    borderRadius: 15,
+  scrollContent: {
     width: "100%",
-    marginTop: 20,
-    borderWidth: 1,
-    borderColor: "#1D2F49",
-    color: "#FFFFFF",
+    alignItems: "center",
+    paddingBottom: 40,
   },
 
   button: {
-    width: "100%",
+    alignSelf: "stretch",
     backgroundColor: "#5B8CFF",
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
     marginTop: 30,
     alignItems: "center",
+    marginHorizontal: 20,
+    minWidth: "90%",
   },
 
   buttonPressed: {
