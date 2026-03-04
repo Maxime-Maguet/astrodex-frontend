@@ -7,13 +7,16 @@ import Header from "../components/Header";
 import CompassBar from "../components/CompassBar";
 import * as Astronomy from "astronomy-engine";
 import { DeviceMotion } from "expo-sensors";
+import ButtonCapture from "../components/buttonCapture";
+import ObservationModal from "../components/observationModal";
+import { ScrollView } from "react-native";
 
 // Liste des astres, pour l'instant système solaire pour test
 const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
 
 export default function ObservationScreen() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.value); // On récupère les infos du store (token, nickname, etc.)
+  const user = useSelector(state => state.user.value); // On récupère les infos du store (token, nickname, etc.)
 
   const [currentPosition, setCurrentPosition] = useState(null); // État local pour afficher la position direct sur l'écran
   const [heading, setHeading] = useState(0); // Direction du tel (0-360°)
@@ -40,7 +43,7 @@ export default function ObservationScreen() {
             timeInterval: 5000, // On check toutes les 5 secondes
             distanceInterval: 1, // Ou dès qu'on bouge d'un mètre
           },
-          (location) => {
+          location => {
             // 3. À chaque fois que la position change :
             const coords = {
               lat: location.coords.latitude,
@@ -93,7 +96,7 @@ export default function ObservationScreen() {
           // 16ms pour une fluidité maximale (60 FPS)
           DeviceMotion.setUpdateInterval(16);
 
-          dmSub = DeviceMotion.addListener((data) => {
+          dmSub = DeviceMotion.addListener(data => {
             //Utiliser 'heading' pour le Nord magnétique (0 = Nord)
             // Si 'heading' est disponible, donne la boussole réelle
             if (data.heading !== undefined && data.heading !== -1) {
@@ -108,7 +111,7 @@ export default function ObservationScreen() {
               let degree = Math.round((360 - alpha - 90) % 360);
               setHeading(degree);
               let pitch = Math.round(data.rotation.beta * (180 / Math.PI));
-              console.log("Pitch / Altitude du tel :", pitch);
+              // console.log("Pitch / Altitude du tel :", pitch);
             }
 
             //Logique Astro Bridée (1 fois par seconde)
@@ -134,10 +137,20 @@ export default function ObservationScreen() {
     };
   }, []);
 
+ const [modalVisible, setModalVisible] = useState(false);
+
+const handleCapture = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <Header title="Observation" />
-      <CompassBar />
+      {/* <CompassBar /> */}
       <View style={styles.card}>
         <Text style={styles.body}>
           Ta position :{" "}
@@ -156,9 +169,15 @@ export default function ObservationScreen() {
           <Text style={styles.body}>Alignement : PlaceHolder</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.button} activeOpacity={0.8}>
-        <Text style={styles.buttonText}>CAPTURER</Text>
-      </TouchableOpacity>
+      <ButtonCapture
+        style={styles.button}
+        textStyle={styles.buttonText}
+        onPress={handleCapture}
+      />
+ <ObservationModal
+        visible={modalVisible}
+        closeModal={closeModal}
+      />
     </View>
   );
 }
