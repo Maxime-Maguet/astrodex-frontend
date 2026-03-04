@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 
 export default function EquipementSelectionScreen() {
     const Dispatch = useDispatch();
-  const [astre, setAstre] = useState(null);
+ 
 const [Equipement, setEquipement]= useState('');
 
   const Equipement_LIMITS = {
@@ -36,7 +36,7 @@ const [Equipement, setEquipement]= useState('');
     .then((response) => response.json())
    .then((data) => {
     if (data.result ) {
-      console.log("Succès");
+      console.log("Succès", data.equipement);
       Dispatch()
       setEquipement(equipement)
     } else console.log("Echec non visible");
