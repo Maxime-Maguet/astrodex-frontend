@@ -20,7 +20,7 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
 
   const handleSubmit = () => {
-    fetch("http://192.168.1.6:3000/users/signin", {
+    fetch("http://192.168.1.22:3000/users/signin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username, password: password }),
@@ -40,7 +40,10 @@ export default function LoginScreen({ navigation }) {
 
   return (
     // KeyboardAvoidingView évite de cacher les inputs
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
       <ScrollView contentContainerStyle={styles.inner}>
         <Text style={styles.Gtitle}>Explore le ciel et collecte les astres !</Text>
         <Text style={styles.title}>Connexion</Text>
