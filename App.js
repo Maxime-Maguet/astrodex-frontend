@@ -13,6 +13,7 @@ import user from "./reducers/user";
 import astre from "./reducers/astre";
 import SignupScreen from "./screens/signupScreen";
 import HomeScreen from "./screens/HomeScreen";
+import AstrodexScreen from "./screens/AstrodexScreen";
 // import {
 //   persistStore,
 //   persistReducer,
@@ -70,7 +71,7 @@ export default function App() {
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="Login" component={AstrodexScreen} />
           <Stack.Screen name="Inscription" component={SignupScreen} />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
