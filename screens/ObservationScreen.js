@@ -41,9 +41,11 @@ export default function ObservationScreen() {
   }
   return (
     <View style={styles.container}>
-      <ScrollView>
+      <ScrollView
+        style={{ width: "100%" }}
+        contentContainerStyle={styles.scrollContent}
+      >
         <Header title="Observation" />
-        {/* <CompassBar /> */}
         {platformIOS()}
         <ButtonCapture
           style={styles.button}
@@ -60,18 +62,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0B0F1A",
+  },
+
+  scrollContent: {
+    width: "100%",
     alignItems: "center",
-    padding: 20,
+    paddingBottom: 40,
   },
 
   button: {
-    width: "100%",
+    alignSelf: "stretch",
     backgroundColor: "#5B8CFF",
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
     marginTop: 30,
     alignItems: "center",
+    marginHorizontal: 20,
+    minWidth: "90%",
   },
 
   buttonPressed: {

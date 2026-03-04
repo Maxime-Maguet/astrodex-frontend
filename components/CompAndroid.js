@@ -1,17 +1,15 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Location from "expo-location";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { updateLocation } from "../reducers/user";
-import Header from "../components/Header";
 import CompassBar from "../components/CompassBar";
 import * as Astronomy from "astronomy-engine";
-import { DeviceMotion } from "expo-sensors";
 
 // Liste des astres, pour l'instant système solaire pour test
 const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
 let astreFocus = "Sun";
-let Alignement = "Pas aligné";
+let Alignement;
 
 export default function BoussoleAndroid() {
   const dispatch = useDispatch();
@@ -19,10 +17,6 @@ export default function BoussoleAndroid() {
 
   const [currentPosition, setCurrentPosition] = useState(null); // État local pour afficher la position direct sur l'écran
   const [target, setTarget] = useState("Rien en vue..."); // L'astre visé
-
-  const locationRef = useRef(null); // Pour stocker la position GPS
-  const lastCalc = useRef(0); // Pour brider le calcul Astro à 1 seconde
-  const currentTargetRef = useRef(null);
 
   useEffect(() => {
     let subscription; // On prépare une variable pour pouvoir dire "quand je ne suis pas sur l'app, je n'actualise pas"
@@ -63,22 +57,6 @@ export default function BoussoleAndroid() {
         subscription.remove();
       }
     };
-    //         // On check si le user est bien connecté (s'il a un token) avant de lancer l'appel
-    // if (user.token) {
-    //         // 1. On va taper sur notre Backend pour récupérer tous les astres qu'il a déjà capturés
-    //         // On utilise le token pour être sûr que c'est bien sa collection
-    //   fetch(`${BACKEND_ADDRESS}/captures/${user.token}`)
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //         // 2. Si le backend nous répond "result: true", c'est que c'est tout bon
-    //       if (data.result) {
-
-    //         // On dispatch les astres déjà capturés dans le store Redux
-    //         //Comme ça, on peut afficher ses astres capturés sur n'importe quel écran de l'app !
-    //         dispatch(loadCaptures(data.captures));
-    //       }
-    //     });
-    // }
   }, []);
 
   const [locationHeading, setLocationHeading] = useState(0);
@@ -93,7 +71,7 @@ export default function BoussoleAndroid() {
 
       let locationSubscription = await Location.watchHeadingAsync(
         (locationHeading) => {
-          setLocationHeading(locationHeading.magHeading.toFixed(0));
+          setLocationHeading(Number(locationHeading.trueHeading.toFixed(0)));
         },
       );
 
@@ -130,7 +108,7 @@ export default function BoussoleAndroid() {
       const diff = Math.abs(locationHeading - hor.azimuth);
       const distanceHorizontale = Math.min(diff, 360 - diff);
 
-      // Si l'astre est au-dessus de l'horizon et aligné (marge de 10°)
+      // Si l'astre est au-dessus de l'horizon et aligné
       if (hor.altitude > 0) {
         if (distanceHorizontale <= 2 && astreFocus === body) {
           found = `${body}`;
@@ -151,9 +129,12 @@ export default function BoussoleAndroid() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.h2}>Pour ANDROID</Text>
-      <View>
+      <View style={styles.headerPadding}>
+        <Text style={styles.h2}>Pour Android</Text>
         <Text style={styles.body}>Astre Focus: {astreFocus}</Text>
+      </View>
+      <View>
+        <CompassBar degree={locationHeading} />
       </View>
       <View style={styles.card}>
         <Text style={styles.body}>
@@ -179,11 +160,17 @@ export default function BoussoleAndroid() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: "100%",
     backgroundColor: "#0B0F1A",
     alignItems: "center",
-    padding: 20,
   },
+
+  headerPadding: {
+    alignSelf: "center",
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+
   content: {
     flex: 1,
     justifyContent: "center",
@@ -228,15 +215,16 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 10,
     borderRadius: 15,
-    width: "100%",
+    alignSelf: "stretch",
     marginTop: 20,
     borderWidth: 1,
     borderColor: "#1D2F49",
     color: "#FFFFFF",
+    marginHorizontal: 20,
   },
 
   button: {
-    width: "100%",
+    alignSelf: "stretch",
     backgroundColor: "#5B8CFF",
     paddingVertical: 12,
     paddingHorizontal: 24,
