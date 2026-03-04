@@ -20,7 +20,6 @@ import { DeviceMotion } from "expo-sensors";
 import ButtonCapture from "../components/buttonCapture";
 import ObservationModal from "../components/observationModal";
 
-
 export default function ObservationScreen() {
   const [modalVisible, setModalVisible] = useState(false);
 
