@@ -30,7 +30,7 @@ export default function CompassBar() {
 
       let angle = (data.rotation.alpha * (180 / Math.PI) + 360) % 360;
 
-      console.log("angle brut :", Math.round(angle));
+      //console.log("angle brut :", Math.round(angle));
       setDegree(Math.round(angle));
     });
     //On demande une mise à jour toutes les 16ms ≈ 60fps. C'est la fréquence d'un écran fluide.
@@ -42,7 +42,7 @@ export default function CompassBar() {
   // on part du principe que 1° = 1px
   //const translateX = degree - CONTENT_WIDTH;
   const translateX = -(degree * ZOOM_FACTOR) - CONTENT_WIDTH;
-  console.log(degree);
+  //console.log(degree);
 
   return (
     <View style={styles.container}>
