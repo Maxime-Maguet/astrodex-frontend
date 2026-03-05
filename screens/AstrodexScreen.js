@@ -4,8 +4,9 @@ import {
   View,
   SafeAreaView,
   ScrollView,
-  Image,
   Switch,
+  StatusBar,
+  Platform,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +14,7 @@ import { AddAstres } from "../reducers/astre";
 import AstroCard from "../components/AstroCard";
 import Header from "../components/Header";
 import AstroModal from "../components/AstroModal";
+import * as NavigationBar from "expo-navigation-bar";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -31,9 +33,17 @@ export default function AstrodexScreen() {
     setModalVisible(true);
   };
 
+  const closeModal = () => {
+    setModalVisible(false);
+  };
   const userToken = "yT4UH_beP7aLhzeTatho7gMOZJDIDy4D";
 
   const dispatch = useDispatch();
+
+  //permet de ne pas avoir la barre de navigation du téléphone
+  useEffect(() => {
+    NavigationBar.setVisibilityAsync("hidden");
+  }, []);
 
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
@@ -89,6 +99,7 @@ export default function AstrodexScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <StatusBar hidden={true} />
       <Header title="AstroDex" />
       <View style={styles.toggleContainer}>
         <Switch
@@ -105,6 +116,14 @@ export default function AstrodexScreen() {
       >
         {astresList}
       </ScrollView>
+
+      {selectedAstre && (
+        <AstroModal
+          visible={modalVisible}
+          closeModale={closeModal}
+          infoAstre={selectedAstre}
+        ></AstroModal>
+      )}
     </SafeAreaView>
   );
 }
@@ -113,6 +132,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#0B0F1A",
+    paddingTop: Platform.OS === "ios" ? 20 : 0,
   },
   scrollView: {
     flex: 1,
