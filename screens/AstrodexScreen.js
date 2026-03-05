@@ -25,6 +25,11 @@ export default function AstrodexScreen() {
   const [selectedAstre, SetSelectedAstre] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
+  const user = useSelector((state) => state.user.value);
+  const astre = useSelector((state) => state.astre.value);
+  console.log("astroDexScreen tokenUser => ", user.token);
+  console.log("astroDexScreen astre capturé =>", astre);
+
   const toggleSwitch = () =>
     setShowCapturedOnly((previsousState) => !previsousState);
 
@@ -36,7 +41,6 @@ export default function AstrodexScreen() {
   const closeModal = () => {
     setModalVisible(false);
   };
-  const userToken = "yT4UH_beP7aLhzeTatho7gMOZJDIDy4D";
 
   const dispatch = useDispatch();
 
@@ -45,6 +49,7 @@ export default function AstrodexScreen() {
     NavigationBar.setVisibilityAsync("hidden");
   }, []);
 
+  //fetch de la route get pour récupérer tous les astres
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
@@ -57,12 +62,13 @@ export default function AstrodexScreen() {
       });
   }, []);
 
+  //fetch de la route get users/profile via le token pour récupérer
   useEffect(() => {
-    fetch(`${apiUrl}/users/profile/${userToken}`)
+    fetch(`${apiUrl}/users/profile/${user.token}`)
       .then((res) => res.json())
       .then((userData) => {
         if (userData.result) {
-          console.log("capturedAstres raw :", userData.user.capturedAstres);
+          //console.log("capturedAstres raw :", userData.user.capturedAstres);
           setAstresCapture(userData.user.capturedAstres);
         }
       });
@@ -71,6 +77,9 @@ export default function AstrodexScreen() {
   //console.log("tous les astres : ", astres[0]);
   //console.log("astres capturés: ", astresCapture[0]);
 
+  // Filtre les astres selon le switch "Mes captures"
+  // Si showCapturedOnly est true, ne garde que les astres déjà capturés
+  // Sinon, renvoie tous les astres
   const filteredAstres = astres.filter((astre) => {
     if (showCapturedOnly) {
       return astresCapture.some((e) => e._id === astre._id);
@@ -79,6 +88,7 @@ export default function AstrodexScreen() {
     }
   });
 
+  // Pour chaque astre filtré, on vérifie s'il est capturé
   const astresList = filteredAstres.map((data, i) => {
     //console.log(data.rarity_level);
 
@@ -142,6 +152,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 20,
     alignItems: "center",
+    marginTop: 20,
   },
 
   toggleContainer: {

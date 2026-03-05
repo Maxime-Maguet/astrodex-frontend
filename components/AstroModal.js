@@ -6,8 +6,6 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useEffect, useState } from "react";
 
 export default function AstroModal(props) {
   return (

@@ -8,11 +8,16 @@ export const astreSlice = createSlice({
   name: "astre",
   initialState,
   reducers: {
-    AddAstres: (state, action) => {
-      state.value.push(action.payload);
+    addAstre: (state, action) => {
+      const alreadyCaptured = state.value.some(
+        (astre) => astre._id === action.payload._id,
+      );
+      if (!alreadyCaptured) {
+        state.value.push(action.payload);
+      }
     },
   },
 });
 
-export const { AddAstres } = astreSlice.actions;
+export const { addAstre } = astreSlice.actions;
 export default astreSlice.reducer;

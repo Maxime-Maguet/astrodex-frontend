@@ -5,7 +5,7 @@ const initialState = {
     token: null,
     username: null,
     location: null,
-    equipement : null,
+    equipement: null,
   },
 };
 
@@ -16,7 +16,7 @@ export const userSlice = createSlice({
     login: (state, action) => {
       state.value.token = action.payload.token;
       state.value.username = action.payload.username;
-console.log(action.payload)
+      console.log("reducer user login/signup", action.payload);
     },
     logout: (state) => {
       state.value.token = null;
@@ -26,11 +26,12 @@ console.log(action.payload)
     updateLocation: (state, action) => {
       state.value.location = action.payload;
     },
-    updateEquipement : (state, action) =>{
-      state.value.equipement = action.payload
-    }
+    updateEquipement: (state, action) => {
+      state.value.equipement = action.payload;
+    },
   },
 });
 
-export const { login, logout, updateLocation, updateEquipement } = userSlice.actions;
+export const { login, logout, updateLocation, updateEquipement } =
+  userSlice.actions;
 export default userSlice.reducer;
