@@ -77,14 +77,14 @@ export default function HomeScreen() {
   }, []);
 
   const astresList = astres.map((data, i) => {
-    return (
-      <AstreCard
-        key={data._id}
-        name={data.name}
-        description={data.description}
-        imageUrl={data.imageUrl}
-      />
-    );
+    // return (
+    //   <AstreCard
+    //     key={data._id}
+    //     name={data.name}
+    //     description={data.description}
+    //     imageUrl={data.imageUrl}
+    //   />
+    // );
   });
 
   return (

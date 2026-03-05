@@ -105,7 +105,6 @@ export default function AstrodexScreen() {
       >
         {astresList}
       </ScrollView>
-      <AstroModal></AstroModal>
     </SafeAreaView>
   );
 }
