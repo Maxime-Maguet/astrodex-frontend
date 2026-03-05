@@ -42,8 +42,8 @@ export default function AstrodexScreen() {
       });
   }, []);
   //console.log(astresCapture);
-  console.log("tous les astres : ", astres[0]);
-  console.log("astres capturés: ", astresCapture[0]);
+  //console.log("tous les astres : ", astres[0]);
+  //console.log("astres capturés: ", astresCapture[0]);
 
   const astresList = astres.map((data, i) => {
     //console.log(data.rarity_level);
@@ -51,7 +51,7 @@ export default function AstrodexScreen() {
     const isCaptured = astresCapture.some((astre) => astre._id === data._id);
     return (
       <AstroCard
-        key={i}
+        key={data._id}
         name={data.name}
         description={data.description}
         imageUrl={data.imageUrl}

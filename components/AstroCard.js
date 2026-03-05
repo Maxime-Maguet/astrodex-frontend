@@ -1,10 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AddAstres } from "../reducers/astre";
 
 export default function AstroCard(props) {
-  const [isLocked, setIslocked] = useState(!props.isCaptured);
+  //const [isLocked, setIslocked] = useState(!props.isCaptured);
 
   const rarityStyle = {
     Commune: "#22C55E",
@@ -29,7 +26,7 @@ export default function AstroCard(props) {
       <TouchableOpacity style={styles.button} activeOpacity={0.8}>
         <Text style={styles.buttonText}>Détails</Text>
       </TouchableOpacity>
-      {isLocked && (
+      {!props.isCaptured && (
         <View style={styles.lockedCard}>
           <Text style={styles.lockedText}>NON CAPTURÉ</Text>
         </View>
@@ -42,7 +39,7 @@ const styles = StyleSheet.create({
   astreName: {
     fontSize: 15,
     color: "#FFFFFF",
-    fontWeight: 600,
+    fontWeight: "600",
     fontFamily: "Inter",
     marginBottom: 10,
   },
