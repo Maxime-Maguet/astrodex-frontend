@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ImageBackground,
   StatusBar,
+  ScrollView,
 } from "react-native";
 import CompassBar from "../components/CompassBar";
 import * as Location from "expo-location";
