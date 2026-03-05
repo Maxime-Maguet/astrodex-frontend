@@ -10,7 +10,8 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+// changement URL directement .env
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 export default function EquipementSelectionScreen() {
   const Dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
@@ -33,7 +34,7 @@ export default function EquipementSelectionScreen() {
       return;
     }
 
-    fetch("http://192.168.1.6:3000/users/updateUser", {
+    fetch(`${apiUrl}/users/updateUser`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ equipement: Equipement, token: user.token }),
