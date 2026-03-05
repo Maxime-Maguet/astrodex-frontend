@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Modal } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateEquipement } from "../reducers/user";
@@ -6,7 +6,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
-export default function EquipementSelectionScreen( props ) {
+export default function EquipementSelectionScreen( {navigation} ) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
@@ -40,7 +40,7 @@ export default function EquipementSelectionScreen( props ) {
           
 
           console.log(data.equipement, " Equipement reçu !");
-          props.closeModal();
+          
           navigation.navigate("Observation");
           dispatch(updateEquipement(data.equipement));
 
@@ -48,7 +48,7 @@ export default function EquipementSelectionScreen( props ) {
       });
   };
   return (
-    <Modal  visible={props.visible} animationType="fade" transparent>
+    
     <View style={styles.container}>
       <Text style={styles.buttonText}>Choisis ton équipement</Text>
       <View style={styles.buttoncontainer}>
@@ -96,7 +96,7 @@ export default function EquipementSelectionScreen( props ) {
         <Text style={styles.buttonConfirmer}>Confirmer</Text>
       </TouchableOpacity>
     </View>
-    </Modal>
+  
   );
 }
 
