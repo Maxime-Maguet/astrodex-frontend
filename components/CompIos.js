@@ -119,11 +119,9 @@ export default function BoussoleAndroid() {
       let ra, dec;
 
       if (FIXED_COORDINATES[bodyName]) {
-        // Cas : Sirius, Andromède, Orion
         ra = FIXED_COORDINATES[bodyName].ra;
         dec = FIXED_COORDINATES[bodyName].dec;
       } else {
-        // Cas : Mars, Moon, Jupiter, etc.
         try {
           const equ = Astronomy.Equator(bodyName, date, observer, true, true);
           ra = equ.ra;
