@@ -12,6 +12,8 @@ import * as Location from "expo-location";
 import { fetchWeather } from "../services/weatherService";
 import * as NavigationBar from "expo-navigation-bar";
 import HomeAstresCard from "../components/homeAstresCard";
+import SkyCard from "../components/SkyCard";
+
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
 
@@ -111,18 +113,12 @@ export default function HomeScreen() {
         </View>
         <View style={styles.weatherContainer}>
           {weather ? (
-            <>
-              <Text style={{ color: "white", fontSize: 16 }}>
-                Temp: {weather.temp}°C
-              </Text>
-              <Text style={{ color: "white", fontSize: 16 }}>
-                Clouds: {weather.clouds}%
-              </Text>
-              <Text style={{ color: "white", fontSize: 16 }}>
-                Visibility: {weather.clartePercent}%
-              </Text>
-              <Text style={{ color: "#5B8CFF", marginTop: 10 }}>{message}</Text>
-            </>
+            <SkyCard
+              temp={weather.temp}
+              clouds={weather.clouds}
+              clartePercent={weather.clartePercent}
+              message={message}
+            />
           ) : (
             <Text style={{ color: "grey" }}>Unable to fetch weather</Text>
           )}
@@ -140,7 +136,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingVertical: 20,
-    justifyContent: "center",
+    justifyContent: "flex-end",
   },
   header: {
     alignItems: "center",
@@ -162,8 +158,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   weatherContainer: {
-    alignItems: "center",
-    marginBottom: 20,
+    width: "100%",
+    marginBottom: 10,
+    paddingHorizontal: 0,
   },
   compassContainer: {
     marginBottom: 50, // On la décolle un peu du bas
