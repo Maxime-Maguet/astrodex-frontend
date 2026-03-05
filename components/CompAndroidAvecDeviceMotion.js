@@ -1,17 +1,16 @@
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Location from "expo-location";
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { updateLocation } from "../reducers/user";
-import Header from "../components/Header";
-import CompassBar from "../components/CompassBar";
 import * as Astronomy from "astronomy-engine";
+import CompassBar from "../components/CompassBarIOS";
 import { DeviceMotion } from "expo-sensors";
 
 // Liste des astres, pour l'instant système solaire pour test
 const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
 let astreFocus = "Venus";
-let Alignement = "Pas aligné";
+let Alignement;
 
 export default function BoussoleAndroid2() {
   const dispatch = useDispatch();
@@ -63,22 +62,6 @@ export default function BoussoleAndroid2() {
         subscription.remove();
       }
     };
-    //         // On check si le user est bien connecté (s'il a un token) avant de lancer l'appel
-    // if (user.token) {
-    //         // 1. On va taper sur notre Backend pour récupérer tous les astres qu'il a déjà capturés
-    //         // On utilise le token pour être sûr que c'est bien sa collection
-    //   fetch(`${BACKEND_ADDRESS}/captures/${user.token}`)
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //         // 2. Si le backend nous répond "result: true", c'est que c'est tout bon
-    //       if (data.result) {
-
-    //         // On dispatch les astres déjà capturés dans le store Redux
-    //         //Comme ça, on peut afficher ses astres capturés sur n'importe quel écran de l'app !
-    //         dispatch(loadCaptures(data.captures));
-    //       }
-    //     });
-    // }
   }, []);
 
   const [deviceMotionHeading, setDeviceMotionHeading] = useState(0);
@@ -97,7 +80,7 @@ export default function BoussoleAndroid2() {
         calculatedHeading -= 360;
       }
 
-      setDeviceMotionHeading(calculatedHeading.toFixed(0));
+      setDeviceMotionHeading(Number(calculatedHeading.toFixed(0)));
     });
 
     return () => {
@@ -153,9 +136,12 @@ export default function BoussoleAndroid2() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.h2}>Pour ANDROID avec DeviceMotion</Text>
-      <View>
+      <View style={styles.headerPadding}>
+        <Text style={styles.h2}>Pour Android</Text>
         <Text style={styles.body}>Astre Focus: {astreFocus}</Text>
+      </View>
+      <View>
+        <CompassBar degree={deviceMotionHeading} />
       </View>
       <View style={styles.card}>
         <Text style={styles.body}>
@@ -181,11 +167,17 @@ export default function BoussoleAndroid2() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: "100%",
     backgroundColor: "#0B0F1A",
     alignItems: "center",
-    padding: 20,
   },
+
+  headerPadding: {
+    alignSelf: "center",
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
+
   content: {
     flex: 1,
     justifyContent: "center",
@@ -230,15 +222,16 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 10,
     borderRadius: 15,
-    width: "100%",
+    alignSelf: "stretch",
     marginTop: 20,
     borderWidth: 1,
     borderColor: "#1D2F49",
     color: "#FFFFFF",
+    marginHorizontal: 20,
   },
 
   button: {
-    width: "100%",
+    alignSelf: "stretch",
     backgroundColor: "#5B8CFF",
     paddingVertical: 12,
     paddingHorizontal: 24,

@@ -1,23 +1,8 @@
-import { useEffect, useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import * as Location from "expo-location";
-import {
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  ScrollView,
-  Platform,
-} from "react-native";
-import { updateLocation } from "../reducers/user";
+import { useState } from "react";
+import { StyleSheet, View, ScrollView, Platform } from "react-native";
 import Header from "../components/Header";
-import CompassBar from "../components/CompassBar";
 import BoussoleIOS from "../components/CompIos";
 import BoussoleAndroid from "../components/CompAndroid";
-import BoussoleAndroid2 from "../components/CompAndroidAvecDeviceMotion";
-import * as Astronomy from "astronomy-engine";
-import { DeviceMotion } from "expo-sensors";
 import ButtonCapture from "../components/buttonCapture";
 import ObservationModal from "../components/observationModal";
 
