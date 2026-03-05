@@ -14,6 +14,8 @@ import AstroCard from "../components/AstroCard";
 import Header from "../components/Header";
 import AstroModal from "../components/AstroModal";
 
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
 export default function AstrodexScreen() {
   const [astres, setAstres] = useState([]);
   const [astresCapture, setAstresCapture] = useState([]);
@@ -34,7 +36,7 @@ export default function AstrodexScreen() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    fetch("http://192.168.1.6:3000/astres")
+    fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
       .then((astresData) => {
         //console.log(astresData.astres[0].name);
@@ -46,7 +48,7 @@ export default function AstrodexScreen() {
   }, []);
 
   useEffect(() => {
-    fetch(`http://192.168.1.6:3000/users/profile/${userToken}`)
+    fetch(`${apiUrl}/users/profile/${userToken}`)
       .then((res) => res.json())
       .then((userData) => {
         if (userData.result) {

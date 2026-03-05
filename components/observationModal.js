@@ -10,12 +10,15 @@ import { useEffect, useState } from "react";
 import { Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
 export default function ObservationModal(props) {
   const [observation, setObservation] = useState(null);
   const navigation = useNavigation();
+
   useEffect(() => {
     if (props.visible) {
-      fetch("http://192.168.1.6:3000/astres")
+      fetch(`${apiUrl}/astres`)
         .then((response) => response.json())
         .then((data) => {
           console.log(data);

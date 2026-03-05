@@ -13,17 +13,18 @@ import { fetchWeather } from "../services/weatherService";
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
 
-const visibilityToPercent = meters =>
+const visibilityToPercent = (meters) =>
   Math.min(Math.round((meters / MAX_VISIBILITY) * 100), 100);
+
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function HomeScreen() {
   const [weather, setWeather] = useState(null);
   const [message, setMessage] = useState("");
   const [astres, setAstres] = useState([]);
   useEffect(() => {
-
     let interval;
-    
+
     const loadWeather = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -64,15 +65,16 @@ export default function HomeScreen() {
     };
   }, []);
 
-useEffect(() => {
-  fetch("http://192.168.1.67:3000/astres")
-    .then((res) => res.json())
-    .then((data) => { console.log(data)
-      if (data.result) {
-        setAstres(data.astres);
-      }
-    });
-}, []);
+  useEffect(() => {
+    fetch(`${apiUrl}/astres`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data.result) {
+          setAstres(data.astres);
+        }
+      });
+  }, []);
 
   const astresList = astres.map((data, i) => {
     return (
