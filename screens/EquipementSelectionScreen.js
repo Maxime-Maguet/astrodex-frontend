@@ -6,11 +6,11 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
-export default function EquipementSelectionScreen({ navigation }) {
+export default function EquipementSelectionScreen( props ) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
-  const [Equipement, setEquipement] = useState("");
+  const [equipement, setEquipement] = useState("");
 
   // const Equipement_LIMITS = {
   // "Oeil nue": { maxMagnitude: 4, label: "Œil nu", xpBonus: 100 }, //Configuration basé sur la magnétude
@@ -23,7 +23,7 @@ export default function EquipementSelectionScreen({ navigation }) {
   //};
 
   const Observation = () => {
-    if (Equipement === "" || Equipement === undefined) {
+    if (equipement === "" || equipement === undefined) {
       console.log("pas d'équipement selectionné");
       return;
     }
@@ -31,21 +31,24 @@ export default function EquipementSelectionScreen({ navigation }) {
     fetch(`${apiUrl}/users/updateUser`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ equipement: Equipement, token: user.token }),
+      body: JSON.stringify({ equipement: equipement, token: user.token }),
     })
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
         if (data) {
-          console.log("Succès", data.equipement);
+          
 
-          dispatch(updateEquipement(data.equipement));
+          console.log(data.equipement, " Equipement reçu !");
+          props.closeModal();
           navigation.navigate("Observation");
-          console.log(data.equipement, "Envoi bien l'equipement");
+          dispatch(updateEquipement(data.equipement));
+
         } else console.log(" déjà équipé");
       });
   };
   return (
+    <Modal  visible={props.visible} animationType="fade" transparent>
     <View style={styles.container}>
       <Text style={styles.buttonText}>Choisis ton équipement</Text>
       <View style={styles.buttoncontainer}>
@@ -54,7 +57,7 @@ export default function EquipementSelectionScreen({ navigation }) {
           onPress={() => setEquipement("Oeil nue")}
           style={[
             styles.button,
-            Equipement === "Oeil nue" && { backgroundColor: "blue" },
+            equipement === "Oeil nue" && { backgroundColor: "blue" },
           ]}
           activeOpacity={0.8}
         >
@@ -67,7 +70,7 @@ export default function EquipementSelectionScreen({ navigation }) {
           onPress={() => setEquipement("Jumelles")}
           style={[
             styles.button,
-            Equipement === "Jumelles" && { backgroundColor: "blue" },
+            equipement === "Jumelles" && { backgroundColor: "blue" },
           ]}
           activeOpacity={0.8}
         >
@@ -80,7 +83,7 @@ export default function EquipementSelectionScreen({ navigation }) {
           onPress={() => setEquipement("Lunette astronomique")}
           style={[
             styles.button,
-            Equipement === "Lunette astronomique" && {
+            equipement === "Lunette astronomique" && {
               backgroundColor: "blue",
             },
           ]}
@@ -93,13 +96,14 @@ export default function EquipementSelectionScreen({ navigation }) {
         <Text style={styles.buttonConfirmer}>Confirmer</Text>
       </TouchableOpacity>
     </View>
+    </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0B0F1A",
+    backgroundColor: "#ffffff",
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
@@ -141,7 +145,7 @@ const styles = StyleSheet.create({
 
   icon: {
     fontSize: 25,
-    color: "white",
+    color: "#000000",
     marginTop: 40,
   },
   buttoncontainer: {
