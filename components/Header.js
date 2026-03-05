@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 20,
+    alignItems: "center",
   },
   titre: {
     fontSize: 48,

@@ -5,10 +5,12 @@ import {
   Text,
   SafeAreaView,
   ImageBackground,
+  StatusBar,
 } from "react-native";
 import CompassBar from "../components/CompassBar";
 import * as Location from "expo-location";
 import { fetchWeather } from "../services/weatherService";
+import * as NavigationBar from "expo-navigation-bar";
 
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
@@ -22,6 +24,11 @@ export default function HomeScreen() {
   const [weather, setWeather] = useState(null);
   const [message, setMessage] = useState("");
   const [astres, setAstres] = useState([]);
+
+  useEffect(() => {
+    NavigationBar.setVisibilityAsync("hidden");
+  }, []);
+
   useEffect(() => {
     let interval;
 
@@ -89,6 +96,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <StatusBar hidden={true} />
       <View style={styles.container}>
         {astresList}
 

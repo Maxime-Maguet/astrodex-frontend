@@ -1,18 +1,29 @@
-import { useState } from "react";
-import { StyleSheet, View, ScrollView, Platform } from "react-native";
+import { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Platform,
+  StatusBar,
+} from "react-native";
 import Header from "../components/Header";
 import BoussoleIOS from "../components/CompIos";
 import BoussoleAndroid from "../components/CompAndroid";
 import ButtonCapture from "../components/buttonCapture";
 import ObservationModal from "../components/observationModal";
+import * as NavigationBar from "expo-navigation-bar";
 
 export default function ObservationScreen() {
   const [modalVisible, setModalVisible] = useState(false);
-const [planetName, setplanetName] = useState(null);
+  const [planetName, setplanetName] = useState(null);
   const handleCapture = () => {
     setplanetName("Mars"); // a modifier ici pour recuperer les planetes en fonction du positionnement de la capture
     setModalVisible(true);
   };
+
+  useEffect(() => {
+    NavigationBar.setVisibilityAsync("hidden");
+  }, []);
 
   const closeModal = () => {
     setModalVisible(false);
@@ -27,6 +38,7 @@ const [planetName, setplanetName] = useState(null);
   }
   return (
     <View style={styles.container}>
+      <StatusBar hidden={true} />
       <ScrollView
         style={{ width: "100%" }}
         contentContainerStyle={styles.scrollContent}
@@ -38,7 +50,11 @@ const [planetName, setplanetName] = useState(null);
           textStyle={styles.buttonText}
           onPress={handleCapture}
         />
-        <ObservationModal visible={modalVisible} closeModal={closeModal} planetName={planetName} />
+        <ObservationModal
+          visible={modalVisible}
+          closeModal={closeModal}
+          planetName={planetName}
+        />
       </ScrollView>
     </View>
   );

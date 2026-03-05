@@ -24,9 +24,6 @@ export default function AstroModal(props) {
           onStartShouldSetResponder={() => true}
           onTouchEnd={(e) => e.stopPropagation()}
         >
-          <TouchableOpacity onPress={props.closeModale}>
-            <FontAwesome name="times" size={16} color="#000000" />
-          </TouchableOpacity>
           <Text style={styles.rareté}>
             Rareté : {props.infoAstre.rarity_level}
           </Text>
