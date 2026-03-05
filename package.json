@@ -16,7 +16,6 @@
     "@reduxjs/toolkit": "^2.11.2",
     "astronomy-engine": "^2.1.19",
     "expo": "^54.0.1",
-    "expo-blur": "~15.0.8",
     "expo-location": "~19.0.6",
     "expo-navigation-bar": "^55.0.8",
     "expo-sensors": "~15.0.8",
