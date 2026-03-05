@@ -1,17 +1,8 @@
-import {
-  Modal,
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Image,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
 
-export default function AstreCard( props ) {
+export default function AstreCard(props) {
   return (
     <View style={styles.card}>
-    
       <Image source={{ uri: props.imageUrl }} style={styles.image} />
       <View style={styles.container}>
         <Text style={styles.astreName}>{props.name}</Text>
@@ -33,7 +24,7 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
-    borderRadius: 60, 
+    borderRadius: 60,
     marginBottom: 10,
   },
 
