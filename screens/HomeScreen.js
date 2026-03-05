@@ -11,7 +11,7 @@ import CompassBar from "../components/CompassBar";
 import * as Location from "expo-location";
 import { fetchWeather } from "../services/weatherService";
 import * as NavigationBar from "expo-navigation-bar";
-
+import HomeAstresCard from "../components/homeAstresCard";
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
 
@@ -84,22 +84,31 @@ export default function HomeScreen() {
   }, []);
 
   const astresList = astres.map((data, i) => {
-    // return (
-    //   <AstreCard
-    //     key={data._id}
-    //     name={data.name}
-    //     description={data.description}
-    //     imageUrl={data.imageUrl}
-    //   />
-    // );
+    return (
+      <HomeAstresCard
+        key={data._id}
+        name={data.name}
+        imageUrl={data.imageUrl}
+      />
+    );
   });
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar hidden={true} />
       <View style={styles.container}>
-        {astresList}
-
+        <View style={styles.astresSection}>
+          <Text style={styles.texteAstres}>Astres Visible ce soir</Text>
+          <View style={styles.ScrollView}>
+            <ScrollView
+              horizontal={true} // permet de mettre VieW en scroll horizontale
+              showsHorizontalScrollIndicator={true}
+              style={styles.astresScroll}
+            >
+              {astresList}
+            </ScrollView>
+          </View>
+        </View>
         <View style={styles.weatherContainer}>
           {weather ? (
             <>
@@ -126,11 +135,12 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#050505", // Fond très sombre
+    backgroundColor: "#0B0F1A",
   },
   container: {
     flex: 1,
     paddingVertical: 20,
+    justifyContent: "center",
   },
   header: {
     alignItems: "center",
@@ -158,5 +168,21 @@ const styles = StyleSheet.create({
   compassContainer: {
     marginBottom: 50, // On la décolle un peu du bas
     width: "100%",
+  },
+
+  texteAstres: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
+  },
+
+  ScrollView: {
+    height: 180,
+    marginTop: 10,
+  },
+
+  astresSection: {
+    flex: 1,
+    justifyContent: "center",
   },
 });
