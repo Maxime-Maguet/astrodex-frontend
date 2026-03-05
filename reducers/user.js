@@ -5,6 +5,7 @@ const initialState = {
     token: null,
     username: null,
     location: null,
+    equipement : null,
   },
 };
 
@@ -25,8 +26,11 @@ console.log(action.payload)
     updateLocation: (state, action) => {
       state.value.location = action.payload;
     },
+    updateEquipement : (state, action) =>{
+      state.value.equipement = action.payload
+    }
   },
 });
 
-export const { login, logout, updateLocation } = userSlice.actions;
+export const { login, logout, updateLocation, updateEquipement } = userSlice.actions;
 export default userSlice.reducer;
