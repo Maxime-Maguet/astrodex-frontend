@@ -1,8 +1,6 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 
 export default function AstroCard(props) {
-  //const [isLocked, setIslocked] = useState(!props.isCaptured);
-
   const rarityStyle = {
     Commune: "#22C55E",
     Rare: "#3B82F6",
