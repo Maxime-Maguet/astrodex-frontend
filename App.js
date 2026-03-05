@@ -50,15 +50,18 @@ function TabNavigator() {
             return <FontAwesome name="binoculars" size={size} color={color} />;
           } else if (route.name === "Astrodex") {
             return <Ionicons name="planet-sharp" size={size} color={color} />;
+          } else if (route.name === "Acceuil") {
+            return <Ionicons name="home" size={size} color={color} />;
           }
-
           return <FontAwesome name={iconName} size={size} color={color} />;
         },
         headerShown: false,
-      })}>
-      <Tab.Screen name="Accueil" component={HomeScreen} />
+      })}
+    >
+      <Tab.Screen name="Acceuil" component={HomeScreen} />
       <Tab.Screen name="Observation" component={ObservationScreen} />
       <Tab.Screen name="Astrodex" component={AstrodexScreen} />
+      <Tab.Screen name="Equipement" component={EquipementSelectionScreen} />
     </Tab.Navigator>
   );
 }
