@@ -15,7 +15,7 @@ export default function ObservationModal(props) {
   const navigation = useNavigation();
   useEffect(() => {
     if (props.visible) {
-      fetch("http://192.168.1.67:3000/astres")
+      fetch("http://192.168.1.6:3000/astres")
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
