@@ -15,37 +15,37 @@ const MARKERS = [
   { label: "NW", degree: 315 },
 ];
 
-export default function CompassBar({ degree, targetAzimuth }) {
+export default function CompassBar({ degree }) {
   const translateX = SCREEN_WIDTH / 2 - degree * ZOOM_FACTOR - CONTENT_WIDTH;
 
   return (
     <View style={styles.container}>
       <View style={styles.cursor} />
       <View style={[styles.ribbon, { transform: [{ translateX }] }]}>
-        <CompassContent targetAzimuth={targetAzimuth} />
-        <CompassContent targetAzimuth={targetAzimuth} />
-        <CompassContent targetAzimuth={targetAzimuth} />
+        <CompassContent />
+        <CompassContent />
+        <CompassContent />
       </View>
     </View>
   );
 }
 
-const CompassContent = ({ targetAzimuth }) => (
+const CompassContent = () => (
   <View style={{ width: CONTENT_WIDTH, position: "relative", height: 80 }}>
     {MARKERS.map(({ label, degree }) => (
       <Text
         key={label}
-        style={[styles.cardinal, { left: degree * ZOOM_FACTOR - 10 }]}
+        style={[
+          styles.cardinal,
+          {
+            position: "absolute",
+            left: degree * ZOOM_FACTOR - 10,
+          },
+        ]}
       >
         {label}
       </Text>
     ))}
-
-    {targetAzimuth !== null && (
-      <View style={[styles.target, { left: targetAzimuth * ZOOM_FACTOR - 15 }]}>
-        <Text style={{ fontSize: 10 }}>⭕</Text>
-      </View>
-    )}
   </View>
 );
 
@@ -57,16 +57,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     overflow: "hidden",
   },
-
-  target: {
-    position: "absolute",
-    top: "50%",
-    width: 20,
-    height: 20,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
   cursor: {
     position: "absolute",
     left: SCREEN_WIDTH / 2,
