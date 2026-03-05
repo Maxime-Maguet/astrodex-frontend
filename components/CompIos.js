@@ -4,19 +4,24 @@ import * as Location from "expo-location";
 import { StyleSheet, Text, View } from "react-native";
 import { updateLocation } from "../reducers/user";
 import CompassBar from "../components/CompassBar";
+import AstreSelector from "../components/AstresVisibles";
 import * as Astronomy from "astronomy-engine";
 
 // Liste des astres, pour l'instant système solaire pour test
 const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
-let astreFocus = "Saturn";
+
 let Alignement;
 
-export default function BoussoleIOS() {
+export default function BoussoleAndroid() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value); // On récupère les infos du store (token, nickname, etc.)
 
   const [currentPosition, setCurrentPosition] = useState(null); // État local pour afficher la position direct sur l'écran
   const [target, setTarget] = useState("Rien en vue..."); // L'astre visé
+  const [targetAzimuth, setTargetAzimuth] = useState(null);
+  const [astreFocus, setAstreFocus] = useState(null);
+  const [visibleBodies, setVisibleBodies] = useState([]); // Liste filtrée pour le menu
+  const [locationHeading, setLocationHeading] = useState(0);
 
   useEffect(() => {
     let subscription; // On prépare une variable pour pouvoir dire "quand je ne suis pas sur l'app, je n'actualise pas"
@@ -59,8 +64,6 @@ export default function BoussoleIOS() {
     };
   }, []);
 
-  const [locationHeading, setLocationHeading] = useState(0);
-
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -90,51 +93,64 @@ export default function BoussoleIOS() {
       currentPosition.longitude,
       currentPosition.altitude ?? 0,
     );
-
     const date = new Date();
-    let found = "Rien en vue...";
 
-    for (let body of bodies) {
-      const equ_ofdate = Astronomy.Equator(body, date, observer, true, true);
-      const hor = Astronomy.Horizon(
-        date,
-        observer,
-        equ_ofdate.ra,
-        equ_ofdate.dec,
-        "normal",
-      );
+    // A. Filtrer les astres visibles pour le menu déroulant
+    const list = bodies.filter((body) => {
+      const equ = Astronomy.Equator(body, date, observer, true, true);
+      const hor = Astronomy.Horizon(date, observer, equ.ra, equ.dec, "normal");
+      return hor.altitude > 0;
+    });
+    setVisibleBodies(list);
 
-      // Calcul de l'écart entre le téléphone et l'astre
-      const diff = Math.abs(locationHeading - hor.azimuth);
-      const distanceHorizontale = Math.min(diff, 360 - diff);
+    // B. Calculer les infos pour l'astre focus actuel
+    let found = "...";
+    let currentAz = null;
+    if (astreFocus === null) {
+      return;
+    }
+    const equFocus = Astronomy.Equator(astreFocus, date, observer, true, true);
+    const horFocus = Astronomy.Horizon(
+      date,
+      observer,
+      equFocus.ra,
+      equFocus.dec,
+      "normal",
+    );
 
-      // Si l'astre est au-dessus de l'horizon et aligné
-      if (hor.altitude > 0) {
-        if (distanceHorizontale <= 2 && astreFocus === body) {
-          found = `${body}`;
-          Alignement = "Alignement parfait";
-          break;
-        } else if (distanceHorizontale < 10 && body === astreFocus) {
-          Alignement = "Presque aligné";
-        } else if (distanceHorizontale > 10 && body === astreFocus) {
-          Alignement = "Pas aligné";
-        }
+    currentAz = horFocus.azimuth;
+    const diff = Math.abs(locationHeading - horFocus.azimuth);
+    const distanceHorizontale = Math.min(diff, 360 - diff);
+
+    if (horFocus.altitude > 0) {
+      if (distanceHorizontale <= 2) {
+        found = astreFocus;
+        Alignement = "Alignement parfait";
+      } else if (distanceHorizontale < 10) {
+        Alignement = "Presque aligné";
+      } else {
+        Alignement = "Pas aligné";
       }
+    } else {
+      Alignement = "Sous l'horizon";
     }
 
+    setTargetAzimuth(currentAz);
     setTarget(found);
-
-    // On relance le calcul dès que la position ou la boussole change
-  }, [currentPosition, locationHeading]);
+  }, [currentPosition, locationHeading, astreFocus]);
 
   return (
     <View style={styles.container}>
       <View style={styles.headerPadding}>
-        <Text style={styles.h2}>Pour IOS</Text>
         <Text style={styles.body}>Astre Focus: {astreFocus}</Text>
+        <AstreSelector
+          visibleBodies={visibleBodies}
+          currentFocus={astreFocus}
+          onSelect={(body) => setAstreFocus(body)}
+        />
       </View>
       <View>
-        <CompassBar degree={locationHeading} />
+        <CompassBar degree={locationHeading} targetAzimuth={targetAzimuth} />
       </View>
       <View style={styles.card}>
         <Text style={styles.body}>
@@ -166,9 +182,11 @@ const styles = StyleSheet.create({
   },
 
   headerPadding: {
-    alignSelf: "center",
-    paddingHorizontal: 20,
+    width: "100%",
+    height: 150,
     alignItems: "center",
+    justifyContent: "center",
+    paddingTop: 10,
   },
 
   content: {

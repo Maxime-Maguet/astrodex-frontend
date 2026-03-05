@@ -8,7 +8,7 @@ import * as Astronomy from "astronomy-engine";
 
 // Liste des astres, pour l'instant système solaire pour test
 const bodies = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn"];
-let astreFocus = "Saturn";
+let astreFocus = "Sun";
 let Alignement;
 
 export default function BoussoleAndroid() {
@@ -17,7 +17,7 @@ export default function BoussoleAndroid() {
 
   const [currentPosition, setCurrentPosition] = useState(null); // État local pour afficher la position direct sur l'écran
   const [target, setTarget] = useState("Rien en vue..."); // L'astre visé
-
+  const [targetAzimuth, setTargetAzimuth] = useState(null);
   useEffect(() => {
     let subscription; // On prépare une variable pour pouvoir dire "quand je ne suis pas sur l'app, je n'actualise pas"
 
@@ -84,15 +84,15 @@ export default function BoussoleAndroid() {
   useEffect(() => {
     // On ne calcule que si on a la position ET l'orientation
     if (!currentPosition) return;
-
     const observer = new Astronomy.Observer(
       currentPosition.latitude,
       currentPosition.longitude,
       currentPosition.altitude ?? 0,
     );
-
     const date = new Date();
-    let found = "Rien en vue...";
+
+    let found = "...";
+    let currentAz = null;
 
     for (let body of bodies) {
       const equ_ofdate = Astronomy.Equator(body, date, observer, true, true);
@@ -104,37 +104,38 @@ export default function BoussoleAndroid() {
         "normal",
       );
 
-      // Calcul de l'écart entre le téléphone et l'astre
-      const diff = Math.abs(locationHeading - hor.azimuth);
-      const distanceHorizontale = Math.min(diff, 360 - diff);
+      if (body === astreFocus) {
+        currentAz = hor.azimuth;
 
-      // Si l'astre est au-dessus de l'horizon et aligné
-      if (hor.altitude > 0) {
-        if (distanceHorizontale <= 2 && astreFocus === body) {
-          found = `${body}`;
-          Alignement = "Alignement parfait";
-          break;
-        } else if (distanceHorizontale < 10 && body === astreFocus) {
-          Alignement = "Presque aligné";
-        } else if (distanceHorizontale > 10 && body === astreFocus) {
-          Alignement = "Pas aligné";
+        const diff = Math.abs(locationHeading - hor.azimuth);
+        const distanceHorizontale = Math.min(diff, 360 - diff);
+
+        if (hor.altitude > 0) {
+          if (distanceHorizontale <= 2) {
+            found = `${body}`;
+            Alignement = "Alignement parfait";
+          } else if (distanceHorizontale < 10) {
+            Alignement = "Presque aligné";
+          } else {
+            Alignement = "Pas aligné";
+          }
+        } else {
+          Alignement = "Sous l'horizon";
         }
+        break;
       }
     }
-
+    setTargetAzimuth(currentAz);
     setTarget(found);
-
-    // On relance le calcul dès que la position ou la boussole change
   }, [currentPosition, locationHeading]);
 
   return (
     <View style={styles.container}>
       <View style={styles.headerPadding}>
-        <Text style={styles.h2}>Pour Android</Text>
         <Text style={styles.body}>Astre Focus: {astreFocus}</Text>
       </View>
       <View>
-        <CompassBar degree={locationHeading} />
+        <CompassBar degree={locationHeading} targetAzimuth={targetAzimuth} />
       </View>
       <View style={styles.card}>
         <Text style={styles.body}>
