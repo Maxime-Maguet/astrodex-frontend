@@ -1,12 +1,11 @@
-import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 
 export default function AstreCard(props) {
   return (
     <View style={styles.card}>
-      <Image source={{ uri: props.imageUrl }} style={styles.image} />
+      <Image source={{ uri: props.imageUrl }} style={styles.image}  />
       <View style={styles.container}>
         <Text style={styles.astreName}>{props.name}</Text>
-        <Text style={styles.description}>{props.description}</Text>
       </View>
     </View>
   );
@@ -19,13 +18,15 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginHorizontal: 20,
     alignItems: "center",
+    
   },
 
   image: {
-    width: 100,
-    height: 100,
-    borderRadius: 60,
+    width: 110,
+    height: 110,
+borderRadius: 55,
     marginBottom: 10,
+    
   },
 
   container: {
@@ -37,11 +38,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     marginBottom: 5,
-  },
-
-  description: {
-    fontSize: 14,
-    color: "#ccc",
-    textAlign: "center",
+    fontFamily: "Inter",
   },
 });
