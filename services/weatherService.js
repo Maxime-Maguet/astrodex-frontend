@@ -1,5 +1,5 @@
 export const fetchWeather = async (lat, lon) => {
-  const res = await fetch(`http://localhost:3000/weather?lat=${lat}&lon=${lon}`);
+ const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/weather?lat=${lat}&lon=${lon}`);
 
   if (!res.ok) {
     console.log("Unable to fetch weather");

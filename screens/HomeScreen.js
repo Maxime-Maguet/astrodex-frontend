@@ -21,6 +21,9 @@ export default function HomeScreen() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
+
+    let interval;
+    
     const loadWeather = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
