@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  Switch,
 } from "react-native";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +16,12 @@ import Header from "../components/Header";
 export default function AstrodexScreen() {
   const [astres, setAstres] = useState([]);
   const [astresCapture, setAstresCapture] = useState([]);
-  const userToken = "FOhjtgEWySnHAccR1oIiRI8ahdLysji0";
+  const [showCapturedOnly, setShowCapturedOnly] = useState(false);
+
+  const toggleSwitch = () =>
+    setShowCapturedOnly((previsousState) => !previsousState);
+
+  const userToken = "yT4UH_beP7aLhzeTatho7gMOZJDIDy4D";
 
   const dispatch = useDispatch();
 
@@ -36,7 +42,7 @@ export default function AstrodexScreen() {
       .then((res) => res.json())
       .then((userData) => {
         if (userData.result) {
-          //console.log(userData.user.capturedAstres);
+          console.log("capturedAstres raw :", userData.user.capturedAstres);
           setAstresCapture(userData.user.capturedAstres);
         }
       });
@@ -45,7 +51,15 @@ export default function AstrodexScreen() {
   //console.log("tous les astres : ", astres[0]);
   //console.log("astres capturés: ", astresCapture[0]);
 
-  const astresList = astres.map((data, i) => {
+  const filteredAstres = astres.filter((astre) => {
+    if (showCapturedOnly) {
+      return astresCapture.some((e) => e._id === astre._id);
+    } else {
+      return true;
+    }
+  });
+
+  const astresList = filteredAstres.map((data, i) => {
     //console.log(data.rarity_level);
 
     const isCaptured = astresCapture.some((astre) => astre._id === data._id);
@@ -64,6 +78,15 @@ export default function AstrodexScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <Header title="AstroDex" />
+      <View style={styles.toggleContainer}>
+        <Switch
+          trackColor={{ false: "#767577", true: "#767577" }}
+          thumbColor={showCapturedOnly ? "#5B8CFF" : "#f4f3f4"}
+          onValueChange={toggleSwitch}
+          value={showCapturedOnly}
+        />
+        <Text style={styles.toggleText}>Mes captures</Text>
+      </View>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         style={styles.scrollView}
@@ -87,5 +110,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 20,
     alignItems: "center",
+  },
+
+  toggleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  toggleText: {
+    color: "#AAB3C5",
+    marginLeft: 10,
   },
 });
