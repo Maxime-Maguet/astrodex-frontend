@@ -18,6 +18,7 @@ export default function SignupScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
+  const [usernameError, setUsernameError] = useState(false);
 
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -25,14 +26,12 @@ export default function SignupScreen({ navigation }) {
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const handleSubmit = () => {
+    // Vérifie si un des champs est vide
     if (email === "" || username === "" || password === "") return;
 
-    if (EMAIL_REGEX.test(email)) {
-      dispatch(login(email));
-      navigation.replace("TabNavigator", { screen: "observationScreen" });
-    } else {
-      console.log("Email invalide");
-      setEmailError(true);
+    // Vérifie si l'email est valide grâce à la REGEX
+    if (!EMAIL_REGEX.test(email)) {
+      setEmailError(true); // Active l'état d'erreur pour afficher un message d'erreur dans l'interface
       return;
     }
 
@@ -54,7 +53,7 @@ export default function SignupScreen({ navigation }) {
           dispatch(login({ token: data.token, username: username }));
           navigation.replace("TabNavigator");
         } else {
-          // console.log("utilisateur déjà existant.");
+          setUsernameError(true);
         }
       });
   };
@@ -83,10 +82,18 @@ export default function SignupScreen({ navigation }) {
           )}
           <TextInput
             placeholder="username"
-            onChangeText={(value) => setUsername(value)}
+            onChangeText={(value) => {
+              setUsername(value);
+              if (usernameError) {
+                setUsernameError(false);
+              }
+            }}
             value={username}
             style={styles.input}
           />
+          {usernameError && (
+            <Text style={styles.errorUsername}>Utilisateur déjà existant</Text>
+          )}
           <TextInput
             placeholder="password"
             onChangeText={(value) => setPassword(value)}
@@ -150,6 +157,12 @@ const styles = StyleSheet.create({
   },
 
   error: {
+    fontSize: 16,
+    color: "rgba(255, 21, 0, 0.53)",
+    fontFamily: "Inter",
+  },
+
+  errorUsername: {
     fontSize: 16,
     color: "rgba(255, 21, 0, 0.53)",
     fontFamily: "Inter",

@@ -13,13 +13,13 @@ import { fetchWeather } from "../services/weatherService";
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
 
-const visibilityToPercent = (meters) =>
+const visibilityToPercent = meters =>
   Math.min(Math.round((meters / MAX_VISIBILITY) * 100), 100);
 
 export default function HomeScreen() {
   const [weather, setWeather] = useState(null);
   const [message, setMessage] = useState("");
-
+  const [astres, setAstres] = useState([]);
   useEffect(() => {
     const loadWeather = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -33,7 +33,7 @@ export default function HomeScreen() {
         try {
           const data = await fetchWeather(
             location.coords.latitude,
-            location.coords.longitude
+            location.coords.longitude,
           );
           setWeather({
             ...data,
@@ -49,33 +49,45 @@ export default function HomeScreen() {
         }
       };
 
-//appel immédiat puis toutes les 30 min
+      //appel immédiat puis toutes les 30 min
       await fetchAndUpdate();
       interval = setInterval(fetchAndUpdate, REFRESH_INTERVAL);
     };
 
     loadWeather();
-//nettoyage au démontage
+    //nettoyage au démontage
     return () => {
       if (interval) clearInterval(interval);
     };
   }, []);
 
+useEffect(() => {
+  fetch("http://192.168.1.67:3000/astres")
+    .then((res) => res.json())
+    .then((data) => { console.log(data)
+      if (data.result) {
+        setAstres(data.astres);
+      }
+    });
+}, []);
+
+  const astresList = astres.map((data, i) => {
+    return (
+      <AstreCard
+        key={data._id}
+        name={data.name}
+        description={data.description}
+        imageUrl={data.imageUrl}
+      />
+    );
+  });
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {/* Titre ou Dashboard en haut */}
-        <View style={styles.header}>
-          <Text style={styles.title}>Stellar Explorer</Text>
-          <Text style={styles.subtitle}>Jours 2 - Test Boussole</Text>
-        </View>
+        {astresList}
 
-        {/* Espace vide au milieu (futur Radar / Carte) */}
-        <View style={styles.mainView}>
-          <Text style={{ color: "grey" }}>Le radar principal viendra ici</Text>
-        </View>
-
-         <View style={styles.weatherContainer}>
+        <View style={styles.weatherContainer}>
           {weather ? (
             <>
               <Text style={{ color: "white", fontSize: 16 }}>
@@ -92,11 +104,6 @@ export default function HomeScreen() {
           ) : (
             <Text style={{ color: "grey" }}>Unable to fetch weather</Text>
           )}
-        </View>
-
-        {/* TA BOUSSOLE EN BAS (Style Skyrim) */}
-        <View style={styles.compassContainer}>
-          <CompassBar />
         </View>
       </View>
     </SafeAreaView>
@@ -132,7 +139,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   weatherContainer: {
-    alignItems: "center", 
+    alignItems: "center",
     marginBottom: 20,
   },
   compassContainer: {

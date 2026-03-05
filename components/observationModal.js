@@ -20,9 +20,9 @@ export default function ObservationModal(props) {
         .then((data) => {
           console.log(data);
 
-          //   console.log(data.astres);
+          const astres = data.astres.find((e) => e.name === props.planetName);
 
-          setObservation(data.astres[0]);
+          setObservation(astres);
         });
     }
   }, [props.visible]);

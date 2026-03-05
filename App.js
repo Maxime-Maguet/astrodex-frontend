@@ -55,8 +55,8 @@ function TabNavigator() {
           return <FontAwesome name={iconName} size={size} color={color} />;
         },
         headerShown: false,
-      })}
-    >
+      })}>
+      <Tab.Screen name="Accueil" component={HomeScreen} />
       <Tab.Screen name="Observation" component={ObservationScreen} />
       <Tab.Screen name="Astrodex" component={AstrodexScreen} />
     </Tab.Navigator>
