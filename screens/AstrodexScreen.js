@@ -12,14 +12,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { AddAstres } from "../reducers/astre";
 import AstroCard from "../components/AstroCard";
 import Header from "../components/Header";
+import AstroModal from "../components/AstroModal";
 
 export default function AstrodexScreen() {
   const [astres, setAstres] = useState([]);
   const [astresCapture, setAstresCapture] = useState([]);
   const [showCapturedOnly, setShowCapturedOnly] = useState(false);
+  const [selectedAstre, SetSelectedAstre] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const toggleSwitch = () =>
     setShowCapturedOnly((previsousState) => !previsousState);
+
+  const handleDetails = (astre) => {
+    SetSelectedAstre(astre);
+    setModalVisible(true);
+  };
 
   const userToken = "yT4UH_beP7aLhzeTatho7gMOZJDIDy4D";
 
@@ -72,9 +80,11 @@ export default function AstrodexScreen() {
         rarity={data.rarity_level}
         type={data.type}
         isCaptured={isCaptured}
+        onDetails={() => handleDetails(data)}
       />
     );
   });
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <Header title="AstroDex" />
@@ -93,6 +103,7 @@ export default function AstrodexScreen() {
       >
         {astresList}
       </ScrollView>
+      <AstroModal></AstroModal>
     </SafeAreaView>
   );
 }

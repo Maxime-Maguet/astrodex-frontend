@@ -21,7 +21,11 @@ export default function AstroCard(props) {
         <Text style={styles.type}>{props.type}</Text>
         <Text style={styles.rarity}>{props.rarity}</Text>
       </View>
-      <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+      <TouchableOpacity
+        style={styles.button}
+        activeOpacity={0.8}
+        onPress={props.onDetails}
+      >
         <Text style={styles.buttonText}>Détails</Text>
       </TouchableOpacity>
       {!props.isCaptured && (
