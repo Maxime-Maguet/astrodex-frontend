@@ -23,8 +23,9 @@ import ObservationModal from "../components/observationModal";
 
 export default function ObservationScreen() {
   const [modalVisible, setModalVisible] = useState(false);
-
+const [planetName, setplanetName] = useState(null);
   const handleCapture = () => {
+    setplanetName("Mars"); // a modifier ici pour recuperer les planetes en fonction du positionnement de la capture
     setModalVisible(true);
   };
 
@@ -52,7 +53,7 @@ export default function ObservationScreen() {
           textStyle={styles.buttonText}
           onPress={handleCapture}
         />
-        <ObservationModal visible={modalVisible} closeModal={closeModal} />
+        <ObservationModal visible={modalVisible} closeModal={closeModal} planetName={planetName} />
       </ScrollView>
     </View>
   );
