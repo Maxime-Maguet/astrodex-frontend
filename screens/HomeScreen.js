@@ -9,6 +9,7 @@ import {
 import CompassBar from "../components/CompassBar";
 import * as Location from "expo-location";
 import { fetchWeather } from "../services/weatherService";
+import SkyCard from "../components/SkyCard";
 
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
@@ -93,23 +94,17 @@ export default function HomeScreen() {
         {astresList}
 
         <View style={styles.weatherContainer}>
-          {weather ? (
-            <>
-              <Text style={{ color: "white", fontSize: 16 }}>
-                Temp: {weather.temp}°C
-              </Text>
-              <Text style={{ color: "white", fontSize: 16 }}>
-                Clouds: {weather.clouds}%
-              </Text>
-              <Text style={{ color: "white", fontSize: 16 }}>
-                Visibility: {weather.clartePercent}%
-              </Text>
-              <Text style={{ color: "#5B8CFF", marginTop: 10 }}>{message}</Text>
-            </>
-          ) : (
-            <Text style={{ color: "grey" }}>Unable to fetch weather</Text>
-          )}
-        </View>
+  {weather ? (
+    <SkyCard
+      temp={weather.temp}
+      clouds={weather.clouds}
+      clartePercent={weather.clartePercent}
+      message={message}
+    />
+  ) : (
+    <Text style={{ color: "grey" }}>Unable to fetch weather</Text>
+  )}
+</View>
       </View>
     </SafeAreaView>
   );
@@ -121,9 +116,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#050505", // Fond très sombre
   },
   container: {
-    flex: 1,
-    paddingVertical: 20,
-  },
+  flex: 1,
+  paddingVertical: 20,
+  justifyContent: "flex-end",
+},
   header: {
     alignItems: "center",
     marginTop: 40,
@@ -144,9 +140,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   weatherContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
+  width: "100%",
+  marginBottom: 10,
+  paddingHorizontal: 0,
+},
   compassContainer: {
     marginBottom: 50, // On la décolle un peu du bas
     width: "100%",
