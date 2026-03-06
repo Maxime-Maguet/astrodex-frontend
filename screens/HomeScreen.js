@@ -7,6 +7,7 @@ import {
   ImageBackground,
   StatusBar,
   ScrollView,
+  Image,
 } from "react-native";
 import CompassBar from "../components/CompassBar";
 import * as Location from "expo-location";
@@ -23,7 +24,7 @@ import { useDispatch } from "react-redux";
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
 
-const visibilityToPercent = (meters) =>
+const visibilityToPercent = meters =>
   Math.min(Math.round((meters / MAX_VISIBILITY) * 100), 100);
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -32,8 +33,13 @@ export default function HomeScreen() {
   const [weather, setWeather] = useState(null);
   const [message, setMessage] = useState("");
   const [astres, setAstres] = useState([]);
+<<<<<<< HEAD
   const [visibleAstres, setVisibleAstresState] = useState([]);
   const dispatch = useDispatch();
+=======
+  const [astroInfo, setAstroInfo] = useState(null);
+  
+>>>>>>> origin/suitecapture
 
   useEffect(() => {
     NavigationBar.setVisibilityAsync("hidden");
@@ -83,16 +89,34 @@ export default function HomeScreen() {
     };
   }, []);
 
+const shortText = astroInfo.description.slice(0, 250);
+
+  useEffect(() => {
+    fetch(`${apiUrl}/astres/info`)
+      .then(response => response.json())
+      .then(data => {
+        setAstroInfo(data);
+      })
+      .catch(error => console.log(error));
+  }, []);
+
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
+<<<<<<< HEAD
       .then((res) => res.json())
       .then((data) => {
+=======
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+>>>>>>> origin/suitecapture
         if (data.result) {
           setAstres(data.astres);
         }
       });
   }, []);
 
+<<<<<<< HEAD
   useEffect(() => {
     if (astres.length > 0 && weather?.coords) {
       const allNames = astres.map((a) => a.name);
@@ -110,6 +134,10 @@ export default function HomeScreen() {
   }, [astres, weather]);
 
   const astresList = visibleAstres.map((data, i) => {
+=======
+
+  const astresList = astres.map((data, i) => {
+>>>>>>> origin/suitecapture
     return (
       <HomeAstresCard
         key={data._id}
@@ -125,6 +153,22 @@ export default function HomeScreen() {
       <View style={styles.container}>
         <View style={styles.accueil}>
           <Text style={styles.accueil1}>Accueil</Text>
+          <View>
+            {astroInfo && (
+              <>
+                {/* <Text>{astroInfo.title}</Text> */}
+                <Image
+                  source={{ uri: astroInfo.image }}
+                  style={{ width: "100%", height: 100 }}
+                />
+                <ScrollView>
+                  <Text style={styles.description} >
+                    {shortText}...
+                  </Text>
+                </ScrollView>
+              </>
+            )}
+          </View>
         </View>
         <View style={styles.astresSection}>
           <Text style={styles.texteAstres}>Astres visibles maintenant</Text>
@@ -132,8 +176,7 @@ export default function HomeScreen() {
             <ScrollView
               horizontal={true} // permet de mettre VieW en scroll horizontale
               showsHorizontalScrollIndicator={false}
-              style={styles.astresScroll}
-            >
+              style={styles.astresScroll}>
               {astresList}
             </ScrollView>
           </View>
@@ -218,11 +261,15 @@ const styles = StyleSheet.create({
   },
 
   accueil1: {
-    fontSize: 32,
+    fontSize: 48,
     fontWeight: "bold",
     color: "white",
     fontFamily: "Inter",
     textAlign: "center",
     marginBottom: 20,
+  },
+  description: {
+    fontSize: 14,
+    color: "white",
   },
 });
