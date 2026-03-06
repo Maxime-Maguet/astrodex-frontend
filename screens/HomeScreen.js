@@ -14,6 +14,7 @@ import { fetchWeather } from "../services/weatherService";
 import * as NavigationBar from "expo-navigation-bar";
 import HomeAstresCard from "../components/homeAstresCard";
 import SkyCard from "../components/SkyCard";
+import LogoutButton from "../components/LogoutButton";
 
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
@@ -124,6 +125,7 @@ export default function HomeScreen() {
             <Text style={{ color: "grey" }}>Unable to fetch weather</Text>
           )}
         </View>
+        <LogoutButton />
       </View>
     </SafeAreaView>
   );
