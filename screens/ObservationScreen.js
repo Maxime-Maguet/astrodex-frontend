@@ -18,15 +18,26 @@ import { addAstre } from "../reducers/astre";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
-export default function ObservationScreen() {
+export default function ObservationScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const selectedAstre = useSelector((state) => state.astre.astreFocus);
+
+  // const handleCapture = () => {
+  //   if (!selectedAstre) return;
+
   const userToken = useSelector((state) => state.user.value.token);
+  const selectedAstre = useSelector((state) => state.astre.astreFocus);
+  const capturedAstres = useSelector((state) => state.astre.value);
+
+  const isAlreadyCaptured = capturedAstres.some(
+    (astre) => astre.name === selectedAstre,
+  );
 
   const handleCapture = () => {
-    if (!selectedAstre) return;
-
+    if (isAlreadyCaptured) {
+      navigation.navigate("Astrodex", { astreName: selectedAstre });
+      return;
+    }
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
       .then((astresData) => {
@@ -39,10 +50,7 @@ export default function ObservationScreen() {
           (astre) => astre.name === selectedAstre,
         );
 
-        if (!astreToCapture) {
-          console.log("Astre non trouvé :", selectedAstre);
-          return;
-        }
+        if (!astreToCapture) return;
 
         fetch(`${apiUrl}/astres/capturer`, {
           method: "PUT",
@@ -58,7 +66,7 @@ export default function ObservationScreen() {
               dispatch(addAstre(astreToCapture));
               setModalVisible(true);
             } else {
-              console.log("Déjà capturé ou erreur serveur"); // ou afficher un message à l'user
+              console.log("Erreur lors de la capture");
             }
           });
       });

@@ -33,7 +33,7 @@ export default function ProfileScreen() {
         .then((res) => res.json())
         .then((userData) => {
           if (userData.result) {
-            console.log("equipement :", userData.user.equipement);
+            //console.log("equipement :", userData.user.equipement);
             let name = userData.user.name;
             let xp = userData.user.xp;
             let equip = userData.user.equipement;
@@ -76,7 +76,11 @@ export default function ProfileScreen() {
           <Text style={styles.body}>Ton équipement : {equipement}</Text>
         </View>
         <TouchableOpacity
-          onPress={() => navigation.navigate("EquipementSelectionScreen")}
+          onPress={() =>
+            navigation.navigate("EquipementSelectionScreen", {
+              from: "Profil",
+            })
+          }
           style={[styles.button]}
           activeOpacity={0.8}
         >

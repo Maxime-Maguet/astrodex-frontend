@@ -87,7 +87,6 @@ export default function HomeScreen() {
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         if (data.result) {
           setAstres(data.astres);
         }

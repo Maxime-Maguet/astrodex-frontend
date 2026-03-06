@@ -9,28 +9,32 @@ import {
   Platform,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import { setCapturedAstres } from "../reducers/astre";
 import AstroCard from "../components/AstroCard";
 import Header from "../components/Header";
 import AstroModal from "../components/AstroModal";
 import * as NavigationBar from "expo-navigation-bar";
+import { useRoute } from "@react-navigation/native";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function AstrodexScreen() {
-  const [astres, setAstres] = useState([]);
-  const [showCapturedOnly, setShowCapturedOnly] = useState(false);
-  const [selectedAstre, SetSelectedAstre] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [astres, setAstres] = useState([]); // Tous les astres
+  const [showCapturedOnly, setShowCapturedOnly] = useState(false); // Filtre "Mes captures"
+  const [selectedAstre, setSelectedAstre] = useState(null); // Astre sélectionné pour la modal
+  const [modalVisible, setModalVisible] = useState(false); // Etat de la modal
 
-  const astre = useSelector((state) => state.astre.value);
+  const route = useRoute(); // Pour récupérer les params envoyés depuis ObservationScreen
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
+  const capturedAstres = useSelector((state) => state.astre.value);
 
   const toggleSwitch = () =>
     setShowCapturedOnly((previsousState) => !previsousState);
 
   const handleDetails = (astre) => {
-    SetSelectedAstre(astre);
+    setSelectedAstre(astre);
     setModalVisible(true);
   };
 
@@ -43,7 +47,18 @@ export default function AstrodexScreen() {
     NavigationBar.setVisibilityAsync("hidden");
   }, []);
 
-  //fetch de la route get pour récupérer tous les astres
+  // Ouvre la modal si un astre vient d'être capturé
+  useEffect(() => {
+    if (route.params?.astreName) {
+      const astre = astres.find((e) => e.name === route.params.astreName);
+      if (astre) {
+        setSelectedAstre(astre);
+        setModalVisible(true);
+      }
+    }
+  }, [route.params, astres]);
+
+  // Fetch tous les astres
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
@@ -54,12 +69,23 @@ export default function AstrodexScreen() {
       });
   }, []);
 
+  // Fetch astres capturés par l'utilisateur
+  useEffect(() => {
+    fetch(`${apiUrl}/users/profile/${user.token}`)
+      .then((res) => res.json())
+      .then((userData) => {
+        if (userData.result) {
+          dispatch(setCapturedAstres(userData.user.capturedAstres));
+        }
+      });
+  }, []);
+
   // Filtre les astres selon le switch "Mes captures"
   // Si showCapturedOnly est true, ne garde que les astres déjà capturés
   // Sinon, renvoie tous les astres
   const filteredAstres = astres.filter((item) => {
     if (showCapturedOnly) {
-      return astre.some((e) => e._id === item._id);
+      return capturedAstres.some((e) => e._id === item._id);
     } else {
       return true;
     }
@@ -67,9 +93,7 @@ export default function AstrodexScreen() {
 
   // Pour chaque astre filtré, on vérifie s'il est capturé
   const astresList = filteredAstres.map((data, i) => {
-    //console.log(data.rarity_level);
-
-    const isCaptured = astre.some((astre) => astre._id === data._id);
+    const isCaptured = capturedAstres.some((astre) => astre._id === data._id);
     return (
       <AstroCard
         key={data._id}
