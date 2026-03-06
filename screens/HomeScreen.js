@@ -14,11 +14,11 @@ import { fetchWeather } from "../services/weatherService";
 import * as NavigationBar from "expo-navigation-bar";
 import HomeAstresCard from "../components/homeAstresCard";
 import SkyCard from "../components/SkyCard";
-
+import { LinearGradient } from "expo-linear-gradient";
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
 
-const visibilityToPercent = (meters) =>
+const visibilityToPercent = meters =>
   Math.min(Math.round((meters / MAX_VISIBILITY) * 100), 100);
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -77,8 +77,8 @@ export default function HomeScreen() {
 
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         console.log(data);
         if (data.result) {
           setAstres(data.astres);
@@ -100,14 +100,16 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar hidden={true} />
       <View style={styles.container}>
+        <View style={styles.accueil}>
+          <Text style={styles.accueil1}>Accueil</Text>
+        </View>
         <View style={styles.astresSection}>
           <Text style={styles.texteAstres}>Astres Visible ce soir</Text>
           <View style={styles.ScrollView}>
             <ScrollView
               horizontal={true} // permet de mettre VieW en scroll horizontale
-              showsHorizontalScrollIndicator={true}
-              style={styles.astresScroll}
-            >
+              showsHorizontalScrollIndicator={false}
+              style={styles.astresScroll}>
               {astresList}
             </ScrollView>
           </View>
@@ -172,6 +174,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "white",
+    fontFamily: "Inter",
+    textAlign: "center",
   },
 
   ScrollView: {
@@ -182,5 +186,19 @@ const styles = StyleSheet.create({
   astresSection: {
     flex: 1,
     justifyContent: "center",
+  },
+
+  accueil: {
+    flex: 1,
+    justifyContent: "flex-start",
+  },
+
+  accueil1: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "white",
+    fontFamily: "Inter",
+    textAlign: "center",
+    marginBottom: 20,
   },
 });
