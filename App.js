@@ -68,7 +68,7 @@ function TabNavigator() {
       <Tab.Screen name="Acceuil" component={HomeScreen} />
       <Tab.Screen name="Observation" component={ObservationScreen} />
       <Tab.Screen name="Astrodex" component={AstrodexScreen} />
-      <Tab.Screen name="Profil" component={HomeScreen} />
+      <Tab.Screen name="Profil" component={EquipementSelectionScreen} />
     </Tab.Navigator>
   );
 }
@@ -88,6 +88,7 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Inscription" component={SignupScreen} />
+          <Stack.Screen name="Equipement" component={EquipementSelectionScreen } />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
