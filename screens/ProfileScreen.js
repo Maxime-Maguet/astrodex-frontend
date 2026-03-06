@@ -15,7 +15,7 @@ import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
-export default function ProfileScreen() {
+export default function ProfileScreen(route) {
   const [equipement, setEquipement] = useState("rien");
   const [xp, setXp] = useState(0);
   const [name, setName] = useState("");
@@ -23,10 +23,7 @@ export default function ProfileScreen() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
-  useEffect(() => {
-    NavigationBar.setVisibilityAsync("hidden");
-  }, []);
-
+ 
   useEffect(() => {
     if (isFocused && user.token) {
       fetch(`${apiUrl}/users/profile/${user.token}`)

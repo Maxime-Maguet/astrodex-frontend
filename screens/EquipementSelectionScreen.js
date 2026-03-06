@@ -8,21 +8,21 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function EquipementSelectionScreen({ navigation }) {
   const route = useRoute();
-
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.value);
-
-  const [equipement, setEquipement] = useState("");
-
-  // const Equipement_LIMITS = {
-  // "Oeil nue": { maxMagnitude: 4, label: "Œil nu", xpBonus: 100 }, //Configuration basé sur la magnétude
-  //Jumelles: { maxMagnitude: 8, label: "Jumelle", xpBonus: 250 },
+  //const Equipement_LIMITS = {
+  //"Oeil nue": { maxMagnitude: 4, label: "Œil nu", xpBonus: 100 }, //Configuration basé sur la magnétude
+  //"Jumelles": { maxMagnitude: 8, label: "Jumelle", xpBonus: 250 },
   //"Lunette astronomique": {
   //maxMagnitude: 15,
   //label: "Télescope",
   //xpBonus: 500,
   //},
+
   //};
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
+
+  const [equipement, setEquipement] = useState("");
 
   const Observation = () => {
     if (equipement === "" || equipement === undefined) {
@@ -39,6 +39,10 @@ export default function EquipementSelectionScreen({ navigation }) {
       .then((data) => {
         //console.log(data);
         if (data) {
+          console.log(data.equipement, " Equipement reçu !");
+
+          navigation.navigate("TabNavigator", { screen: "Acceuil" });
+
           dispatch(updateEquipement(data.equipement));
         }
         const ecranOrigine = route.params?.from;
