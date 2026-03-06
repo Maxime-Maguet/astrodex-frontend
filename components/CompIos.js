@@ -6,41 +6,24 @@ import { updateLocation } from "../reducers/user";
 import CompassBar from "../components/CompassBar";
 import AstreSelector from "../components/AstresVisibles";
 import * as Astronomy from "astronomy-engine";
-
+import { FIXED_COORDINATES } from "../modules/logiqueAstres";
 // Liste des astres, pour l'instant système solaire pour test
-
-const FIXED_COORDINATES = {
-  Andromède: { ra: 0.7122, dec: 41.2689 },
-  Sirius: { ra: 6.7525, dec: -16.7161 },
-  "Nébuleuse d'Orion": { ra: 5.5881, dec: -5.3908 },
-};
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
+let Alignement;
+
 export default function BoussoleAndroid() {
   const dispatch = useDispatch();
+
   const user = useSelector((state) => state.user.value); // On récupère les infos du store (token, nickname, etc.)
+  const visibleAstres = useSelector((state) => state.astre.visibleAstres);
 
   const [currentPosition, setCurrentPosition] = useState(null); // État local pour afficher la position direct sur l'écran
   const [target, setTarget] = useState("..."); // L'astre visé
   const [targetAzimuth, setTargetAzimuth] = useState(null);
   const [astreFocus, setAstreFocus] = useState(null);
-  const [visibleBodies, setVisibleBodies] = useState([]); // Liste filtrée pour le menu
   const [locationHeading, setLocationHeading] = useState(0);
-  const [bodies, setBodies] = useState([]); // Liste des Astres dans la BDD
-
-  //fetch des astres dans la BDD
-  useEffect(() => {
-    fetch(`${apiUrl}/astres`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.result) {
-          const names = data.astres.map((astre) => astre.name); //On cherche que le nom de l'astre
-          setBodies(names); //on envoie la donnée dans l'état bodies
-        }
-      })
-      .catch((error) => console.error("Erreur Fetch BDD:", error));
-  }, []);
 
   useEffect(() => {
     let subscription; // On prépare une variable pour pouvoir dire "quand je ne suis pas sur l'app, je n'actualise pas"
@@ -104,8 +87,7 @@ export default function BoussoleAndroid() {
   }, []);
 
   useEffect(() => {
-    // On ne calcule que si on a la position ET l'orientation
-    if (!currentPosition) return;
+    if (!currentPosition || !astreFocus || astreFocus === "...") return;
 
     const observer = new Astronomy.Observer(
       currentPosition.latitude,
@@ -114,68 +96,41 @@ export default function BoussoleAndroid() {
     );
     const date = new Date();
 
-    // A. Filtrer les astres visibles pour le menu déroulant
-    const list = bodies.filter((bodyName) => {
-      let ra, dec;
+    let raFocus, decFocus;
 
-      if (FIXED_COORDINATES[bodyName]) {
-        ra = FIXED_COORDINATES[bodyName].ra;
-        dec = FIXED_COORDINATES[bodyName].dec;
-      } else {
-        try {
-          const equ = Astronomy.Equator(bodyName, date, observer, true, true);
-          ra = equ.ra;
-          dec = equ.dec;
-        } catch (e) {
-          return false;
-        }
-      }
-
-      const hor = Astronomy.Horizon(date, observer, ra, dec, "normal");
-      return hor.altitude > 0;
-    });
-    setVisibleBodies(list);
-
-    if (astreFocus && astreFocus !== "...") {
-      let raFocus, decFocus;
-
-      if (FIXED_COORDINATES[astreFocus]) {
-        raFocus = FIXED_COORDINATES[astreFocus].ra;
-        decFocus = FIXED_COORDINATES[astreFocus].dec;
-      } else {
+    // Utilisation des coordonnées fixes ou calculées
+    if (FIXED_COORDINATES[astreFocus]) {
+      raFocus = FIXED_COORDINATES[astreFocus].ra;
+      decFocus = FIXED_COORDINATES[astreFocus].dec;
+    } else {
+      try {
         const equ = Astronomy.Equator(astreFocus, date, observer, true, true);
         raFocus = equ.ra;
         decFocus = equ.dec;
+      } catch (e) {
+        return;
       }
+    }
 
-      const horFocus = Astronomy.Horizon(
-        date,
-        observer,
-        raFocus,
-        decFocus,
-        "normal",
-      );
+    const horFocus = Astronomy.Horizon(
+      date,
+      observer,
+      raFocus,
+      decFocus,
+      "normal",
+    );
+    setTargetAzimuth(horFocus.azimuth);
 
-      // Mise à jour de l'azimut pour le point sur la boussole
-      setTargetAzimuth(horFocus.azimuth);
+    const diff = Math.abs(locationHeading - horFocus.azimuth);
+    const distanceHorizontale = Math.min(diff, 360 - diff);
 
-      // Calcul de l'alignement
-      const diff = Math.abs(locationHeading - horFocus.azimuth);
-      const distanceHorizontale = Math.min(diff, 360 - diff);
-
-      if (horFocus.altitude > 0) {
-        if (distanceHorizontale <= 3) {
-          setTarget(`⭐ ${astreFocus} en vue !`);
-        } else if (distanceHorizontale < 10) {
-          setTarget("🥵 C'est chaud...");
-        } else if (distanceHorizontale < 20) {
-          setTarget("🫠 Tu te rapproches...");
-        } else {
-          setTarget("🥶 C'est froid...");
-        }
-      } else {
-        setTarget("L'astre est sous la ligne d'horizon");
-      }
+    if (horFocus.altitude > 0) {
+      if (distanceHorizontale <= 3) setTarget(`⭐ ${astreFocus} en vue !`);
+      else if (distanceHorizontale < 10) setTarget("🥵 C'est chaud...");
+      else if (distanceHorizontale < 20) setTarget("🫠 Tu te rapproches...");
+      else setTarget("🥶 C'est froid...");
+    } else {
+      setTarget("L'astre est sous la ligne d'horizon");
     }
   }, [currentPosition, locationHeading, astreFocus]);
 
@@ -184,7 +139,7 @@ export default function BoussoleAndroid() {
       <View style={styles.headerPadding}>
         <Text style={styles.body}>Astre Focus: {astreFocus}</Text>
         <AstreSelector
-          visibleBodies={visibleBodies}
+          visibleBodies={visibleAstres}
           currentFocus={astreFocus}
           onSelect={(body) => setAstreFocus(body)}
         />

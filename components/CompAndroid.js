@@ -106,6 +106,7 @@ export default function BoussoleAndroid() {
   useEffect(() => {
     // On ne calcule que si on a la position ET l'orientation
     if (!currentPosition) return;
+    if (locationHeading === 0 && !astreFocus) return;
 
     const observer = new Astronomy.Observer(
       currentPosition.latitude,
@@ -119,11 +120,9 @@ export default function BoussoleAndroid() {
       let ra, dec;
 
       if (FIXED_COORDINATES[bodyName]) {
-        // Cas : Sirius, Andromède, Orion
         ra = FIXED_COORDINATES[bodyName].ra;
         dec = FIXED_COORDINATES[bodyName].dec;
       } else {
-        // Cas : Mars, Moon, Jupiter, etc.
         try {
           const equ = Astronomy.Equator(bodyName, date, observer, true, true);
           ra = equ.ra;
@@ -162,8 +161,8 @@ export default function BoussoleAndroid() {
       setTargetAzimuth(horFocus.azimuth);
 
       // Calcul de l'alignement
-      const diff = Math.abs(locationHeading - horFocus.azimuth);
-      const distanceHorizontale = Math.min(diff, 360 - diff);
+      const diff = locationHeading - horFocus.azimuth;
+      const distanceHorizontale = Math.abs(((diff + 180) % 360) - 180);
 
       if (horFocus.altitude > 0) {
         if (distanceHorizontale <= 3) {

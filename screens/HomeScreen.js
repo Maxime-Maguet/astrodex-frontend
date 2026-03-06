@@ -16,6 +16,9 @@ import HomeAstresCard from "../components/homeAstresCard";
 import SkyCard from "../components/SkyCard";
 import { LinearGradient } from "expo-linear-gradient";
 import LogoutButton from "../components/LogoutButton";
+import { AstresVisibles } from "../modules/logiqueAstres";
+import { setVisibleAstres } from "../reducers/astre";
+import { useDispatch } from "react-redux";
 
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
@@ -29,6 +32,8 @@ export default function HomeScreen() {
   const [weather, setWeather] = useState(null);
   const [message, setMessage] = useState("");
   const [astres, setAstres] = useState([]);
+  const [visibleAstres, setVisibleAstresState] = useState([]);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     NavigationBar.setVisibilityAsync("hidden");
@@ -53,6 +58,7 @@ export default function HomeScreen() {
           );
           setWeather({
             ...data,
+            coords: location.coords,
             clartePercent: visibilityToPercent(data.visibility),
           });
           if (data.clouds > 70) {
@@ -88,7 +94,23 @@ export default function HomeScreen() {
       });
   }, []);
 
-  const astresList = astres.map((data, i) => {
+  useEffect(() => {
+    if (astres.length > 0 && weather?.coords) {
+      const allNames = astres.map((a) => a.name);
+
+      const visibles = AstresVisibles(allNames, {
+        latitude: weather.coords.latitude,
+        longitude: weather.coords.longitude,
+      });
+
+      const filteredAstres = astres.filter((a) => visibles.includes(a.name));
+
+      setVisibleAstresState(filteredAstres);
+      dispatch(setVisibleAstres(visibles));
+    }
+  }, [astres, weather]);
+
+  const astresList = visibleAstres.map((data, i) => {
     return (
       <HomeAstresCard
         key={data._id}
@@ -106,7 +128,7 @@ export default function HomeScreen() {
           <Text style={styles.accueil1}>Accueil</Text>
         </View>
         <View style={styles.astresSection}>
-          <Text style={styles.texteAstres}>Astres Visible ce soir</Text>
+          <Text style={styles.texteAstres}>Astres visibles maintenant</Text>
           <View style={styles.ScrollView}>
             <ScrollView
               horizontal={true} // permet de mettre VieW en scroll horizontale

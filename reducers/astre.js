@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   value: [],
   astreFocus: null,
+  visibleAstres: [],
 };
 
 export const astreSlice = createSlice({
@@ -24,8 +25,12 @@ export const astreSlice = createSlice({
       state.astreFocus = action.payload;
       //console.log("reducer astre =>", action.payload);
     },
+
+    setVisibleAstres: (state, action) => {
+      state.visibleAstres = action.payload;
+    },
   },
 });
 
-export const { addAstre, setAstreFocus } = astreSlice.actions;
+export const { addAstre, setAstreFocus, setVisibleAstres } = astreSlice.actions;
 export default astreSlice.reducer;
