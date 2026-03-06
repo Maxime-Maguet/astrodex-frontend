@@ -6,7 +6,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
-export default function EquipementSelectionScreen( {navigation} ) {
+export default function EquipementSelectionScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
@@ -37,18 +37,14 @@ export default function EquipementSelectionScreen( {navigation} ) {
       .then((data) => {
         console.log(data);
         if (data) {
-          
-
           console.log(data.equipement, " Equipement reçu !");
-          
-          navigation.navigate("TabNavigator", { screen: "Observation" });
-          dispatch(updateEquipement(data.equipement));
 
+          navigation.navigate("Profil");
+          dispatch(updateEquipement(data.equipement));
         } else console.log(" déjà équipé");
       });
   };
   return (
-    
     <View style={styles.container}>
       <Text style={styles.buttonText}>Choisis ton équipement</Text>
       <View style={styles.buttoncontainer}>
@@ -62,7 +58,6 @@ export default function EquipementSelectionScreen( {navigation} ) {
           activeOpacity={0.8}
         >
           <Text style={styles.buttonText}>Oeil nue</Text>
-          
         </TouchableOpacity>
       </View>
       <View style={styles.buttoncontainer}>
@@ -76,7 +71,6 @@ export default function EquipementSelectionScreen( {navigation} ) {
           activeOpacity={0.8}
         >
           <Text style={styles.buttonText}>Jumelles</Text>
-         
         </TouchableOpacity>
       </View>
       <View style={styles.buttoncontainer}>
@@ -92,14 +86,12 @@ export default function EquipementSelectionScreen( {navigation} ) {
           activeOpacity={0.8}
         >
           <Text style={styles.buttonText}>Télescope</Text>
-         
         </TouchableOpacity>
       </View>
       <TouchableOpacity onPress={() => Observation()} style={styles.confirmBtn}>
         <Text style={styles.buttonConfirmer}>Confirmer</Text>
       </TouchableOpacity>
     </View>
-  
   );
 }
 
@@ -108,8 +100,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0B0F1A",
     padding: 20,
-    paddingTop : 30,
-    justifyContent :"space-between",
+    paddingTop: 30,
+    justifyContent: "space-between",
     alignItems: "center",
   },
   button: {
@@ -132,7 +124,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#5B8CFF",
     color: "#FFFFFF",
     padding: 20,
-    borderRadius:10,
+    borderRadius: 10,
     paddingLeft: 60,
     paddingRight: 60,
     alignItems: "center",

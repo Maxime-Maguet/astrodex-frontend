@@ -14,16 +14,13 @@ import { fetchWeather } from "../services/weatherService";
 import * as NavigationBar from "expo-navigation-bar";
 import HomeAstresCard from "../components/homeAstresCard";
 import SkyCard from "../components/SkyCard";
-<<<<<<< HEAD
 import { LinearGradient } from "expo-linear-gradient";
-=======
 import LogoutButton from "../components/LogoutButton";
 
->>>>>>> origin/deconnexion
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
 
-const visibilityToPercent = meters =>
+const visibilityToPercent = (meters) =>
   Math.min(Math.round((meters / MAX_VISIBILITY) * 100), 100);
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -82,8 +79,8 @@ export default function HomeScreen() {
 
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         console.log(data);
         if (data.result) {
           setAstres(data.astres);
@@ -114,7 +111,8 @@ export default function HomeScreen() {
             <ScrollView
               horizontal={true} // permet de mettre VieW en scroll horizontale
               showsHorizontalScrollIndicator={false}
-              style={styles.astresScroll}>
+              style={styles.astresScroll}
+            >
               {astresList}
             </ScrollView>
           </View>

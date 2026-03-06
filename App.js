@@ -16,6 +16,7 @@ import astre from "./reducers/astre";
 import SignupScreen from "./screens/signupScreen";
 import HomeScreen from "./screens/HomeScreen";
 import AstrodexScreen from "./screens/AstrodexScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 import EquipementSelectionScreen from "./screens/EquipementSelectionScreen";
 import { LinearGradient } from "expo-linear-gradient";
 // import {
@@ -71,11 +72,12 @@ function TabNavigator() {
           return <FontAwesome name={iconName} size={size} color={color} />;
         },
         headerShown: false,
-      })}>
+      })}
+    >
       <Tab.Screen name="Acceuil" component={HomeScreen} />
       <Tab.Screen name="Observation" component={ObservationScreen} />
       <Tab.Screen name="Astrodex" component={AstrodexScreen} />
-      <Tab.Screen name="Profil" component={EquipementSelectionScreen} />
+      <Tab.Screen name="Profil" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
@@ -95,7 +97,10 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Inscription" component={SignupScreen} />
-          <Stack.Screen name="Equipement" component={EquipementSelectionScreen } />
+          <Stack.Screen
+            name="EquipementSelectionScreen"
+            component={EquipementSelectionScreen}
+          />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>
