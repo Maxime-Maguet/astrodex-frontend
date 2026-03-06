@@ -6,21 +6,37 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
-export default function EquipementSelectionScreen({ navigation }) {
+export default function EquipementSelectionScreen({ navigation}) {
+
+  //const Equipement_LIMITS = {
+    //"Oeil nue": { maxMagnitude: 4, label: "Œil nu", xpBonus: 100 }, //Configuration basé sur la magnétude
+    //"Jumelles": { maxMagnitude: 8, label: "Jumelle", xpBonus: 250 },
+    //"Lunette astronomique": {
+      //maxMagnitude: 15,
+      //label: "Télescope",
+      //xpBonus: 500,
+    //},
+  
+  //};
+
+   React.useEffect(() => {
+      if (route.params.profile) {
+        
+        alert(route.params?.profile);
+      }
+    }, [route.params?.profile]);
+    useEffect(() => {
+      NavigationBar.setVisibilityAsync("hidden");
+    }, []);
+  
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
   const [equipement, setEquipement] = useState("");
+  
+  
+ 
 
-  // const Equipement_LIMITS = {
-  // "Oeil nue": { maxMagnitude: 4, label: "Œil nu", xpBonus: 100 }, //Configuration basé sur la magnétude
-  //Jumelles: { maxMagnitude: 8, label: "Jumelle", xpBonus: 250 },
-  //"Lunette astronomique": {
-  //maxMagnitude: 15,
-  //label: "Télescope",
-  //xpBonus: 500,
-  //},
-  //};
 
   const Observation = () => {
     if (equipement === "" || equipement === undefined) {
@@ -39,7 +55,8 @@ export default function EquipementSelectionScreen({ navigation }) {
         if (data) {
           console.log(data.equipement, " Equipement reçu !");
 
-          navigation.navigate("Profil");
+          navigation.navigate("TabNavigator", { screen: "Acceuil"})
+           
           dispatch(updateEquipement(data.equipement));
         } else console.log(" déjà équipé");
       });

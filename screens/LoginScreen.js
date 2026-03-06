@@ -33,7 +33,7 @@ export default function LoginScreen({ navigation }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          dispatch(login({ token: data.token, username: username, equipement : user.equipement }));
+          dispatch(login({ token: data.token, username: username,}));
           console.log(data.result, "bien Afficher")
           navigation.replace("TabNavigator");
         } else {
