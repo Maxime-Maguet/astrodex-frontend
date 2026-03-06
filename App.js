@@ -16,6 +16,7 @@ import astre from "./reducers/astre";
 import SignupScreen from "./screens/signupScreen";
 import HomeScreen from "./screens/HomeScreen";
 import AstrodexScreen from "./screens/AstrodexScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 import EquipementSelectionScreen from "./screens/EquipementSelectionScreen";
 import { LinearGradient } from "expo-linear-gradient";
 // import {
@@ -44,11 +45,11 @@ function TabNavigator() {
         tabBarActiveTintColor: "#5B8CFF",
         tabBarInactiveTintColor: "#ffffff",
         tabBarBackground: () => (
-  <LinearGradient
-    colors={["#1D2F49", "#0B0F1A", "#1D2F49"]}
- style={{ flex: 1 }}
-  />
-),
+          <LinearGradient
+            colors={["#1D2F49", "#0B0F1A", "#1D2F49"]}
+            style={{ flex: 1 }}
+          />
+        ),
         tabBarIcon: ({ color, size }) => {
           let iconName = "";
 
@@ -59,16 +60,19 @@ function TabNavigator() {
           } else if (route.name === "Acceuil") {
             return <Ionicons name="home" size={size} color={color} />;
           } else if (route.name === "Profil") {
-            return <FontAwesome name="user-circle-o" size={size} color={color} />;
+            return (
+              <FontAwesome name="user-circle-o" size={size} color={color} />
+            );
           }
           return <FontAwesome name={iconName} size={size} color={color} />;
         },
         headerShown: false,
-      })}>
+      })}
+    >
       <Tab.Screen name="Acceuil" component={HomeScreen} />
       <Tab.Screen name="Observation" component={ObservationScreen} />
       <Tab.Screen name="Astrodex" component={AstrodexScreen} />
-      <Tab.Screen name="Profil" component={HomeScreen} />
+      <Tab.Screen name="Profil" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
@@ -88,6 +92,10 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Inscription" component={SignupScreen} />
+          <Stack.Screen
+            name="EquipementSelectionScreen"
+            component={EquipementSelectionScreen}
+          />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
       </NavigationContainer>

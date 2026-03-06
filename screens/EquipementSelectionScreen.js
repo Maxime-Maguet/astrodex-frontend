@@ -6,7 +6,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
-export default function EquipementSelectionScreen( {navigation} ) {
+export default function EquipementSelectionScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
@@ -37,18 +37,14 @@ export default function EquipementSelectionScreen( {navigation} ) {
       .then((data) => {
         console.log(data);
         if (data) {
-          
-
           console.log(data.equipement, " Equipement reçu !");
-          
-          navigation.navigate("Observation");
-          dispatch(updateEquipement(data.equipement));
 
+          navigation.navigate("Profil");
+          dispatch(updateEquipement(data.equipement));
         } else console.log(" déjà équipé");
       });
   };
   return (
-    
     <View style={styles.container}>
       <Text style={styles.buttonText}>Choisis ton équipement</Text>
       <View style={styles.buttoncontainer}>
@@ -96,7 +92,6 @@ export default function EquipementSelectionScreen( {navigation} ) {
         <Text style={styles.buttonConfirmer}>Confirmer</Text>
       </TouchableOpacity>
     </View>
-  
   );
 }
 
