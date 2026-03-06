@@ -9,8 +9,8 @@ import {
   Platform,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import { setCapturedAstres } from "../reducers/astre";
 import AstroCard from "../components/AstroCard";
 import Header from "../components/Header";
 import AstroModal from "../components/AstroModal";
@@ -24,7 +24,9 @@ export default function AstrodexScreen() {
   const [selectedAstre, SetSelectedAstre] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const astre = useSelector((state) => state.astre.value);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
+  const capturedAstres = useSelector((state) => state.astre.value);
 
   const toggleSwitch = () =>
     setShowCapturedOnly((previsousState) => !previsousState);
@@ -54,12 +56,23 @@ export default function AstrodexScreen() {
       });
   }, []);
 
+  //fetch de la route get users/profile via le token pour récupérer
+  useEffect(() => {
+    fetch(`${apiUrl}/users/profile/${user.token}`)
+      .then((res) => res.json())
+      .then((userData) => {
+        if (userData.result) {
+          dispatch(setCapturedAstres(userData.user.capturedAstres));
+        }
+      });
+  }, []);
+
   // Filtre les astres selon le switch "Mes captures"
   // Si showCapturedOnly est true, ne garde que les astres déjà capturés
   // Sinon, renvoie tous les astres
   const filteredAstres = astres.filter((item) => {
     if (showCapturedOnly) {
-      return astre.some((e) => e._id === item._id);
+      return capturedAstres.some((e) => e._id === item._id);
     } else {
       return true;
     }
@@ -67,9 +80,7 @@ export default function AstrodexScreen() {
 
   // Pour chaque astre filtré, on vérifie s'il est capturé
   const astresList = filteredAstres.map((data, i) => {
-    //console.log(data.rarity_level);
-
-    const isCaptured = astre.some((astre) => astre._id === data._id);
+    const isCaptured = capturedAstres.some((astre) => astre._id === data._id);
     return (
       <AstroCard
         key={data._id}

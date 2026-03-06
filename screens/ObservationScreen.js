@@ -48,6 +48,8 @@ export default function ObservationScreen() {
               console.log("astreToCapture =>", astreToCapture);
               dispatch(addAstre(astreToCapture));
               setModalVisible(true);
+            } else {
+              NavigationBar.navigate("");
             }
           });
       });
