@@ -138,7 +138,7 @@ export default function HomeScreen() {
       <View style={styles.container}>
         <View style={styles.accueil}>
           <Text style={styles.accueil1}>Accueil</Text>
-          <View>
+          <View style={{ alignItems: "center" }}>
             {astroInfo && (
               <>
                 {/* <Text>{astroInfo.title}</Text> */}
@@ -146,11 +146,11 @@ export default function HomeScreen() {
                   source={{ uri: astroInfo.image }}
                   style={{ width: 100, height: 100 }}
                 />
-                <ScrollView>
+                {/* <ScrollView>
                   <Text style={styles.description}>
                     {astroInfo.description}
                   </Text>
-                </ScrollView>
+                </ScrollView> */}
               </>
             )}
           </View>
