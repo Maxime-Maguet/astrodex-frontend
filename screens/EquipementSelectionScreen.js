@@ -41,7 +41,7 @@ export default function EquipementSelectionScreen( {navigation} ) {
 
           console.log(data.equipement, " Equipement reçu !");
           
-          navigation.navigate("Observation");
+          navigation.navigate("TabNavigator", { screen: "Observation" });
           dispatch(updateEquipement(data.equipement));
 
         } else console.log(" déjà équipé");
@@ -62,6 +62,7 @@ export default function EquipementSelectionScreen( {navigation} ) {
           activeOpacity={0.8}
         >
           <Text style={styles.buttonText}>Oeil nue</Text>
+          
         </TouchableOpacity>
       </View>
       <View style={styles.buttoncontainer}>
@@ -75,6 +76,7 @@ export default function EquipementSelectionScreen( {navigation} ) {
           activeOpacity={0.8}
         >
           <Text style={styles.buttonText}>Jumelles</Text>
+         
         </TouchableOpacity>
       </View>
       <View style={styles.buttoncontainer}>
@@ -90,6 +92,7 @@ export default function EquipementSelectionScreen( {navigation} ) {
           activeOpacity={0.8}
         >
           <Text style={styles.buttonText}>Télescope</Text>
+         
         </TouchableOpacity>
       </View>
       <TouchableOpacity onPress={() => Observation()} style={styles.confirmBtn}>
@@ -103,9 +106,10 @@ export default function EquipementSelectionScreen( {navigation} ) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#0B0F1A",
     padding: 20,
-    justifyContent: "center",
+    paddingTop : 30,
+    justifyContent :"space-between",
     alignItems: "center",
   },
   button: {
@@ -115,7 +119,7 @@ const styles = StyleSheet.create({
     padding: 25,
     paddingLeft: 25,
     borderRadius: 8,
-    marginTop: 15,
+    marginTop: 10,
     alignItems: "center",
   },
   buttonText: {
@@ -128,12 +132,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#5B8CFF",
     color: "#FFFFFF",
     padding: 20,
-    borderRadius: 10,
-    paddingLeft: 100,
-    paddingRight: 100,
+    borderRadius:10,
+    paddingLeft: 60,
+    paddingRight: 60,
     alignItems: "center",
     marginTop: 10,
-    marginBottom: 50,
+    marginBottom: 30,
   },
 
   confirmBtn: {
@@ -145,7 +149,7 @@ const styles = StyleSheet.create({
 
   icon: {
     fontSize: 25,
-    color: "#000000",
+    color: "#ffffff",
     marginTop: 40,
   },
   buttoncontainer: {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,16 +10,19 @@ import {
   Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { login } from "../reducers/user";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
-
+ const user = useSelector((state) => state.user.value);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  
+  
+  
 
   const handleSubmit = () => {
     fetch(`${apiUrl}/users/signin`, {
@@ -30,7 +33,8 @@ export default function LoginScreen({ navigation }) {
       .then((response) => response.json())
       .then((data) => {
         if (data.result) {
-          dispatch(login({ token: data.token, username: username }));
+          dispatch(login({ token: data.token, username: username, equipement : user.equipement }));
+          console.log(data.result, "bien Afficher")
           navigation.replace("TabNavigator");
         } else {
           console.log("Error : ", data.error);
