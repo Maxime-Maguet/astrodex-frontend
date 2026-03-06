@@ -129,7 +129,6 @@ export default function HomeScreen() {
             <Text style={{ color: "grey" }}>Unable to fetch weather</Text>
           )}
         </View>
-        <LogoutButton />
       </View>
     </SafeAreaView>
   );
