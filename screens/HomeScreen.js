@@ -85,7 +85,7 @@ export default function HomeScreen() {
     };
   }, []);
 
-  const shortText = astroInfo.description.slice(0, 250);
+  // const shortText = astroInfo.description.slice(0, 250);
 
   useEffect(() => {
     fetch(`${apiUrl}/astres/info`)
@@ -147,7 +147,7 @@ export default function HomeScreen() {
                   style={{ width: "100%", height: 100 }}
                 />
                 <ScrollView>
-                  <Text style={styles.description}>{shortText}...</Text>
+                  <Text style={styles.description}></Text>
                 </ScrollView>
               </>
             )}
