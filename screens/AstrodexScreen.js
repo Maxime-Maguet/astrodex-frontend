@@ -9,8 +9,8 @@ import {
   Platform,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AddAstres } from "../reducers/astre";
+import { useSelector } from "react-redux";
+
 import AstroCard from "../components/AstroCard";
 import Header from "../components/Header";
 import AstroModal from "../components/AstroModal";
@@ -20,15 +20,11 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function AstrodexScreen() {
   const [astres, setAstres] = useState([]);
-  const [astresCapture, setAstresCapture] = useState([]);
   const [showCapturedOnly, setShowCapturedOnly] = useState(false);
   const [selectedAstre, SetSelectedAstre] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const user = useSelector((state) => state.user.value);
   const astre = useSelector((state) => state.astre.value);
-  console.log("astroDexScreen tokenUser => ", user.token);
-  console.log("astroDexScreen astre capturé =>", astre);
 
   const toggleSwitch = () =>
     setShowCapturedOnly((previsousState) => !previsousState);
@@ -42,8 +38,6 @@ export default function AstrodexScreen() {
     setModalVisible(false);
   };
 
-  const dispatch = useDispatch();
-
   //permet de ne pas avoir la barre de navigation du téléphone
   useEffect(() => {
     NavigationBar.setVisibilityAsync("hidden");
@@ -54,35 +48,18 @@ export default function AstrodexScreen() {
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
       .then((astresData) => {
-        //console.log(astresData.astres[0].name);
         if (astresData.result) {
           setAstres(astresData.astres);
-          dispatch(AddAstres(astresData.astres));
         }
       });
   }, []);
-
-  //fetch de la route get users/profile via le token pour récupérer
-  useEffect(() => {
-    fetch(`${apiUrl}/users/profile/${user.token}`)
-      .then((res) => res.json())
-      .then((userData) => {
-        if (userData.result) {
-          //console.log("capturedAstres raw :", userData.user.capturedAstres);
-          setAstresCapture(userData.user.capturedAstres);
-        }
-      });
-  }, []);
-  //console.log(astresCapture);
-  //console.log("tous les astres : ", astres[0]);
-  //console.log("astres capturés: ", astresCapture[0]);
 
   // Filtre les astres selon le switch "Mes captures"
   // Si showCapturedOnly est true, ne garde que les astres déjà capturés
   // Sinon, renvoie tous les astres
-  const filteredAstres = astres.filter((astre) => {
+  const filteredAstres = astres.filter((item) => {
     if (showCapturedOnly) {
-      return astresCapture.some((e) => e._id === astre._id);
+      return astre.some((e) => e._id === item._id);
     } else {
       return true;
     }
@@ -92,7 +69,7 @@ export default function AstrodexScreen() {
   const astresList = filteredAstres.map((data, i) => {
     //console.log(data.rarity_level);
 
-    const isCaptured = astresCapture.some((astre) => astre._id === data._id);
+    const isCaptured = astre.some((astre) => astre._id === data._id);
     return (
       <AstroCard
         key={data._id}

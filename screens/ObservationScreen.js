@@ -13,12 +13,44 @@ import ButtonCapture from "../components/buttonCapture";
 import ObservationModal from "../components/observationModal";
 import * as NavigationBar from "expo-navigation-bar";
 
+import { useDispatch, useSelector } from "react-redux";
+import { addAstre } from "../reducers/astre";
+const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
 export default function ObservationScreen() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [planetName, setplanetName] = useState(null);
+
+  const dispatch = useDispatch();
+  const selectedAstre = useSelector((state) => state.astre.astreFocus);
+  const userToken = useSelector((state) => state.user.value.token);
+
+  //console.log("observationModal =>", userToken);
+
   const handleCapture = () => {
-    setplanetName("Mars"); // a modifier ici pour recuperer les planetes en fonction du positionnement de la capture
-    setModalVisible(true);
+    fetch(`${apiUrl}/astres`)
+      .then((res) => res.json())
+      .then((astresData) => {
+        const astreToCapture = astresData.astres.find(
+          (astre) => astre.name === selectedAstre,
+        );
+        fetch(`${apiUrl}/astres/capturer`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            astreId: astreToCapture._id,
+            token: userToken,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.result) {
+              console.log("data.result =>", data.result);
+              console.log("astreToCapture =>", astreToCapture);
+              dispatch(addAstre(astreToCapture));
+              setModalVisible(true);
+            }
+          });
+      });
   };
 
   useEffect(() => {
@@ -50,11 +82,7 @@ export default function ObservationScreen() {
           textStyle={styles.buttonText}
           onPress={handleCapture}
         />
-        <ObservationModal
-          visible={modalVisible}
-          closeModal={closeModal}
-          planetName={planetName}
-        />
+        <ObservationModal visible={modalVisible} closeModal={closeModal} />
       </ScrollView>
     </View>
   );

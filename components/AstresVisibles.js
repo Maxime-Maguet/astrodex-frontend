@@ -8,16 +8,21 @@ import {
   Modal,
 } from "react-native";
 
+import { useDispatch } from "react-redux";
+import { setAstreFocus } from "../reducers/astre";
+
 export default function AstreSelector({
   visibleBodies,
   currentFocus,
   onSelect,
 }) {
   const [isVisible, setIsVisible] = useState(false);
+  const dispatch = useDispatch();
 
   const handleSelect = (body) => {
     onSelect(body);
     setIsVisible(false);
+    dispatch(setAstreFocus(body));
   };
 
   return (

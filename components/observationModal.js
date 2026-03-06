@@ -10,20 +10,23 @@ import { useEffect, useState } from "react";
 import { Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
+import { useSelector } from "react-redux";
+
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function ObservationModal(props) {
   const [observation, setObservation] = useState(null);
   const navigation = useNavigation();
+  const selectedAstre = useSelector((state) => state.astre.astreFocus);
 
   useEffect(() => {
     if (props.visible) {
       fetch(`${apiUrl}/astres`)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
 
-          const astres = data.astres.find((e) => e.name === props.planetName);
+          const astres = data.astres.find((e) => e.name === selectedAstre);
 
           setObservation(astres);
         });
