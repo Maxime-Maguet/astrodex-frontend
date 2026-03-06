@@ -24,8 +24,6 @@ export default function ObservationScreen() {
   const selectedAstre = useSelector((state) => state.astre.astreFocus);
   const userToken = useSelector((state) => state.user.value.token);
 
-  //console.log("observationModal =>", userToken);
-
   const handleCapture = () => {
     if (!selectedAstre) return;
 
