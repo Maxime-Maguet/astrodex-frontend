@@ -15,11 +15,11 @@ import * as NavigationBar from "expo-navigation-bar";
 
 import { useDispatch, useSelector } from "react-redux";
 import { addAstre } from "../reducers/astre";
+
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function ObservationScreen() {
   const [modalVisible, setModalVisible] = useState(false);
-
   const dispatch = useDispatch();
   const selectedAstre = useSelector((state) => state.astre.astreFocus);
   const userToken = useSelector((state) => state.user.value.token);
@@ -27,12 +27,25 @@ export default function ObservationScreen() {
   //console.log("observationModal =>", userToken);
 
   const handleCapture = () => {
+    if (!selectedAstre) return;
+
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
       .then((astresData) => {
+        console.log(
+          "Astres BDD:",
+          astresData.astres.map((a) => `"${a.name}"`),
+        );
+        console.log("selectedAstre:", `"${selectedAstre}"`);
         const astreToCapture = astresData.astres.find(
           (astre) => astre.name === selectedAstre,
         );
+
+        if (!astreToCapture) {
+          console.log("Astre non trouvé :", selectedAstre);
+          return;
+        }
+
         fetch(`${apiUrl}/astres/capturer`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -44,10 +57,10 @@ export default function ObservationScreen() {
           .then((res) => res.json())
           .then((data) => {
             if (data.result) {
-              console.log("data.result =>", data.result);
-              console.log("astreToCapture =>", astreToCapture);
               dispatch(addAstre(astreToCapture));
               setModalVisible(true);
+            } else {
+              console.log("Déjà capturé ou erreur serveur"); // ou afficher un message à l'user
             }
           });
       });
@@ -65,7 +78,7 @@ export default function ObservationScreen() {
     if (Platform.OS === "ios") {
       return <BoussoleIOS />;
     } else if (Platform.OS === "android") {
-      return <BoussoleAndroid />;
+      return <BoussoleIOS />;
     }
   }
   return (
@@ -82,6 +95,7 @@ export default function ObservationScreen() {
           textStyle={styles.buttonText}
           onPress={handleCapture}
         />
+
         <ObservationModal visible={modalVisible} closeModal={closeModal} />
       </ScrollView>
     </View>
@@ -119,5 +133,10 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
+  },
+
+  bodyError: {
+    color: "#970000",
+    fontSize: 12,
   },
 });
