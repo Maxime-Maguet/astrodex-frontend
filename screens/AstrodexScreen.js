@@ -15,15 +15,17 @@ import AstroCard from "../components/AstroCard";
 import Header from "../components/Header";
 import AstroModal from "../components/AstroModal";
 import * as NavigationBar from "expo-navigation-bar";
+import { useRoute } from "@react-navigation/native";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function AstrodexScreen() {
-  const [astres, setAstres] = useState([]);
-  const [showCapturedOnly, setShowCapturedOnly] = useState(false);
-  const [selectedAstre, SetSelectedAstre] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [astres, setAstres] = useState([]); // Tous les astres
+  const [showCapturedOnly, setShowCapturedOnly] = useState(false); // Filtre "Mes captures"
+  const [selectedAstre, setSelectedAstre] = useState(null); // Astre sélectionné pour la modal
+  const [modalVisible, setModalVisible] = useState(false); // Etat de la modal
 
+  const route = useRoute(); // Pour récupérer les params envoyés depuis ObservationScreen
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
   const capturedAstres = useSelector((state) => state.astre.value);
@@ -32,7 +34,7 @@ export default function AstrodexScreen() {
     setShowCapturedOnly((previsousState) => !previsousState);
 
   const handleDetails = (astre) => {
-    SetSelectedAstre(astre);
+    setSelectedAstre(astre);
     setModalVisible(true);
   };
 
@@ -45,7 +47,18 @@ export default function AstrodexScreen() {
     NavigationBar.setVisibilityAsync("hidden");
   }, []);
 
-  //fetch de la route get pour récupérer tous les astres
+  // Ouvre la modal si un astre vient d'être capturé
+  useEffect(() => {
+    if (route.params?.astreName) {
+      const astre = astres.find((e) => e.name === route.params.astreName);
+      if (astre) {
+        setSelectedAstre(astre);
+        setModalVisible(true);
+      }
+    }
+  }, [route.params, astres]);
+
+  // Fetch tous les astres
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
@@ -56,7 +69,7 @@ export default function AstrodexScreen() {
       });
   }, []);
 
-  //fetch de la route get users/profile via le token pour récupérer
+  // Fetch astres capturés par l'utilisateur
   useEffect(() => {
     fetch(`${apiUrl}/users/profile/${user.token}`)
       .then((res) => res.json())

@@ -3,10 +3,12 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateEquipement } from "../reducers/user";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-
+import { useRoute } from "@react-navigation/native";
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function EquipementSelectionScreen({ navigation }) {
+  const route = useRoute();
+
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
@@ -35,13 +37,18 @@ export default function EquipementSelectionScreen({ navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        //console.log(data);
         if (data) {
-          console.log(data.equipement, " Equipement reçu !");
-
-          navigation.navigate("TabNavigator", { screen: "Profil" });
           dispatch(updateEquipement(data.equipement));
-        } else console.log(" déjà équipé");
+        }
+        const ecranOrigine = route.params?.from;
+        if (ecranOrigine === "Profil") {
+          navigation.navigate("TabNavigator", { screen: "Profil" });
+        } else if (ecranOrigine === "Signup") {
+          navigation.navigate("TabNavigator", { screen: "Accueil" });
+        } else {
+          navigation.navigate("TabNavigator", { screen: "Accueil" });
+        }
       });
   };
   return (

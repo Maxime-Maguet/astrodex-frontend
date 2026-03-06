@@ -17,22 +17,33 @@ import { useDispatch, useSelector } from "react-redux";
 import { addAstre } from "../reducers/astre";
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
-export default function ObservationScreen() {
+export default function ObservationScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   const dispatch = useDispatch();
-  const selectedAstre = useSelector((state) => state.astre.astreFocus);
-  const userToken = useSelector((state) => state.user.value.token);
 
-  //console.log("observationModal =>", userToken);
+  const userToken = useSelector((state) => state.user.value.token);
+  const selectedAstre = useSelector((state) => state.astre.astreFocus);
+  const capturedAstres = useSelector((state) => state.astre.value);
+
+  const isAlreadyCaptured = capturedAstres.some(
+    (astre) => astre.name === selectedAstre,
+  );
 
   const handleCapture = () => {
+    if (isAlreadyCaptured) {
+      navigation.navigate("Astrodex", { astreName: selectedAstre });
+      return;
+    }
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
       .then((astresData) => {
         const astreToCapture = astresData.astres.find(
           (astre) => astre.name === selectedAstre,
         );
+
+        if (!astreToCapture) return;
+
         fetch(`${apiUrl}/astres/capturer`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -44,12 +55,10 @@ export default function ObservationScreen() {
           .then((res) => res.json())
           .then((data) => {
             if (data.result) {
-              console.log("data.result =>", data.result);
-              console.log("astreToCapture =>", astreToCapture);
               dispatch(addAstre(astreToCapture));
               setModalVisible(true);
             } else {
-              NavigationBar.navigate("");
+              console.log("Erreur lors de la capture");
             }
           });
       });
