@@ -43,12 +43,17 @@ function TabNavigator() {
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: "#5B8CFF",
         tabBarInactiveTintColor: "#ffffff",
+
         tabBarBackground: () => (
-  <LinearGradient
-    colors={["#1D2F49", "#0B0F1A", "#1D2F49"]}
- style={{ flex: 1 }}
-  />
-),
+          <LinearGradient
+            colors={["#1D2F49", "#0B0F1A", "#1D2F49"]}
+            style={{ flex: 1 }}
+          />
+        ),
+        tabBarStyle: {
+          borderTopWidth: 0, // retire le petit trait entre le container et la tab
+        },
+
         tabBarIcon: ({ color, size }) => {
           let iconName = "";
 
@@ -59,7 +64,9 @@ function TabNavigator() {
           } else if (route.name === "Acceuil") {
             return <Ionicons name="home" size={size} color={color} />;
           } else if (route.name === "Profil") {
-            return <FontAwesome name="user-circle-o" size={size} color={color} />;
+            return (
+              <FontAwesome name="user-circle-o" size={size} color={color} />
+            );
           }
           return <FontAwesome name={iconName} size={size} color={color} />;
         },
