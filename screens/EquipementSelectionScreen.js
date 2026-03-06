@@ -39,7 +39,7 @@ export default function EquipementSelectionScreen({ navigation }) {
         if (data) {
           console.log(data.equipement, " Equipement reçu !");
 
-          navigation.navigate("Profil");
+          navigation.navigate("TabNavigator", { screen: "Accueil"})
           dispatch(updateEquipement(data.equipement));
         } else console.log(" déjà équipé");
       });

@@ -51,7 +51,7 @@ export default function SignupScreen({ navigation }) {
         console.log(data);
         if (data.token) {
           dispatch(login({ token: data.token, username: username }));
-          navigation.replace("Equipement");
+          navigation.replace("EquipementSelectionScreen");
         } else {
           setUsernameError(true);
         }

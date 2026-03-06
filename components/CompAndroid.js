@@ -18,6 +18,7 @@ const FIXED_COORDINATES = {
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function BoussoleAndroid() {
+
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value); // On récupère les infos du store (token, nickname, etc.)
 
@@ -180,6 +181,7 @@ export default function BoussoleAndroid() {
       }
     }
   }, [currentPosition, locationHeading, astreFocus]);
+
 
   return (
     <View style={styles.container}>
