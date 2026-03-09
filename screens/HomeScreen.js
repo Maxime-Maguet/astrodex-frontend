@@ -20,6 +20,7 @@ import LogoutButton from "../components/LogoutButton";
 import { AstresVisibles } from "../modules/logiqueAstres";
 import { setVisibleAstres } from "../reducers/astre";
 import { useDispatch } from "react-redux";
+import LoadingModal from "../components/LoadingModal";
 
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
@@ -30,6 +31,7 @@ const visibilityToPercent = (meters) =>
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function HomeScreen() {
+  const [isLoading, setIsLoading] = useState(true);
   const [weather, setWeather] = useState(null);
   const [message, setMessage] = useState("");
   const [astres, setAstres] = useState([]);
@@ -119,6 +121,7 @@ export default function HomeScreen() {
 
       setVisibleAstresState(filteredAstres);
       dispatch(setVisibleAstres(visibles));
+       setTimeout(() => setIsLoading(false), 4000); //4 secondes de chargement
     }
   }, [astres, weather]);
 
@@ -134,6 +137,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <LoadingModal visible={isLoading} />
       <StatusBar hidden={true} />
       <View style={styles.container}>
         <View style={styles.accueil}>
@@ -179,7 +183,7 @@ export default function HomeScreen() {
               message={message}
             />
           ) : (
-            <Text style={{ color: "grey" }}>Unable to fetch weather</Text>
+            <Text style={{ color: "grey" }}>Impossible d'afficher la météo</Text>
           )}
         </View>
       </View>
