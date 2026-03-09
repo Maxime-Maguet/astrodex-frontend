@@ -137,7 +137,6 @@ export default function BoussoleAndroid() {
   return (
     <View style={styles.container}>
       <View style={styles.headerPadding}>
-        <Text style={styles.body}>Astre Focus: {astreFocus}</Text>
         <AstreSelector
           visibleBodies={visibleAstres}
           currentFocus={astreFocus}

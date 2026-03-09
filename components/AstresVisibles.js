@@ -31,12 +31,14 @@ export default function AstreSelector({
         style={styles.dropdownButton}
         onPress={() => setIsVisible(!isVisible)}
       >
-        <Text style={styles.selectedText}>
-          {currentFocus && currentFocus !== "..."
-            ? currentFocus
-            : "Choisissez un astre à viser"}
-        </Text>
-        <Text style={styles.arrow}>{isVisible ? "▲" : "▼"}</Text>
+        <View style={styles.aligner}>
+          <Text style={styles.selectedText}>
+            {currentFocus && currentFocus !== "..."
+              ? currentFocus
+              : "Choisissez un astre à viser"}
+          </Text>
+          <Text style={styles.arrow}>{isVisible ? "▲" : "▼"}</Text>
+        </View>
       </TouchableOpacity>
 
       {isVisible && (
@@ -69,7 +71,6 @@ export default function AstreSelector({
 
 const styles = StyleSheet.create({
   container: {
-    width: "70%",
     zIndex: 1000,
     marginBottom: 10,
     position: "relative",
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   dropdownButton: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "#151C2F",
@@ -86,7 +87,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#1D2F49",
     height: 55,
+    minWidth: "60%",
   },
+
+  aligner: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
   selectedText: {
     color: "#FFFFFF",
     fontSize: 16,
@@ -95,7 +103,7 @@ const styles = StyleSheet.create({
   arrow: {
     color: "#5B8CFF",
     fontSize: 12,
-    paddingLeft: 20,
+    paddingLeft: 10,
   },
   dropdownList: {
     position: "absolute",
@@ -108,7 +116,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     zIndex: 2000,
     elevation: 10,
-    minWidth: "50%",
+    minWidth: "60%",
   },
   item: {
     padding: 15,

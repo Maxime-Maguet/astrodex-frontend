@@ -323,12 +323,12 @@ const styles = StyleSheet.create({
 
   buttonDeco: {
     width: 200,
-    marginRight: 15,
     paddingHorizontal: 10,
     paddingVertical: 15,
     borderWidth: 1,
     borderColor: "#AAB3C5",
     borderRadius: 5,
+    alignItems: "center",
   },
   text: {
     color: "#AAB3C5",

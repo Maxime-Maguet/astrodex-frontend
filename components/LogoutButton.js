@@ -22,7 +22,6 @@ export default function LogoutButton() {
 const styles = StyleSheet.create({
   button: {
     width: 200,
-    marginRight: 15,
     paddingHorizontal: 10,
     paddingVertical: 15,
     borderWidth: 1,

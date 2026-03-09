@@ -5,6 +5,7 @@ import {
   ScrollView,
   Platform,
   StatusBar,
+  Text,
 } from "react-native";
 import Header from "../components/Header";
 import BoussoleIOS from "../components/CompIos";
@@ -12,23 +13,26 @@ import BoussoleAndroid from "../components/CompAndroid";
 import ButtonCapture from "../components/buttonCapture";
 import ObservationModal from "../components/observationModal";
 import * as NavigationBar from "expo-navigation-bar";
-
 import { useDispatch, useSelector } from "react-redux";
 import { addAstre } from "../reducers/astre";
+import { updateEquipement } from "../reducers/user";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function ObservationScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
+  const [EquipementVu, setEquipementVu] = useState("");
   const dispatch = useDispatch();
 
   // const handleCapture = () => {
   //   if (!selectedAstre) return;
 
+  const equipement = useSelector((state) => state.user.value.equipement);
   const userToken = useSelector((state) => state.user.value.token);
   const selectedAstre = useSelector((state) => state.astre.astreFocus);
   const capturedAstres = useSelector((state) => state.astre.value);
-
+  const user = useSelector((state) => state.user.value);
+  console.log(equipement);
   const isAlreadyCaptured = capturedAstres.some(
     (astre) => astre.name === selectedAstre,
   );
@@ -64,6 +68,7 @@ export default function ObservationScreen({ navigation }) {
           .then((data) => {
             if (data.result) {
               dispatch(addAstre(astreToCapture));
+              dispatch(updateEquipement(data.equipement));
               setModalVisible(true);
             } else {
               console.log("Erreur lors de la capture");
@@ -87,24 +92,54 @@ export default function ObservationScreen({ navigation }) {
       return <BoussoleIOS />;
     }
   }
+
+  function equip() {
+    if (equipement === undefined) {
+      fetch(`${apiUrl}/users/profile/${user.token}`)
+        .then((res) => res.json())
+        .then((userData) => {
+          if (userData.result) {
+            let equip = userData.user.equipement;
+
+            if (equip) {
+              setEquipementVu(equip);
+            } else {
+              setEquipementVu("Tu n'as pas encore d'équipement !");
+            }
+          }
+        });
+      return (
+        <Text style={styles.body}>
+          Tu utilises comme équipement : {EquipementVu}
+        </Text>
+      );
+    } else {
+      return (
+        <Text style={styles.body}>
+          Tu utilises comme équipement : {equipement}
+        </Text>
+      );
+    }
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar hidden={true} />
-      <ScrollView
+      {/* <ScrollView
         nestedScrollEnabled={true}
         style={{ width: "100%" }}
         contentContainerStyle={styles.scrollContent}
-      >
-        <Header title="Observation" />
-        {platformOS()}
-        <ButtonCapture
-          style={styles.button}
-          textStyle={styles.buttonText}
-          onPress={handleCapture}
-        />
-
-        <ObservationModal visible={modalVisible} closeModal={closeModal} />
-      </ScrollView>
+      > */}
+      <Header title="Observation" />
+      {equip()}
+      {platformOS()}
+      <ButtonCapture
+        style={styles.button}
+        textStyle={styles.buttonText}
+        onPress={handleCapture}
+      />
+      <ObservationModal visible={modalVisible} closeModal={closeModal} />
+      {/* </ScrollView> */}
     </View>
   );
 }
@@ -145,5 +180,12 @@ const styles = StyleSheet.create({
   bodyError: {
     color: "#970000",
     fontSize: 12,
+  },
+  body: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "#FFFFFF",
+    fontFamily: "Inter",
+    marginBottom: 10,
   },
 });
