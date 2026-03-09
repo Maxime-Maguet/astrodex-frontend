@@ -8,21 +8,19 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../reducers/user";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
- const user = useSelector((state) => state.user.value);
+  const user = useSelector(state => state.user.value);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  
-  
-  
 
   const handleSubmit = () => {
     fetch(`${apiUrl}/users/signin`, {
@@ -30,11 +28,11 @@ export default function LoginScreen({ navigation }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username, password: password }),
     })
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         if (data.result) {
-          dispatch(login({ token: data.token, username: username,}));
-          console.log(data.result, "bien Afficher")
+          dispatch(login({ token: data.token, username: username }));
+          console.log(data.result, "bien Afficher");
           navigation.replace("TabNavigator");
         } else {
           console.log("Error : ", data.error);
@@ -46,27 +44,33 @@ export default function LoginScreen({ navigation }) {
     // KeyboardAvoidingView évite de cacher les inputs
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
+      behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <View style={styles.image}>
+        <Image
+          source={require("../assets/Astrodex.png")}
+          style={{ width: 200, height: 200 }}
+        />
+      </View>
+
       <ScrollView contentContainerStyle={styles.inner}>
         <Text style={styles.Gtitle}>
           Explore le ciel et collecte les astres !
         </Text>
-        <Text style={styles.title}>Connexion</Text>
+    <Text style={styles.title}>Connexion</Text>
 
         <TextInput
           placeholder="Username"
-          placeholderTextColor="#A9A9A9"
-          onChangeText={(value) => setUsername(value)}
+          placeholderTextColor="#000000"
+          onChangeText={value => setUsername(value)}
           value={username}
           style={styles.input}
         />
 
         <TextInput
           placeholder="Mot de passe"
-          placeholderTextColor="#A9A9A9"
+          placeholderTextColor="#000000"
           secureTextEntry={true}
-          onChangeText={(value) => setPassword(value)}
+          onChangeText={value => setPassword(value)}
           value={password}
           style={styles.input}
         />
@@ -78,8 +82,7 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.Soustitle}>Vous n'avez pas de compte ?</Text>
         <TouchableOpacity
           onPress={() => navigation.navigate("Inscription")}
-          style={styles.button1}
-        >
+          style={styles.button1}>
           <Text style={styles.buttonSignin}>S'inscrire</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -88,7 +91,7 @@ export default function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#1A1C20" },
+  container: { flex: 1, backgroundColor: "#0B0F1A" },
   inner: { flexGrow: 1, justifyContent: "center", alignItems: "center" },
   title: {
     fontSize: 32,
@@ -98,7 +101,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "85%",
-    backgroundColor: "#B0B5BC",
+    backgroundColor: "#D9DEE3",
     padding: 15,
     borderRadius: 10,
     marginBottom: 20,
@@ -133,5 +136,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 40,
     color: "#FFFFFF",
+  },
+
+  image: {
+    alignItems: "center",
+    marginTop: 50,
   },
 });

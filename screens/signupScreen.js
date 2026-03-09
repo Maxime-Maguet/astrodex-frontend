@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ export default function SignupScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState(false);
   const [usernameError, setUsernameError] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
 
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -46,8 +48,8 @@ export default function SignupScreen({ navigation }) {
         password: password,
       }),
     })
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         console.log(data);
         if (data.token) {
           dispatch(login({ token: data.token, username: username }));
@@ -58,17 +60,25 @@ export default function SignupScreen({ navigation }) {
       });
   };
 
+  function getIconName() {
+    if (passwordVisible) {
+      return "eye-off";
+    } else {
+      return "eye";
+    }
+  }
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
+      behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <View style={styles.container}>
         <Text style={styles.title}>Inscription</Text>
         <View style={styles.formContainer}>
           <TextInput
             placeholder="Email"
-            onChangeText={(value) => {
+            placeholderTextColor="#000000"
+            onChangeText={value => {
               setEmail(value);
               if (emailError) {
                 setEmailError(false);
@@ -81,8 +91,9 @@ export default function SignupScreen({ navigation }) {
             <Text style={styles.error}>Adresse e-mail non valide</Text>
           )}
           <TextInput
-            placeholder="username"
-            onChangeText={(value) => {
+            placeholder="Pseudo"
+            placeholderTextColor="#000000"
+            onChangeText={value => {
               setUsername(value);
               if (usernameError) {
                 setUsernameError(false);
@@ -94,14 +105,34 @@ export default function SignupScreen({ navigation }) {
           {usernameError && (
             <Text style={styles.errorUsername}>Utilisateur déjà existant</Text>
           )}
-          <TextInput
-            placeholder="password"
-            onChangeText={(value) => setPassword(value)}
-            value={password}
-            style={styles.input}
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              placeholder="Mot de passe"
+              onChangeText={value => setPassword(value)}
+              placeholderTextColor="#000000"
+              secureTextEntry={!passwordVisible}
+              value={password}
+              style={styles.passwordInput}
+            />
+
+            <TouchableOpacity
+              onPress={() => setPasswordVisible(!passwordVisible)}
+              style={{ paddingRight: 15 }}>
+              <MaterialCommunityIcons
+                name={getIconName()}
+                size={22}
+                color="#131212"
+              />
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity onPress={handleSubmit} style={styles.button}>
             <Text style={styles.textButton}>S'inscrire</Text>
+          </TouchableOpacity>
+          <Text style={styles.Soustitle}>Vous avez un compte ?</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Login")}
+            style={styles.button1}>
+            <Text style={styles.buttonSigup}>Retour</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -119,7 +150,7 @@ const styles = StyleSheet.create({
   title: {
     color: "#ffffff",
     fontSize: 48,
-    marginTop: 70,
+    marginTop: 80,
   },
 
   button: {
@@ -135,7 +166,7 @@ const styles = StyleSheet.create({
 
   input: {
     width: "85%",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#D9DEE3",
     padding: 15,
     borderRadius: 10,
     marginBottom: 20,
@@ -166,5 +197,43 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "rgba(255, 21, 0, 0.53)",
     fontFamily: "Inter",
+  },
+
+  button1: {
+    padding: 10,
+    borderRadius: 10,
+    alignItems: "center",
+    backgroundColor: "transparent",
+    width: "50%",
+    borderWidth: 1,
+    borderColor: "#2f95dc",
+    marginTop: 10,
+  },
+
+  buttonSigup: {
+    color: "#2f95dc",
+    fontWeight: "bold",
+  },
+
+  Soustitle: {
+    color: "white",
+    fontWeight: "bold",
+    fontFamily: "Inter",
+    marginTop: 20,
+  },
+
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "85%",
+    backgroundColor: "#D9DEE3",
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+
+  passwordInput: {
+    flex: 1,
+    padding: 15,
+    color: "#1A1C20",
   },
 });
