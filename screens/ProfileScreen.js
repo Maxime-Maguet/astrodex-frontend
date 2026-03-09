@@ -102,6 +102,9 @@ export default function ProfileScreen(route) {
         }}
         style={styles.image}
       />
+      <TouchableOpacity>
+        <Text style={styles.imageText}>Changer d'avatar</Text>
+      </TouchableOpacity>
       <View style={styles.card}>
         <View style={styles.container}>
           <Text style={styles.bodyContainerTop}>{name}</Text>
@@ -171,20 +174,29 @@ const styles = StyleSheet.create({
     marginVertical: 25,
   },
 
+  imageText: {
+    color: "#FFFFFF",
+    marginTop: -20,
+    marginBottom: 25,
+  },
+
   header: {
     alignItems: "center",
     marginTop: 40,
   },
+
   title: {
     color: "#FFFFFF",
     fontWeight: "bold",
     letterSpacing: 2,
   },
+
   container: {
     flex: 1,
     marginLeft: 15,
     flexWrap: "nowrap",
   },
+
   bodyContainerTop: {
     fontSize: 24,
     color: "#FFFFFF",
@@ -200,6 +212,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
   modalContent: {
     width: "80%",
     backgroundColor: "#0B0F1A",
