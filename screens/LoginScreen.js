@@ -9,83 +9,127 @@ import {
   ScrollView,
   Platform,
   Image,
+  Keyboard,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../reducers/user";
+import { TouchableWithoutFeedback } from "react-native";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
-  const user = useSelector(state => state.user.value);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [usernameError, setUsernameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [loading, setLoading] = useState(false); //Chargement
+  const handleSubmit = async () => {
+    Keyboard.dismiss(); //fermeture du clavier
+    await new Promise((resolve) => setTimeout(resolve, 100)); //temps pour que le clavier se ferme
 
-  const handleSubmit = () => {
+    //reset erreurs
+    setUsernameError("");
+    setPasswordError("");
+
+    if (!username) {
+      setUsernameError("Veuillez saisir votre nom d'utilisateur");
+      return;
+    }
+    if (!password) {
+      setPasswordError("Veuillez saisir votre mot de passe");
+      return;
+    }
+
+    setLoading(true);
+
     fetch(`${apiUrl}/users/signin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username, password: password }),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
+        setLoading(false);
+
+        console.log("data signin:", data);
         if (data.result) {
           dispatch(login({ token: data.token, username: username }));
           console.log(data.result, "bien Afficher");
           navigation.replace("TabNavigator");
         } else {
-          console.log("Error : ", data.error);
+          if (data.error === "Username does not exist") {
+            setUsernameError("Nom d'utilisateur introuvable");
+          } else if (data.error === "Incorrect password") {
+            setPasswordError("Mot de passe incorrect");
+          } else {
+            setUsernameError("Identifiant ou mot de passe incorrect");
+          }
         }
       });
   };
-
   return (
     // KeyboardAvoidingView évite de cacher les inputs
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
       <View style={styles.image}>
         <Image
           source={require("../assets/Astrodex.png")}
           style={{ width: 200, height: 200 }}
         />
       </View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView contentContainerStyle={styles.inner}>
+          <Text style={styles.Gtitle}>
+            Explore le ciel et collecte les astres !
+          </Text>
+          <Text style={styles.title}>Connexion</Text>
 
-      <ScrollView contentContainerStyle={styles.inner}>
-        <Text style={styles.Gtitle}>
-          Explore le ciel et collecte les astres !
-        </Text>
-    <Text style={styles.title}>Connexion</Text>
+          <TextInput
+            placeholder="Username"
+            placeholderTextColor="#000000"
+            onChangeText={(value) => setUsername(value)}
+            value={username}
+            style={styles.input}
+          />
+          {usernameError ? (
+            <Text style={styles.errorText}>{usernameError}</Text>
+          ) : null}
 
-        <TextInput
-          placeholder="Username"
-          placeholderTextColor="#000000"
-          onChangeText={value => setUsername(value)}
-          value={username}
-          style={styles.input}
-        />
+          <TextInput
+            placeholder="Mot de passe"
+            placeholderTextColor="#000000"
+            secureTextEntry={true}
+            onChangeText={(value) => setPassword(value)}
+            value={password}
+            style={styles.input}
+          />
+          {passwordError ? (
+            <Text style={styles.errorText}>{passwordError}</Text>
+          ) : null}
 
-        <TextInput
-          placeholder="Mot de passe"
-          placeholderTextColor="#000000"
-          secureTextEntry={true}
-          onChangeText={value => setPassword(value)}
-          value={password}
-          style={styles.input}
-        />
+          <TouchableOpacity
+            onPress={handleSubmit}
+            style={[styles.button, loading && styles.buttonDisabled]}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>
+              {loading ? "Connexion en cours..." : "SE CONNECTER"}
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => handleSubmit()} style={styles.button}>
-          <Text style={styles.buttonText}>SE CONNECTER</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.Soustitle}>Vous n'avez pas de compte ?</Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Inscription")}
-          style={styles.button1}>
-          <Text style={styles.buttonSignin}>S'inscrire</Text>
-        </TouchableOpacity>
-      </ScrollView>
+          <Text style={styles.Soustitle}>Vous n'avez pas de compte ?</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Inscription")}
+            style={styles.button1}
+          >
+            <Text style={styles.buttonSignin}>S'inscrire</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 }
@@ -141,5 +185,16 @@ const styles = StyleSheet.create({
   image: {
     alignItems: "center",
     marginTop: 50,
+  },
+  errorText: {
+    color: "rgba(255, 21, 0, 0.53)",
+    fontSize: 13,
+    marginBottom: 12,
+    alignSelf: "flex-start",
+    marginLeft: "7.5%",
+  },
+  buttonDisabled: {
+    backgroundColor: "#2a4fa3",
+    opacity: 0.7,
   },
 });
