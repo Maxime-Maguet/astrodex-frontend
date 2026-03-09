@@ -126,7 +126,11 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     justifyContent: "center",
     alignItems: "center",
-    gap : 20
+    gap : 20,
+    shadowColor: "#ffffff",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
   },
   
   button: {
@@ -183,6 +187,7 @@ const styles = StyleSheet.create({
     gap : 10,
     backgroundColor: "rgba(251, 217, 219, 0.10)",
   
+  borderRadius : 10
   },
   buttonChoix:{
      color: "#FFFFFF",
