@@ -70,7 +70,7 @@ export default function EquipementSelectionScreen({ navigation }) {
             ]}
             activeOpacity={0.8}
           >
-            <Text style={styles.buttonText}>Oeil nue</Text>
+            <Text style={styles.buttonText}>Oeil nu</Text>
             <Text style={styles.desc}>
               Parfait pour apprendre à lire les constellations et repérer les
               planètes les plus brillantes.
@@ -127,16 +127,13 @@ export default function EquipementSelectionScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#172342",
+    backgroundColor: "#0B0F1A",
     padding: 20,
     paddingTop: 30,
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
-    shadowColor: "#ffffff",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
+    
   },
 
   button: {
@@ -175,10 +172,11 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   icon: {
-    fontSize: 25,
+    fontSize: 30,
     color: "#ffffff",
-    marginTop: 30,
-    paddingLeft: 35,
+    marginTop: 20,
+    paddingLeft: 25,
+    
   },
   buttoncontainer: {
     flexDirection: "row",
@@ -191,26 +189,37 @@ const styles = StyleSheet.create({
     paddingLeft: 25,
     paddingHorizontal: 20,
     gap: 10,
-    backgroundColor: "rgba(251, 217, 219, 0.10)",
-
+    backgroundColor: "#535252",
+opacity : 20,
     borderRadius: 10,
   },
   buttonChoix: {
-    color: "#FFFFFF",
+    color: "#ffffff",
     fontSize: 20,
-    fontWeight: "600",
-    marginTop: 40,
+    fontWeight: "700",
+    marginTop: 30,
+    marginBottom: 30,
+    letterSpacing: 5, 
+    elevation :15,
+    
   },
   icontelescope: {
-    fontSize: 40,
+    fontSize: 50,
     color: "#ffffff",
-    marginTop: 40,
-    paddingLeft: 35,
+    marginTop: 20,
+    paddingLeft: 25,
   },
   desc: {
     fontSize: 10,
     color: "#ffffff",
     marginTop: 3,
   },
-  middlecontainer: {},
+  middlecontainer: {
+    
+    shadowColor: "#ffffff",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.8,
+    elevation :15,
+    shadowRadius: 10,
+  },
 });
