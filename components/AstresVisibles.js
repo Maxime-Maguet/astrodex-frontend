@@ -4,8 +4,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ScrollView,
   Modal,
+  ScrollView,
 } from "react-native";
 
 import { useDispatch } from "react-redux";
@@ -42,28 +42,32 @@ export default function AstreSelector({
       </TouchableOpacity>
 
       {isVisible && (
-        <View style={styles.dropdownList}>
-          <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 200 }}>
-            <View>
-              {visibleBodies.length > 0 ? (
-                visibleBodies.map((body) => (
-                  <TouchableOpacity
-                    key={body}
-                    style={[
-                      styles.item,
-                      currentFocus === body && styles.activeItem,
-                    ]}
-                    onPress={() => handleSelect(body)}
-                  >
-                    <Text style={styles.itemText}>{body}</Text>
-                  </TouchableOpacity>
-                ))
-              ) : (
-                <Text style={styles.noAstre}>Aucun astre visible...</Text>
-              )}
-            </View>
-          </ScrollView>
-        </View>
+        //<View style={styles.dropdownList}>
+
+        <ScrollView
+          style={styles.dropdownList}
+          contentContainerStyle={styles.dropdownContent}
+          nestedScrollEnabled={true}
+          scrollEnabled={true}
+        >
+          {visibleBodies.length > 0 ? (
+            visibleBodies.map((body) => (
+              <TouchableOpacity
+                key={body}
+                style={[
+                  styles.item,
+                  currentFocus === body && styles.activeItem,
+                ]}
+                onPress={() => handleSelect(body)}
+              >
+                <Text style={styles.itemText}>{body}</Text>
+              </TouchableOpacity>
+            ))
+          ) : (
+            <Text style={styles.noAstre}>Aucun astre visible...</Text>
+          )}
+        </ScrollView>
+        // </View>
       )}
     </View>
   );
@@ -75,7 +79,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     position: "relative",
     alignItems: "center",
-    flex: 1,
   },
   dropdownButton: {
     flexDirection: "column",
@@ -113,11 +116,17 @@ const styles = StyleSheet.create({
     marginTop: 5,
     borderWidth: 1,
     borderColor: "#1D2F49",
-    overflow: "hidden",
+    maxHeight: 200,
     zIndex: 2000,
     elevation: 10,
     minWidth: "60%",
   },
+
+  dropdownContent: {
+    borderRadius: 8,
+    overflow: "hidden",
+  },
+
   item: {
     padding: 15,
     borderBottomWidth: 1,
