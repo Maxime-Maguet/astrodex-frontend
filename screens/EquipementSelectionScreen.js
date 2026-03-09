@@ -21,7 +21,7 @@ export default function EquipementSelectionScreen({ navigation }) {
   //};
 
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.value);
+  const user = useSelector(state => state.user.value);
 
   const [equipement, setEquipement] = useState("");
 
@@ -36,8 +36,8 @@ export default function EquipementSelectionScreen({ navigation }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ equipement: equipement, token: user.token }),
     })
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         //console.log(data);
         if (data) {
           console.log(data.equipement, " Equipement reçu !");
@@ -70,7 +70,7 @@ export default function EquipementSelectionScreen({ navigation }) {
             ]}
             activeOpacity={0.8}
           >
-            <Text style={styles.buttonText}>Oeil nue</Text>
+            <Text style={styles.buttonText}>Oeil nu</Text>
             <Text style={styles.desc}>
               Parfait pour apprendre à lire les constellations et repérer les
               planètes les plus brillantes.
@@ -133,10 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 20,
-    shadowColor: "#ffffff",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
+
   },
 
   button: {
@@ -193,13 +190,14 @@ const styles = StyleSheet.create({
     gap: 10,
     backgroundColor: "rgba(251, 217, 219, 0.10)",
 
-    borderRadius: 10,
+borderRadius: 10,
   },
   buttonChoix: {
     color: "#FFFFFF",
     fontSize: 20,
     fontWeight: "600",
-    marginTop: 40,
+    marginTop: 30,
+    marginBottom: 30
   },
   icontelescope: {
     fontSize: 40,
@@ -212,5 +210,11 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     marginTop: 3,
   },
-  middlecontainer: {},
+  middlecontainer: {
+    shadowColor: "#ffffff",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    elevation :15,
+    shadowRadius: 10,
+  },
 });
