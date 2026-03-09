@@ -102,6 +102,8 @@ export default function EquipementSelectionScreen({ navigation }) {
       <TouchableOpacity onPress={() => Observation()} style={styles.confirmBtn}>
         <Text style={styles.buttonConfirmer}>Confirmer</Text>
       </TouchableOpacity>
+
+
     </View>
   );
 }
