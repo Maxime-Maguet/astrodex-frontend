@@ -24,7 +24,7 @@ import { useDispatch } from "react-redux";
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
 
-const visibilityToPercent = meters =>
+const visibilityToPercent = (meters) =>
   Math.min(Math.round((meters / MAX_VISIBILITY) * 100), 100);
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -89,17 +89,17 @@ export default function HomeScreen() {
 
   useEffect(() => {
     fetch(`${apiUrl}/astres/info`)
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setAstroInfo(data);
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         if (data.result) {
           setAstres(data.astres);
         }
@@ -108,14 +108,14 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (astres.length > 0 && weather?.coords) {
-      const allNames = astres.map(a => a.name);
+      const allNames = astres.map((a) => a.name);
 
       const visibles = AstresVisibles(allNames, {
         latitude: weather.coords.latitude,
         longitude: weather.coords.longitude,
       });
 
-      const filteredAstres = astres.filter(a => visibles.includes(a.name));
+      const filteredAstres = astres.filter((a) => visibles.includes(a.name));
 
       setVisibleAstresState(filteredAstres);
       dispatch(setVisibleAstres(visibles));
@@ -164,7 +164,8 @@ export default function HomeScreen() {
             <ScrollView
               horizontal={true} // permet de mettre VieW en scroll horizontale
               showsHorizontalScrollIndicator={false}
-              style={styles.astresScroll}>
+              style={styles.astresScroll}
+            >
               {astresList}
             </ScrollView>
           </View>

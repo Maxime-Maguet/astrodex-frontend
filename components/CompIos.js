@@ -39,8 +39,8 @@ export default function BoussoleAndroid() {
         subscription = await Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.High, //si on ne met pas ça, Android ou IOS ne met pas en priorité notre app et donc n'actualise pas
-            timeInterval: 5000, // On check toutes les 5 secondes
-            distanceInterval: 1, // Ou dès qu'on bouge d'un mètre
+            timeInterval: 10000, // On check toutes les 5 secondes
+            distanceInterval: 5, // Ou dès qu'on bouge d'un mètre
           },
           (location) => {
             // 3. À chaque fois que la position change :

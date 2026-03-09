@@ -14,16 +14,17 @@ export default function LogoutButton() {
 
   return (
     <TouchableOpacity style={styles.button} onPress={handleLogout}>
-      <Text style={styles.text}>Log Out</Text>
+      <Text style={styles.text}>Se déconnecter</Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
+    width: 200,
     marginRight: 15,
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 15,
     borderWidth: 1,
     borderColor: "#AAB3C5",
     borderRadius: 5,
@@ -31,6 +32,7 @@ const styles = StyleSheet.create({
   text: {
     color: "#AAB3C5",
     fontFamily: "Inter",
-    fontSize: 12,
+    fontSize: 14,
+    textAlign: "center",
   },
 });
