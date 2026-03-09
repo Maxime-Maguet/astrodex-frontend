@@ -1,8 +1,7 @@
 const MagnitudeLimite = {
-  "Yeux nus": 6,
+  "Oeil nue": 6,
   Jumelles: 10,
-  "Télescope débutant": 12,
-  "Télescope avancé": 15,
+  "Lunette astronomique": 15,
 };
 
 export function filtrerAstresParEquipement(astres, equipement) {

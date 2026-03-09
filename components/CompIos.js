@@ -7,6 +7,7 @@ import CompassBar from "../components/CompassBar";
 import AstreSelector from "../components/AstresVisibles";
 import * as Astronomy from "astronomy-engine";
 import { FIXED_COORDINATES } from "../modules/logiqueAstres";
+import { filtrerAstresParEquipement } from "../modules/filtreAstres";
 // Liste des astres, pour l'instant système solaire pour test
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
