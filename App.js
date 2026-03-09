@@ -79,16 +79,16 @@ function TabNavigator() {
       <Tab.Screen name="Acceuil" component={HomeScreen} />
       <Tab.Screen name="Observation" component={ObservationScreen} />
       <Tab.Screen name="Astrodex" component={AstrodexScreen} />
-      <Tab.Screen 
-  name="Profil" 
-  component={ProfileScreen}
-  options={{
-    headerShown: true,
-    headerRight: () => <LogoutButton />,
-    headerStyle: { backgroundColor: "#0B0F1A" },
-    headerTitle: "",
-  }}
-/>
+      <Tab.Screen
+        name="Profil"
+        component={ProfileScreen}
+        options={{
+          headerShown: true,
+          headerRight: () => <LogoutButton />,
+          headerStyle: { backgroundColor: "#0B0F1A" },
+          headerTitle: "",
+        }}
+      />
     </Tab.Navigator>
   );
 }

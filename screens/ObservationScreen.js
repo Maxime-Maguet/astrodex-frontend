@@ -91,6 +91,7 @@ export default function ObservationScreen({ navigation }) {
     <View style={styles.container}>
       <StatusBar hidden={true} />
       <ScrollView
+        nestedScrollEnabled={true}
         style={{ width: "100%" }}
         contentContainerStyle={styles.scrollContent}
       >

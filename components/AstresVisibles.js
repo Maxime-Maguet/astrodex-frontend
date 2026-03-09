@@ -42,22 +42,24 @@ export default function AstreSelector({
       {isVisible && (
         <View style={styles.dropdownList}>
           <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 200 }}>
-            {visibleBodies.length > 0 ? (
-              visibleBodies.map((body) => (
-                <TouchableOpacity
-                  key={body}
-                  style={[
-                    styles.item,
-                    currentFocus === body && styles.activeItem,
-                  ]}
-                  onPress={() => handleSelect(body)}
-                >
-                  <Text style={styles.itemText}>{body}</Text>
-                </TouchableOpacity>
-              ))
-            ) : (
-              <Text style={styles.noAstre}>Aucun astre visible...</Text>
-            )}
+            <View>
+              {visibleBodies.length > 0 ? (
+                visibleBodies.map((body) => (
+                  <TouchableOpacity
+                    key={body}
+                    style={[
+                      styles.item,
+                      currentFocus === body && styles.activeItem,
+                    ]}
+                    onPress={() => handleSelect(body)}
+                  >
+                    <Text style={styles.itemText}>{body}</Text>
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <Text style={styles.noAstre}>Aucun astre visible...</Text>
+              )}
+            </View>
           </ScrollView>
         </View>
       )}
@@ -72,6 +74,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     position: "relative",
     alignItems: "center",
+    flex: 1,
   },
   dropdownButton: {
     flexDirection: "row",

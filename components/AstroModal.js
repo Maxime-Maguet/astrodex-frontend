@@ -2,72 +2,140 @@ import {
   Modal,
   View,
   Text,
-  TouchableOpacity,
   StyleSheet,
   Image,
+  TouchableWithoutFeedback,
 } from "react-native";
 
+import {
+  ScrollView,
+  GestureHandlerRootView,
+} from "react-native-gesture-handler";
+
 export default function AstroModal(props) {
+  const rarityStyle = {
+    Commune: { color: "#22C55E", label: "★ COMMUNE" },
+    Rare: { color: "#3B82F6", label: "★★ RARE" },
+    Épique: { color: "#A855F7", label: "★★★ ÉPIQUE" },
+    Légendaire: { color: "#FACC15", label: "★★★★ LÉGENDAIRE" },
+  };
+  const rarity = rarityStyle[props.infoAstre.rarity_level];
+
+  const astresData = props.infoAstre.stats;
+
   return (
     <Modal visible={props.visible} animationType="fade" transparent>
-      <TouchableOpacity
-        style={styles.overlay}
-        onPress={props.closeModale}
-        //pour empécher le fade qui fait saccader la fermeture de la modale
-        activeOpacity={1}
-      >
-        <View
-          style={styles.container}
-          // permet de ne pas propager la fermeture de l'overlay au enfant et de pouvoir fermer la modale en cliquant à l'exterieur de celle-ci
-          onStartShouldSetResponder={() => true}
-          onTouchEnd={(e) => e.stopPropagation()}
-        >
-          <Text style={styles.rareté}>
-            Rareté : {props.infoAstre.rarity_level}
-          </Text>
-          <Image
-            source={{ uri: props.infoAstre.imageUrl }}
-            style={styles.image}
-          />
-          <Text style={styles.name}>{props.infoAstre.name}</Text>
-          <Text style={styles.description}>{props.infoAstre.description}</Text>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <TouchableWithoutFeedback onPress={props.closeModale}>
+          <View style={styles.overlay} />
+        </TouchableWithoutFeedback>
+        <View style={styles.containerWrapper}>
+          <View style={styles.container}>
+            <Text style={[styles.rareté, { color: rarity.color }]}>
+              {rarity.label}
+            </Text>
+            <Text style={styles.name}>{props.infoAstre.name}</Text>
+            <View style={styles.imageContainer}>
+              <Image
+                source={{ uri: props.infoAstre.imageUrl }}
+                style={styles.image}
+              />
+            </View>
+
+            <View style={styles.statsContainer}>
+              <View style={styles.stat}>
+                <Text style={styles.statText}>
+                  Distance : {astresData.distance}
+                </Text>
+              </View>
+              <View style={styles.stat}>
+                <Text style={styles.statText}>
+                  Diamètre : {astresData.diametre}
+                </Text>
+              </View>
+              <View style={styles.stat}>
+                <Text style={styles.statText}>Masse : {astresData.masse}</Text>
+              </View>
+            </View>
+
+            <ScrollView
+              nestedScrollEnabled={true}
+              style={{ maxHeight: 100, width: "100%" }}
+              contentContainerStyle={styles.scrollContent}
+            >
+              <Text style={styles.description}>
+                {props.infoAstre.description}
+              </Text>
+              <Text style={styles.description}>...</Text>
+              <Text style={styles.lore}>{props.infoAstre.lore}</Text>
+            </ScrollView>
+          </View>
         </View>
-      </TouchableOpacity>
+      </GestureHandlerRootView>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.3)",
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.85)",
+  },
+  containerWrapper: {
+    ...StyleSheet.absoluteFillObject,
     justifyContent: "center",
     alignItems: "center",
+    pointerEvents: "box-none",
   },
+
   container: {
     width: "85%",
-    backgroundColor: "#ffffff",
+    maxHeight: "80%",
+    backgroundColor: "#111827",
     alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-    padding: 20,
+    borderRadius: 20,
+    padding: 25,
+    shadowColor: "#3B82F6",
+    shadowOpacity: 0.5,
+    elevation: 15,
+    gap: 10,
+    borderWidth: 1.5,
+    borderColor: "rgba(56, 189, 248, 0.2)",
   },
-  image: { width: 150, height: 150, marginBottom: 10 },
+  image: { width: 160, height: 160, marginBottom: 5 },
   name: {
     fontSize: 24,
-    color: "#090909",
+    color: "#FFFFFF",
     fontFamily: "Inter",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 15,
   },
   rareté: {
     fontSize: 28,
-    color: "#090909",
     fontWeight: "bold",
     fontFamily: "Inter",
   },
+  statsContainer: {
+    paddingBottom: 5,
+    gap: 5,
+  },
+  scrollContent: {
+    alignItems: "center",
+    paddingBottom: 0,
+    gap: 10,
+  },
+  statText: { fontFamily: "Inter", textAlign: "center", color: "#FFFFFF" },
+
   description: {
     fontSize: 16,
-    color: "#090909",
+    color: "#9CA3AF",
     fontFamily: "Inter",
     textAlign: "center",
+  },
+  lore: {
+    fontSize: 16,
+    color: "#FFFFFF",
+    textAlign: "justify",
   },
 });

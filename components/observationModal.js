@@ -19,6 +19,17 @@ export default function ObservationModal(props) {
   const navigation = useNavigation();
   const selectedAstre = useSelector((state) => state.astre.astreFocus);
 
+  const rarityStyle = {
+    Commune: "#22C55E",
+    Rare: "#3B82F6",
+    Épique: "#A855F7",
+    Légendaire: "#FACC15",
+  };
+
+  const textColor = observation
+    ? rarityStyle[observation.rarity_level]
+    : "#FFFFFF";
+
   useEffect(() => {
     if (props.visible) {
       fetch(`${apiUrl}/astres`)
@@ -39,16 +50,16 @@ export default function ObservationModal(props) {
         <View style={styles.container}>
           {observation && (
             <>
+              <Text style={[styles.rarity, { color: textColor }]}>
+                {observation.rarity_level}
+              </Text>
+              <Text style={styles.title}>{observation.name}</Text>
               <Image
                 source={{
                   uri: observation.imageUrl,
                 }}
                 style={styles.image}
               />
-              <Text style={styles.title}>{observation.name}</Text>
-
-              <Text style={styles.rarity}>{observation.rarity_level}</Text>
-
               <ScrollView>
                 <Text style={styles.description}>
                   {observation.description}
@@ -63,6 +74,7 @@ export default function ObservationModal(props) {
               navigation.navigate("TabNavigator", { screen: "Astrodex" });
             }}
             style={styles.button}
+            activeOpacity={0.7}
           >
             <Text style={styles.buttonText}>Astrodex</Text>
           </TouchableOpacity>
@@ -75,56 +87,67 @@ export default function ObservationModal(props) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.3)",
+    backgroundColor: "rgba(0, 0, 0, 0.85)",
     justifyContent: "center",
     alignItems: "center",
   },
   container: {
     width: "85%",
-    backgroundColor: "#ffffff",
+    maxHeight: "80%",
+    backgroundColor: "#111827",
     alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 10,
-    padding: 20,
+    gap: 10,
+    borderRadius: 20,
+    padding: 25,
+    borderWidth: 1.5,
+    borderColor: "rgba(56, 189, 248, 0.2)",
+    shadowColor: "#3B82F6",
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.4,
+    shadowRadius: 20,
+    elevation: 20,
   },
+
   title: {
-    fontSize: 32,
-    color: "#090909",
+    fontSize: 24,
+    color: "#FFFFFF",
     fontWeight: "bold",
     fontFamily: "Inter",
+    marginBottom: 15,
+    textAlign: "center",
   },
+
   description: {
-    fontSize: 15,
-    color: "#090909",
-    fontWeight: "bold",
+    fontSize: 16,
+    color: "#9CA3AF",
     fontFamily: "Inter",
-    backgroundColor: "#D9DEE3",
-    borderRadius: 10,
     textAlign: "center",
   },
 
   image: {
-    width: 150,
-    height: 150,
+    width: 160,
+    height: 160,
     marginBottom: 10,
+    borderRadius: 80,
   },
 
   button: {
-    width: "100%",
-    backgroundColor: "#5B8CFF",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    marginTop: 30,
+    width: "50%",
+    backgroundColor: "#3B82F6",
+    borderWidth: 1,
+    borderColor: "#3B82F6",
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 25,
     alignItems: "center",
   },
   buttonText: {
     color: "#FFFFFF",
     fontWeight: "600",
   },
+
   rarity: {
     fontSize: 28,
-    color: "#090909",
     fontWeight: "bold",
     fontFamily: "Inter",
   },
