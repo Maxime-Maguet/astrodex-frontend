@@ -146,11 +146,11 @@ export default function HomeScreen() {
                   source={{ uri: astroInfo.image }}
                   style={{ width: 100, height: 100 }}
                 />
-                {/* <ScrollView>
+                <ScrollView>
                   <Text style={styles.description}>
                     {astroInfo.description}
                   </Text>
-                </ScrollView> */}
+                </ScrollView>
               </>
             )}
           </View>

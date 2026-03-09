@@ -19,7 +19,6 @@ import AstrodexScreen from "./screens/AstrodexScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import EquipementSelectionScreen from "./screens/EquipementSelectionScreen";
 import { LinearGradient } from "expo-linear-gradient";
-import LogoutButton from "./components/LogoutButton";
 import { useSelector } from "react-redux";
 // import {
 //   persistStore,
@@ -79,16 +78,7 @@ function TabNavigator() {
       <Tab.Screen name="Acceuil" component={HomeScreen} />
       <Tab.Screen name="Observation" component={ObservationScreen} />
       <Tab.Screen name="Astrodex" component={AstrodexScreen} />
-      <Tab.Screen 
-  name="Profil" 
-  component={ProfileScreen}
-  options={{
-    headerShown: true,
-    headerRight: () => <LogoutButton />,
-    headerStyle: { backgroundColor: "#0B0F1A" },
-    headerTitle: "",
-  }}
-/>
+      <Tab.Screen name="Profil" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }

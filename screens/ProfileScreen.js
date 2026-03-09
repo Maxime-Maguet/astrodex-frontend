@@ -7,11 +7,14 @@ import {
   StatusBar,
   TouchableOpacity,
   Platform,
+  Image,
+  Modal,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import * as NavigationBar from "expo-navigation-bar";
 import Header from "../components/Header";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
+import LogoutButton from "../components/LogoutButton";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -19,11 +22,13 @@ export default function ProfileScreen(route) {
   const [equipement, setEquipement] = useState("rien");
   const [xp, setXp] = useState(0);
   const [name, setName] = useState("");
+  const [captured, setCaptured] = useState(0);
+  const [astreData, setAstreData] = useState(0);
   const user = useSelector((state) => state.user.value);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const [modalDecoVisible, setModalDecoVisible] = useState(false);
 
- 
   useEffect(() => {
     if (isFocused && user.token) {
       fetch(`${apiUrl}/users/profile/${user.token}`)
@@ -31,11 +36,15 @@ export default function ProfileScreen(route) {
         .then((userData) => {
           if (userData.result) {
             //console.log("equipement :", userData.user.equipement);
+            //console.log("test", userData.user.capturedAstres.length);
             let name = userData.user.name;
             let xp = userData.user.xp;
             let equip = userData.user.equipement;
+            let capture = Number(userData.user.capturedAstres.length);
+
             setName(name);
             setXp(xp);
+            setCaptured(capture);
             if (equip) {
               setEquipement(equip);
             } else {
@@ -45,7 +54,19 @@ export default function ProfileScreen(route) {
         });
     }
   }, [isFocused]);
-  console.log(equipement);
+  //console.log(equipement);
+  // console.log("cap : ", captured);
+
+  useEffect(() => {
+    fetch(`${apiUrl}/astres`)
+      .then((res) => res.json())
+      .then((astresData) => {
+        if (astresData.result) {
+          setAstreData(Number(astresData.astres.length));
+        }
+      });
+  }, []);
+
   //calcul du niveau
   let xps = xp;
   let txtNiv = "";
@@ -55,17 +76,40 @@ export default function ProfileScreen(route) {
     txtNiv = "Niveau maximum atteint";
   }
 
+  function captured100() {
+    if (captured === astreData) {
+      return (
+        <Text style={styles.bodyContainerBottom}>
+          Tu as attrapé tous les astres. Bravo à toi !
+        </Text>
+      );
+    } else {
+      return (
+        <Text style={styles.bodyContainerBottom}>
+          Tu as attrapé {captured} sur {astreData} astres.
+        </Text>
+      );
+    }
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar hidden={true} />
       <Header title="Profil" />
+      <Image
+        source={{
+          uri: "https://res.cloudinary.com/dlywrsigk/image/upload/v1773055116/Profil_etvtzm.png",
+        }}
+        style={styles.image}
+      />
       <View style={styles.card}>
         <View style={styles.container}>
-          <Text style={styles.bodyContainerTop}>Ton Nom : {name}</Text>
+          <Text style={styles.bodyContainerTop}>{name}</Text>
           <Text style={styles.bodyContainer1}>
             Ton Niveau : {niveau} {txtNiv}
           </Text>
           <Text style={styles.bodyContainerBottom}>Ton xp : {xp}</Text>
+          <Text>{captured100()}</Text>
         </View>
       </View>
       <View style={styles.card}>
@@ -84,6 +128,31 @@ export default function ProfileScreen(route) {
           <Text style={styles.buttonText}>Changer</Text>
         </TouchableOpacity>
       </View>
+      <View style={styles.modalView}>
+        <TouchableOpacity
+          style={styles.buttonDeco}
+          onPress={() => setModalDecoVisible(true)}
+        >
+          <Text style={styles.text}>Se déconnecter</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Modal visible={modalDecoVisible} transparent={true} animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={{ color: "#FFFFFF" }}>
+              Veux-tu vraiment te déconnecter?
+            </Text>
+            <LogoutButton />
+            <TouchableOpacity
+              style={styles.buttonDeco}
+              onPress={() => setModalDecoVisible(false)}
+            >
+              <Text style={styles.text}>Annuler</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -94,6 +163,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#0B0F1A",
     paddingTop: Platform.OS === "ios" ? 20 : 0,
     alignItems: "center",
+  },
+
+  image: {
+    width: 150,
+    height: 150,
+    marginVertical: 25,
   },
 
   header: {
@@ -117,6 +192,29 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
     marginTop: 10,
     marginBottom: 10,
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    width: "80%",
+    backgroundColor: "#0B0F1A",
+    borderRadius: 12,
+    padding: 24,
+    alignItems: "center",
+    gap: 16,
+    borderWidth: 1,
+    borderColor: "#AAB3C5",
+  },
+
+  modal: {
+    alignItems: "center",
+    width: 200,
+    height: 200,
   },
 
   bodyContainerBottom: {
@@ -208,5 +306,21 @@ const styles = StyleSheet.create({
   astresSection: {
     flex: 1,
     justifyContent: "center",
+  },
+
+  buttonDeco: {
+    width: 200,
+    marginRight: 15,
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderWidth: 1,
+    borderColor: "#AAB3C5",
+    borderRadius: 5,
+  },
+  text: {
+    color: "#AAB3C5",
+    fontFamily: "Inter",
+    fontSize: 14,
+    textAlign: "center",
   },
 });
