@@ -10,24 +10,28 @@ import { useEffect, useState } from "react";
 import { Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateXp } from "../reducers/user";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function ObservationModal(props) {
   const [observation, setObservation] = useState(null);
+  const [xpGagnee, setXpGagnee] = useState(null);
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const selectedAstre = useSelector((state) => state.astre.astreFocus);
+  const token = useSelector((state) => state.user.value.token);
 
   const rarityStyle = {
-    Commune: "#22C55E",
-    Rare: "#3B82F6",
-    Épique: "#A855F7",
-    Légendaire: "#FACC15",
+    Commune: { color: "#22C55E", xp: 10 },
+    Rare: { color: "#3B82F6", xp: 25 },
+    Épique: { color: "#A855F7", xp: 60 },
+    Légendaire: { color: "#FACC15", xp: 150 },
   };
 
   const textColor = observation
-    ? rarityStyle[observation.rarity_level]
+    ? rarityStyle[observation.rarity_level].color
     : "#FFFFFF";
 
   useEffect(() => {
@@ -35,11 +39,22 @@ export default function ObservationModal(props) {
       fetch(`${apiUrl}/astres`)
         .then((response) => response.json())
         .then((data) => {
-          // console.log(data);
-
           const astres = data.astres.find((e) => e.name === selectedAstre);
 
           setObservation(astres);
+          fetch(`${apiUrl}/users/updateUser`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              token,
+              xp: rarityStyle[astres.rarity_level].xp,
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              setXpGagnee(rarityStyle[astres.rarity_level].xp);
+              dispatch(updateXp(data.xp));
+            });
         });
     }
   }, [props.visible]);
@@ -53,6 +68,11 @@ export default function ObservationModal(props) {
               <Text style={[styles.rarity, { color: textColor }]}>
                 {observation.rarity_level}
               </Text>
+              {xpGagnee && (
+                <Text style={[styles.xpText, { color: textColor }]}>
+                  + {xpGagnee} XP
+                </Text>
+              )}
               <Text style={styles.title}>{observation.name}</Text>
               <Image
                 source={{

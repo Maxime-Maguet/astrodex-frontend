@@ -15,7 +15,8 @@ import AstroCard from "../components/AstroCard";
 import Header from "../components/Header";
 import AstroModal from "../components/AstroModal";
 import * as NavigationBar from "expo-navigation-bar";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useIsFocused } from "@react-navigation/native";
+import { updateXP } from "../reducers/user";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -24,6 +25,9 @@ export default function AstrodexScreen() {
   const [showCapturedOnly, setShowCapturedOnly] = useState(false); // Filtre "Mes captures"
   const [selectedAstre, setSelectedAstre] = useState(null); // Astre sélectionné pour la modal
   const [modalVisible, setModalVisible] = useState(false); // Etat de la modal
+  const [captured, setCaptured] = useState(0);
+  const [nombreAstre, setNombreAstre] = useState(0);
+  const isFocused = useIsFocused();
 
   const route = useRoute(); // Pour récupérer les params envoyés depuis ObservationScreen
   const dispatch = useDispatch();
@@ -65,20 +69,26 @@ export default function AstrodexScreen() {
       .then((astresData) => {
         if (astresData.result) {
           setAstres(astresData.astres);
+          setNombreAstre(Number(astresData.astres.length));
         }
       });
   }, []);
 
   // Fetch astres capturés par l'utilisateur
   useEffect(() => {
-    fetch(`${apiUrl}/users/profile/${user.token}`)
-      .then((res) => res.json())
-      .then((userData) => {
-        if (userData.result) {
-          dispatch(setCapturedAstres(userData.user.capturedAstres));
-        }
-      });
-  }, []);
+    if (isFocused && user.token) {
+      fetch(`${apiUrl}/users/profile/${user.token}`)
+        .then((res) => res.json())
+        .then((userData) => {
+          if (userData.result) {
+            let capture = Number(userData.user.capturedAstres.length);
+            dispatch(setCapturedAstres(userData.user.capturedAstres));
+            dispatch(updateXP(userData.user.xp));
+            setCaptured(capture);
+          }
+        });
+    }
+  }, [isFocused]);
 
   // Filtre les astres selon le switch "Mes captures"
   // Si showCapturedOnly est true, ne garde que les astres déjà capturés
@@ -112,6 +122,19 @@ export default function AstrodexScreen() {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar hidden={true} />
       <Header title="AstroDex" />
+      <View style={styles.rangéeStats}>
+        <View style={styles.badgeStat}>
+          <Text style={styles.valeurStat}>⭐ {user.xp}</Text>
+          <Text style={styles.libelleStat}>XP</Text>
+        </View>
+        <View style={styles.séparateurStat} />
+        <View style={styles.badgeStat}>
+          <Text style={styles.valeurStat}>
+            🌌 {captured}/{nombreAstre}
+          </Text>
+          <Text style={styles.libelleStat}>Astres capturés</Text>
+        </View>
+      </View>
       <View style={styles.toggleContainer}>
         <Switch
           trackColor={{ false: "#767577", true: "#767577" }}
@@ -166,5 +189,37 @@ const styles = StyleSheet.create({
   toggleText: {
     color: "#AAB3C5",
     marginLeft: 10,
+  },
+
+  rangéeStats: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 20,
+    marginBottom: 10,
+    backgroundColor: "#151C2F",
+    borderRadius: 12,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: "rgba(56, 189, 248, 0.2)",
+  },
+  badgeStat: {
+    flex: 1,
+    alignItems: "center",
+  },
+  valeurStat: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  libelleStat: {
+    color: "#AAB3C5",
+    fontSize: 11,
+    marginTop: 2,
+  },
+  séparateurStat: {
+    width: 1,
+    height: 30,
+    backgroundColor: "rgba(56, 189, 248, 0.2)",
   },
 });

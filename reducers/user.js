@@ -6,6 +6,7 @@ const initialState = {
     username: null,
     location: null,
     equipement: null,
+    xp: null,
   },
 };
 
@@ -17,7 +18,8 @@ export const userSlice = createSlice({
       state.value.token = action.payload.token;
       state.value.username = action.payload.username;
       state.value.equipement = action.payload.equipement;
-      console.log("reducer user login/signup", action.payload);
+      state.value.xp = action.payload.xp;
+      console.log("xp reducer => ", action.payload.xp);
     },
     logout: (state) => {
       state.value.token = null;
@@ -30,9 +32,12 @@ export const userSlice = createSlice({
     updateEquipement: (state, action) => {
       state.value.equipement = action.payload;
     },
+    updateXP: (state, action) => {
+      state.value.xp = action.payload;
+    },
   },
 });
 
-export const { login, logout, updateLocation, updateEquipement } =
+export const { login, logout, updateLocation, updateEquipement, updateXP } =
   userSlice.actions;
 export default userSlice.reducer;

@@ -41,11 +41,11 @@ export default function ObservationScreen({ navigation }) {
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
       .then((astresData) => {
-        console.log(
-          "Astres BDD:",
-          astresData.astres.map((a) => `"${a.name}"`),
-        );
-        console.log("selectedAstre:", `"${selectedAstre}"`);
+        // console.log(
+        //   "Astres BDD:",
+        //   astresData.astres.map((a) => `"${a.name}"`),
+        // );
+        //console.log("selectedAstre:", `"${selectedAstre}"`);
         const astreToCapture = astresData.astres.find(
           (astre) => astre.name === selectedAstre,
         );
@@ -90,21 +90,20 @@ export default function ObservationScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar hidden={true} />
-      <ScrollView
-        nestedScrollEnabled={true}
-        style={{ width: "100%" }}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <Header title="Observation" />
-        {platformOS()}
-        <ButtonCapture
-          style={styles.button}
-          textStyle={styles.buttonText}
-          onPress={handleCapture}
-        />
-
-        <ObservationModal visible={modalVisible} closeModal={closeModal} />
-      </ScrollView>
+      {/* <ScrollView
+      nestedScrollEnabled={true}
+      style={{ width: "100%" }}
+      contentContainerStyle={styles.scrollContent}
+      > */}
+      <Header title="Observation" />
+      <View style={styles.boussoleContainer}>{platformOS()}</View>
+      <ButtonCapture
+        style={styles.button}
+        textStyle={styles.buttonText}
+        onPress={handleCapture}
+      />
+      <ObservationModal visible={modalVisible} closeModal={closeModal} />
+      {/* </ScrollView> */}
     </View>
   );
 }
@@ -145,5 +144,10 @@ const styles = StyleSheet.create({
   bodyError: {
     color: "#970000",
     fontSize: 12,
+  },
+
+  boussoleContainer: {
+    zIndex: 0,
+    elevation: 0,
   },
 });
