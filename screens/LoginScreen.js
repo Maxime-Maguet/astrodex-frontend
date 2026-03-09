@@ -15,6 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../reducers/user";
 import { TouchableWithoutFeedback } from "react-native";
+import LoadingModal from "../components/LoadingModal";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -71,6 +72,8 @@ export default function LoginScreen({ navigation }) {
   };
   return (
     // KeyboardAvoidingView évite de cacher les inputs
+    <View style={{ flex: 1 }}>
+    <LoadingModal visible={loading} />
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -131,6 +134,7 @@ export default function LoginScreen({ navigation }) {
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
+    </View>
   );
 }
 
