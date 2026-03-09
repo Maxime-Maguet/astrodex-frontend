@@ -64,12 +64,12 @@ export default function HomeScreen() {
             clartePercent: visibilityToPercent(data.visibility),
           });
           if (data.clouds > 70) {
-            setMessage("Too cloudy to observe the sky");
+            setMessage("Trop nuageux pour l'observation");
           } else {
-            setMessage("Clear sky for observation");
+            setMessage("Ciel dégagé pour l'observation");
           }
         } catch (err) {
-          setMessage("Unable to fetch weather");
+          setMessage("Impossible de charger la météo");
         }
       };
 
