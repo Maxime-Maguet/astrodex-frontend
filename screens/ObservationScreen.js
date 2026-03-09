@@ -130,15 +130,15 @@ export default function ObservationScreen({ navigation }) {
         style={{ width: "100%" }}
         contentContainerStyle={styles.scrollContent}
       >
-      <Header title="Observation" />
-      {equip()}
-      {platformOS()}
-      <ButtonCapture
-        style={styles.button}
-        textStyle={styles.buttonText}
-        onPress={handleCapture}
-      />
-      <ObservationModal visible={modalVisible} closeModal={closeModal} />
+        <Header title="Observation" />
+        {equip()}
+        {platformOS()}
+        <ButtonCapture
+          style={styles.button}
+          textStyle={styles.buttonText}
+          onPress={handleCapture}
+        />
+        <ObservationModal visible={modalVisible} closeModal={closeModal} />
       </ScrollView>
     </View>
   );
