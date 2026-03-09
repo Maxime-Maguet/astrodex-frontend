@@ -24,7 +24,7 @@ import { useDispatch } from "react-redux";
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
 
-const visibilityToPercent = (meters) =>
+const visibilityToPercent = meters =>
   Math.min(Math.round((meters / MAX_VISIBILITY) * 100), 100);
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -89,17 +89,17 @@ export default function HomeScreen() {
 
   useEffect(() => {
     fetch(`${apiUrl}/astres/info`)
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         setAstroInfo(data);
       })
-      .catch((error) => console.log(error));
+      .catch(error => console.log(error));
   }, []);
 
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         if (data.result) {
           setAstres(data.astres);
         }
@@ -108,14 +108,14 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (astres.length > 0 && weather?.coords) {
-      const allNames = astres.map((a) => a.name);
+      const allNames = astres.map(a => a.name);
 
       const visibles = AstresVisibles(allNames, {
         latitude: weather.coords.latitude,
         longitude: weather.coords.longitude,
       });
 
-      const filteredAstres = astres.filter((a) => visibles.includes(a.name));
+      const filteredAstres = astres.filter(a => visibles.includes(a.name));
 
       setVisibleAstresState(filteredAstres);
       dispatch(setVisibleAstres(visibles));
@@ -138,20 +138,23 @@ export default function HomeScreen() {
       <View style={styles.container}>
         <View style={styles.accueil}>
           <Text style={styles.accueil1}>Accueil</Text>
-          <View>
+          <View style={styles.card}>
             {astroInfo && (
-              <>
-                {/* <Text>{astroInfo.title}</Text> */}
+              <View style={styles.imageContainer}>
                 <Image
                   source={{ uri: astroInfo.image }}
-                  style={{ width: 100, height: 100 }}
+                  style={styles.nasaImage}
                 />
-                <ScrollView>
-                  <Text style={styles.description}>
-                    {astroInfo.description}
-                  </Text>
-                </ScrollView>
-              </>
+
+                <View style={styles.overlay}>
+                  <Text style={styles.nomNasa}>NASA • Image du jour</Text>
+                  <ScrollView style={styles.textScroll}>
+                    <Text style={styles.description}>
+                      {astroInfo.description}
+                    </Text>
+                  </ScrollView>
+                </View>
+              </View>
             )}
           </View>
         </View>
@@ -161,8 +164,7 @@ export default function HomeScreen() {
             <ScrollView
               horizontal={true} // permet de mettre VieW en scroll horizontale
               showsHorizontalScrollIndicator={false}
-              style={styles.astresScroll}
-            >
+              style={styles.astresScroll}>
               {astresList}
             </ScrollView>
           </View>
@@ -229,6 +231,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontFamily: "Inter",
     textAlign: "center",
+    marginTop: 35,
   },
 
   ScrollView: {
@@ -257,5 +260,54 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     color: "white",
+  },
+
+  imageContainer: {
+    position: "relative",
+  },
+
+  nasaImage: {
+    width: "100%",
+    height: 200,
+    borderRadius: 16,
+  },
+
+  nomNasa: {
+    color: "#FF8C42",
+    fontSize: 15,
+    marginBottom: 5,
+    textShadowColor: "rgba(0,0,0,0.9)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+
+  description: {
+    fontSize: 14,
+    color: "#FFFFFF",
+    textShadowColor: "rgba(0,0,0,0.9)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+
+  overlay: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    right: 10,
+    backgroundColor: "rgba(0,0,0,0.25)",
+    padding: 10,
+    borderRadius: 10,
+  },
+
+  textScroll: {
+    height: 65,
+  },
+
+  card: {
+    paddingHorizontal: 20,
+    shadowColor: "#ffffff",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
   },
 });
