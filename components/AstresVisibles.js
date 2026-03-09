@@ -42,8 +42,6 @@ export default function AstreSelector({
       </TouchableOpacity>
 
       {isVisible && (
-        //<View style={styles.dropdownList}>
-
         <ScrollView
           style={styles.dropdownList}
           contentContainerStyle={styles.dropdownContent}
@@ -67,7 +65,6 @@ export default function AstreSelector({
             <Text style={styles.noAstre}>Aucun astre visible...</Text>
           )}
         </ScrollView>
-        // </View>
       )}
     </View>
   );
