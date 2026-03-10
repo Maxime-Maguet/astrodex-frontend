@@ -1,33 +1,52 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Modal,
+  SafeAreaView,
+  Platform,
+  StatusBar,
+} from "react-native";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateEquipement } from "../reducers/user";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Header from "../components/Header";
 import { useRoute } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+
+import { LinearGradient } from "expo-linear-gradient";
+
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function EquipementSelectionScreen({ navigation }) {
   const route = useRoute();
-  //const Equipement_LIMITS = {
-  //"Oeil nu": { maxMagnitude: 4, label: "Œil nu", xpBonus: 100 }, //Configuration basé sur la magnétude
-  //"Jumelles": { maxMagnitude: 8, label: "Jumelle", xpBonus: 250 },
-  //"Lunette astronomique": {
-  //maxMagnitude: 15,
-  //label: "Télescope",
-  //xpBonus: 500,
-  //},
-
-  //};
-
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
   const [equipement, setEquipement] = useState("");
+  const [infoVisible, setInfoVisible] = useState(null);
+
+  const equipementsData = [
+    {
+      id: "Oeil nu",
+      icon: "eye",
+      desc: "Parfait pour apprendre à lire les constellations et repérer les planètes les plus brillantes.",
+    },
+    {
+      id: "Jumelles",
+      icon: "binoculars",
+      desc: "L'équilibre idéal pour explorer les champs étoilés et les amas ouverts.",
+    },
+    {
+      id: "Lunette astronomique",
+      icon: "telescope",
+      desc: "Débusquez les astres les plus sombres et les galaxies les plus lointaines.",
+    },
+  ];
 
   const Observation = () => {
     if (equipement === "" || equipement === undefined) {
-      console.log("pas d'équipement selectionné");
       return;
     }
 
@@ -37,9 +56,8 @@ export default function EquipementSelectionScreen({ navigation }) {
       body: JSON.stringify({ equipement: equipement, token: user.token }),
     })
       .then((response) => response.json())
-      .then((data) => {  
+      .then((data) => {
         if (data) {
-         
           dispatch(updateEquipement(data.equipement));
         }
         const ecranOrigine = route.params?.from;
@@ -52,95 +70,137 @@ export default function EquipementSelectionScreen({ navigation }) {
         }
       });
   };
+
+  useEffect(() => {
+    if (user.equipement) {
+      setEquipement(user.equipement);
+    }
+  }, [user.equipement]);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.middlecontainer}>
-        <Text style={styles.buttonChoix}>Choisis ton équipement</Text>
-        <View style={styles.buttoncontainer}>
-          <FontAwesome style={styles.icon} name="eye" />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar hidden />
+      <Header title="Equipement" />
+      <LinearGradient
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={styles.gradient}
+        colors={["#0B0F1A", "#1E2A44"]}
+      >
+        <View style={styles.container}>
+          <Text style={styles.choixEquipement}>Choisis ton équipement</Text>
+          <View style={styles.buttoncontainer}>
+            {equipementsData.map((item) => (
+              <View key={item.id} style={styles.allIcons}>
+                <TouchableOpacity
+                  onPress={() => setEquipement(item.id)}
+                  style={[
+                    styles.button,
+                    equipement === item.id && styles.buttonSelected,
+                  ]}
+                >
+                  <Ionicons
+                    name={item.icon}
+                    size={30}
+                    color={equipement === item.id ? "#FFFFFF" : "#6C768F"}
+                  />
+                </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.buttonText,
+                    equipement === item.id && { color: "#3B6DED" },
+                  ]}
+                >
+                  {item.id === "Lunette astronomique" ? "Telescope" : item.id}
+                </Text>
+                <TouchableOpacity
+                  style={styles.infoBulle}
+                  onPress={() => setInfoVisible(item)}
+                >
+                  <Ionicons
+                    name="information-circle-outline"
+                    size={20}
+                    color="white"
+                  />
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
           <TouchableOpacity
-            onPress={() => setEquipement("Oeil nu")}
-            style={[
-              styles.button,
-              equipement === "Oeil nu" && { backgroundColor: "#1A237E" },
-            ]}
-            activeOpacity={0.8}
+            onPress={() => Observation()}
+            style={styles.confirmBtn}
           >
-            <Text style={styles.buttonText}>Oeil nu</Text>
-            <Text style={styles.desc}>
-              Parfait pour apprendre à lire les constellations et repérer les
-              planètes les plus brillantes.
-            </Text>
+            <Text style={styles.buttonConfirmer}>Confirmer</Text>
           </TouchableOpacity>
-        </View>
-        <View style={styles.buttoncontainer}>
-          <FontAwesome style={styles.icon} name="binoculars" />
-          <TouchableOpacity
-            onPress={() => setEquipement("Jumelles")}
-            style={[
-              styles.button,
-              equipement === "Jumelles" && { backgroundColor: "#1A237E" },
-            ]}
-            activeOpacity={0.8}
+          <Modal
+            visible={infoVisible !== null}
+            transparent
+            animationType="fade"
           >
-            <Text style={styles.buttonText}>Jumelles</Text>
-            <Text style={styles.desc}>
-              L'équilibre idéal pour explorer les champs étoilés et les amas
-              ouverts.
-            </Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalOverlay}
+              onPress={() => setInfoVisible(null)}
+            >
+              {infoVisible && (
+                <View style={styles.modalContent}>
+                  <Text style={styles.modalTitle}>{infoVisible?.id}</Text>
+                  <Text style={styles.desc}>{infoVisible?.desc}</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </Modal>
         </View>
-        <View style={styles.buttoncontainer}>
-          <Ionicons name="telescope" style={styles.icontelescope} />
-          <TouchableOpacity
-            onPress={() => setEquipement("Lunette astronomique")}
-            style={[
-              styles.button , 
-              equipement === "Lunette astronomique" && {
-                backgroundColor: "#1A237E",
-              },
-            ]}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.buttonText}>Télescope</Text>
-            <Text style={styles.desc}>
-              Débusquez les astres les plus sombres et les galaxies les plus
-              lointaines.
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          onPress={() => Observation()}
-          style={styles.confirmBtn}
-        >
-          <Text style={styles.buttonConfirmer}>Confirmer</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      </LinearGradient>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  gradient: { flex: 1 },
+  safeArea: {
     flex: 1,
     backgroundColor: "#0B0F1A",
+    paddingTop: Platform.OS === "ios" ? 20 : 0,
+  },
+  container: {
+    flex: 1,
+    // backgroundColor: "#0B0F1A",
     padding: 20,
-    paddingTop: 30,
     justifyContent: "center",
     alignItems: "center",
-    gap: 20,
+  },
+
+  buttoncontainer: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 10,
+    marginBottom: 40,
+    borderRadius: 15,
+  },
+
+  allIcons: {
+    alignItems: "center",
+    width: 100,
+    gap: 10,
   },
 
   button: {
-    width: "60%",
-    flex: "row",
-    backgroundColor: "#6C768F",
-    padding: 25,
-    paddingLeft: 25,
-    borderRadius: 8,
-    marginTop: 10,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    justifyContent: "center",
     alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.1)",
   },
+
+  buttonSelected: {
+    backgroundColor: "#3B6DED",
+    shadowColor: "#5B8CFF",
+  },
+
   buttonText: {
     color: "#FFFFFF",
     fontSize: 16,
@@ -161,57 +221,46 @@ const styles = StyleSheet.create({
   },
 
   confirmBtn: {
-    marginTop: -15,
     alignItems: "center",
-    paddingLeft: 20,
-    paddingRight: 20,
   },
+
   icon: {
     fontSize: 30,
     color: "#ffffff",
-    marginTop: 20,
-    paddingLeft: 25,
+    marginLeft: 10,
   },
-  buttoncontainer: {
-    flexDirection: "row",
-    width: "100%",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 30,
-    padding: 20,
-    paddingRight: 25,
-    paddingLeft: 25,
-    paddingHorizontal: 20,
-    gap: 10,
-    backgroundColor: "#535252",
-    opacity: 20,
-    borderRadius: 10,
-  },
-  buttonChoix: {
-    color: "#ffffff",
-    fontSize: 20,
+
+  choixEquipement: {
+    color: "#3B6DED",
+    fontSize: 22,
     fontWeight: "700",
-    marginTop: 30,
-    marginBottom: 30,
-    letterSpacing: 5,
-    elevation: 15,
-  },
-  icontelescope: {
-    fontSize: 50,
-    color: "#ffffff",
-    marginTop: 20,
-    paddingLeft: 25,
+    marginBottom: 40,
+    letterSpacing: 3,
   },
   desc: {
-    fontSize: 10,
+    fontSize: 16,
     color: "#ffffff",
     marginTop: 3,
   },
-  middlecontainer: {
-    shadowColor: "#ffffff",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.8,
-    elevation: 15,
-    shadowRadius: 10,
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.7)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  modalContent: {
+    width: "80%",
+    backgroundColor: "#1A202C",
+    padding: 25,
+    borderRadius: 25,
+    alignItems: "center",
+    gap: 10,
+  },
+  modalTitle: {
+    color: "#3B6DED",
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });

@@ -40,7 +40,13 @@ export default function AstroModal(props) {
 
         {/* Wrapper centré — pointerEvents="box-none" permet de cliquer à travers le wrapper sur l'overlay */}
         <View style={styles.containerWrapper}>
-          <View style={styles.container}>
+          <View
+            style={[
+              styles.container,
+              { shadowColor: rarity.color },
+              { borderColor: rarity.color },
+            ]}
+          >
             {/* 
   Génère dynamiquement les étoiles selon la rareté :
   - Array(rarity.stars) crée un tableau de N cases vides
@@ -135,14 +141,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 20,
     padding: 25,
-    shadowColor: "#3B82F6",
+    // shadowColor: "#3B82F6",
     shadowOpacity: 0.5,
+
+    // elevation -> Androïde : Définit l'altitude d'une vue à l'aide de l'API d'altitude sous-jacente d'Android .
+    //Ceci ajoute une ombre portée à l'élément et modifie l'ordre Z des vues superposées.
+
     elevation: 15,
     gap: 10,
-    borderWidth: 1.5,
-    borderColor: "rgba(56, 189, 248, 0.2)",
+    borderWidth: 0.5,
   },
+
   image: { width: 160, height: 160, marginBottom: 20 },
+
   name: {
     fontSize: 24,
     color: "#FFFFFF",

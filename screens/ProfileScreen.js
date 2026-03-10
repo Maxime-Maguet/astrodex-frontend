@@ -25,18 +25,17 @@ export default function ProfileScreen(route) {
   const [name, setName] = useState("");
   const [captured, setCaptured] = useState(0);
   const [astreData, setAstreData] = useState(0);
-  const user = useSelector(state => state.user.value);
+  const user = useSelector((state) => state.user.value);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [modalDecoVisible, setModalDecoVisible] = useState(false);
   const [image, setImage] = useState(null);
 
-
   useEffect(() => {
     if (isFocused && user.token) {
       fetch(`${apiUrl}/users/profile/${user.token}`)
-        .then(res => res.json())
-        .then(userData => {
+        .then((res) => res.json())
+        .then((userData) => {
           if (userData.result) {
             //console.log("equipement :", userData.user.equipement);
             //console.log("test", userData.user.capturedAstres.length);
@@ -62,8 +61,8 @@ export default function ProfileScreen(route) {
 
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
-      .then(res => res.json())
-      .then(astresData => {
+      .then((res) => res.json())
+      .then((astresData) => {
         if (astresData.result) {
           setAstreData(Number(astresData.astres.length));
         }
@@ -95,51 +94,50 @@ export default function ProfileScreen(route) {
     }
   }
 
-
   const takePicture = async () => {
-// Demande la permission d'utiliser la caméra avec ImagePicker
+    // Demande la permission d'utiliser la caméra avec ImagePicker
     const permission = await ImagePicker.requestCameraPermissionsAsync();
-// Si l'utilisateur refuse, on arrête
+    // Si l'utilisateur refuse, on arrête
     if (!permission.granted) {
       Alert.alert("Permission caméra requise");
       return;
     }
-  // Ouvre la caméra du téléphone
+    // Ouvre la caméra du téléphone
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.8,
     });
-// Si l'utilisateur annule la prise de photo, on arrête (utilisation de canceled comme vu sur expo)
+    // Si l'utilisateur annule la prise de photo, on arrête (utilisation de canceled comme vu sur expo)
     if (result.canceled) return;
 
-// On récupère la photo prise
+    // On récupère la photo prise
     const photo = result.assets[0];
 
     setImage(photo.uri);
 
     const formData = new FormData();
- // Ajoute la photo au FormData
+    // Ajoute la photo au FormData
     formData.append("photoFromFront", {
       uri: photo.uri,
       name: "photo.jpg",
       type: "image/jpeg",
     });
-  // Ajoute le token utilisateur pour identifier le user
+    // Ajoute le token utilisateur pour identifier le user
     formData.append("token", user.token);
 
-// Envoie la photo au backend
+    // Envoie la photo au backend
     fetch(`${process.env.EXPO_PUBLIC_API_URL}/users/upload`, {
       method: "POST",
       body: formData,
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         console.log("upload response:", data);
         dispatch(addPhoto(data.avatar));
       });
   };
-// image de l'avatar par défault
+  // image de l'avatar par défault
   const defaultAvatar =
     "https://res.cloudinary.com/dlywrsigk/image/upload/v1773055116/Profil_etvtzm.png";
 
@@ -147,7 +145,7 @@ export default function ProfileScreen(route) {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar hidden={true} />
       <Header title="Profil" />
-      <TouchableOpacity >
+      <TouchableOpacity>
         <Image
           style={styles.avatar}
           source={{
@@ -170,7 +168,10 @@ export default function ProfileScreen(route) {
       </View>
       <View style={styles.card}>
         <View style={styles.container}>
-          <Text style={styles.body}>Ton équipement : {equipement}</Text>
+          <Text style={styles.body}>
+            Ton équipement :{" "}
+            {equipement === "Lunette astronomique" ? "Telescope" : equipement}
+          </Text>
         </View>
         <TouchableOpacity
           onPress={() =>
@@ -179,14 +180,16 @@ export default function ProfileScreen(route) {
             })
           }
           style={[styles.button]}
-          activeOpacity={0.8}>
+          activeOpacity={0.8}
+        >
           <Text style={styles.buttonText}>Changer</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.modalView}>
         <TouchableOpacity
           style={styles.buttonDeco}
-          onPress={() => setModalDecoVisible(true)}>
+          onPress={() => setModalDecoVisible(true)}
+        >
           <Text style={styles.text}>Se déconnecter</Text>
         </TouchableOpacity>
       </View>
@@ -200,7 +203,8 @@ export default function ProfileScreen(route) {
             <LogoutButton />
             <TouchableOpacity
               style={styles.buttonDeco}
-              onPress={() => setModalDecoVisible(false)}>
+              onPress={() => setModalDecoVisible(false)}
+            >
               <Text style={styles.text}>Annuler</Text>
             </TouchableOpacity>
           </View>
@@ -218,13 +222,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  
-
   imageText: {
     color: "#FFFFFF",
     marginTop: -10,
     marginBottom: 25,
-    
   },
 
   header: {
