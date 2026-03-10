@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import Header from "../components/Header";
 import BoussoleIOS from "../components/CompIos";
-import BoussoleAndroid from "../components/CompAndroid";
 import ButtonCapture from "../components/buttonCapture";
 import ObservationModal from "../components/observationModal";
 import * as NavigationBar from "expo-navigation-bar";
@@ -21,7 +20,6 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function ObservationScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [EquipementVu, setEquipementVu] = useState("");
   const dispatch = useDispatch();
 
   // const handleCapture = () => {
@@ -85,42 +83,18 @@ export default function ObservationScreen({ navigation }) {
     setModalVisible(false);
   };
 
-  function platformOS() {
-    if (Platform.OS === "ios") {
-      return <BoussoleIOS />;
-    } else if (Platform.OS === "android") {
-      return <BoussoleIOS />;
-    }
-  }
-
-  function equip() {
-    if (equipement === undefined) {
+  useEffect(() => {
+    if (equipement === undefined || equipement === null) {
       fetch(`${apiUrl}/users/profile/${user.token}`)
         .then((res) => res.json())
         .then((userData) => {
           if (userData.result) {
-            let equip = userData.user.equipement;
-
-            if (equip) {
-              setEquipementVu(equip);
-            } else {
-              setEquipementVu("Tu n'as pas encore d'équipement !");
-            }
+            const equip = userData.user.equipement;
+            dispatch(updateEquipement(equip ?? "Oeil nu"));
           }
         });
-      return (
-        <Text style={styles.body}>
-          Tu utilises comme équipement : {EquipementVu}
-        </Text>
-      );
-    } else {
-      return (
-        <Text style={styles.body}>
-          Tu utilises comme équipement : {equipement}
-        </Text>
-      );
     }
-  }
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -131,8 +105,10 @@ export default function ObservationScreen({ navigation }) {
         contentContainerStyle={styles.scrollContent}
       >
         <Header title="Observation" />
-        {equip()}
-        {platformOS()}
+        <Text style={styles.body}>
+          Tu utilises comme équipement : {equipement ?? "Oeil nu"}
+        </Text>
+        <BoussoleIOS />
         <ButtonCapture
           style={styles.button}
           textStyle={styles.buttonText}

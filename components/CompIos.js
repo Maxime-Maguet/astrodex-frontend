@@ -7,10 +7,7 @@ import CompassBar from "../components/CompassBar";
 import AstreSelector from "../components/AstresVisibles";
 import * as Astronomy from "astronomy-engine";
 import { FIXED_COORDINATES } from "../modules/logiqueAstres";
-//import { filtrerAstresParEquipement } from "../modules/filtreAstres";
-// Liste des astres, pour l'instant système solaire pour test
-
-const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+import { filtrerAstresParEquipement } from "../modules/filtreAstresParEquipement";
 
 let Alignement;
 
@@ -19,13 +16,16 @@ export default function BoussoleAndroid() {
 
   const user = useSelector((state) => state.user.value); // On récupère les infos du store (token, nickname, etc.)
   const visibleAstres = useSelector((state) => state.astre.visibleAstres);
+  const equipement = useSelector((state) => state.user.value.equipement);
+  const astresFiltrés = filtrerAstresParEquipement(visibleAstres, equipement);
 
   const [currentPosition, setCurrentPosition] = useState(null); // État local pour afficher la position direct sur l'écran
   const [target, setTarget] = useState("..."); // L'astre visé
   const [targetAzimuth, setTargetAzimuth] = useState(null);
   const [astreFocus, setAstreFocus] = useState(null);
   const [locationHeading, setLocationHeading] = useState(0);
-
+  // console.log(visibleAstres);
+  // console.log(useSelector((state) => state.astre));
   useEffect(() => {
     let subscription; // On prépare une variable pour pouvoir dire "quand je ne suis pas sur l'app, je n'actualise pas"
 
@@ -139,7 +139,7 @@ export default function BoussoleAndroid() {
     <View style={styles.container}>
       <View style={styles.headerPadding}>
         <AstreSelector
-          visibleBodies={visibleAstres}
+          visibleBodies={astresFiltrés}
           currentFocus={astreFocus}
           onSelect={(body) => setAstreFocus(body)}
         />
