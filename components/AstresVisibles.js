@@ -41,31 +41,34 @@ export default function AstreSelector({
         </View>
       </TouchableOpacity>
 
-      {isVisible && (
-        <ScrollView
-          style={styles.dropdownList}
-          contentContainerStyle={styles.dropdownContent}
-          nestedScrollEnabled={true}
-          scrollEnabled={true}
+      <Modal visible={isVisible} transparent animationType="none">
+        <TouchableOpacity
+          style={styles.overlay}
+          onPress={() => setIsVisible(false)}
+          activeOpacity={1}
         >
-          {visibleBodies.length > 0 ? (
-            visibleBodies.map((body) => (
-              <TouchableOpacity
-                key={body}
-                style={[
-                  styles.item,
-                  currentFocus === body && styles.activeItem,
-                ]}
-                onPress={() => handleSelect(body)}
-              >
-                <Text style={styles.itemText}>{body}</Text>
-              </TouchableOpacity>
-            ))
-          ) : (
-            <Text style={styles.noAstre}>Aucun astre visible...</Text>
-          )}
-        </ScrollView>
-      )}
+          <View style={styles.dropdownList}>
+            <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 200 }}>
+              {visibleBodies.length > 0 ? (
+                visibleBodies.map((body) => (
+                  <TouchableOpacity
+                    key={body}
+                    style={[
+                      styles.item,
+                      currentFocus === body && styles.activeItem,
+                    ]}
+                    onPress={() => handleSelect(body)}
+                  >
+                    <Text style={styles.itemText}>{body}</Text>
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <Text style={styles.noAstre}>Aucun astre visible...</Text>
+              )}
+            </ScrollView>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 }
@@ -73,8 +76,6 @@ export default function AstreSelector({
 const styles = StyleSheet.create({
   container: {
     zIndex: 1000,
-    marginBottom: 10,
-    position: "relative",
     alignItems: "center",
   },
   dropdownButton: {
@@ -89,12 +90,10 @@ const styles = StyleSheet.create({
     height: 55,
     minWidth: "60%",
   },
-
   aligner: {
     flexDirection: "row",
     alignItems: "center",
   },
-
   selectedText: {
     color: "#FFFFFF",
     fontSize: 16,
@@ -105,23 +104,19 @@ const styles = StyleSheet.create({
     fontSize: 12,
     paddingLeft: 10,
   },
+  overlay: {
+    flex: 1,
+  },
   dropdownList: {
     position: "absolute",
-    top: 60,
+    top: 270,
+    alignSelf: "center",
+    width: "60%",
     backgroundColor: "#151C2F",
     borderRadius: 8,
-    marginTop: 5,
     borderWidth: 1,
     borderColor: "#1D2F49",
-    maxHeight: 200,
-    zIndex: 2000,
     elevation: 10,
-    minWidth: "60%",
-  },
-
-  dropdownContent: {
-    borderRadius: 8,
-    overflow: "hidden",
   },
 
   item: {

@@ -9,9 +9,11 @@ import AstreSelector from "../components/AstresVisibles";
 import * as Astronomy from "astronomy-engine";
 import { FIXED_COORDINATES } from "../modules/logiqueAstres";
 import { filtrerAstresParEquipement } from "../modules/filtreAstresParEquipement";
+import { useIsFocused } from "@react-navigation/native";
 
 export default function BoussoleAndroid() {
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
 
   const user = useSelector((state) => state.user.value); // On récupère les infos du store (token, nickname, etc.)
   const visibleAstres = useSelector((state) => state.astre.visibleAstres);
@@ -24,6 +26,7 @@ export default function BoussoleAndroid() {
   const [astreFocus, setAstreFocus] = useState(null);
   const [locationHeading, setLocationHeading] = useState(0);
   const isAligned = useSelector((state) => state.astre.isAligned);
+
   // console.log(visibleAstres);
   // console.log(useSelector((state) => state.astre));
   useEffect(() => {
@@ -88,6 +91,12 @@ export default function BoussoleAndroid() {
   }, []);
 
   useEffect(() => {
+    if (!isFocused) {
+      setAstreFocus(null);
+    }
+  }, [isFocused]);
+
+  useEffect(() => {
     if (!currentPosition || !astreFocus || astreFocus === "...") return;
 
     const observer = new Astronomy.Observer(
@@ -127,10 +136,12 @@ export default function BoussoleAndroid() {
 
     if (horFocus.altitude > 0) {
       dispatch(setIsAligned(distanceHorizontale <= 3));
-      if (distanceHorizontale <= 3) setTarget(`⭐ ${astreFocus} en vue !`);
-      else if (distanceHorizontale < 10) setTarget("🥵 C'est chaud...");
-      else if (distanceHorizontale < 20) setTarget("🫠 Tu te rapproches...");
-      else setTarget("🥶 C'est froid...");
+      if (distanceHorizontale <= 4) setTarget(`⭐ ${astreFocus} en vue !`);
+      else if (distanceHorizontale < 25) setTarget("🥵 C'est chaud...");
+      else if (distanceHorizontale < 50) setTarget("🫠 Tu te rapproches...");
+      else if (distanceHorizontale < 75) setTarget("🥶 C'est froid...");
+      else if (distanceHorizontale < 100) setTarget("❄️ C'est glacial...");
+      else setTarget("🧊 Aussi froid que l'espace");
     } else {
       setTarget("L'astre est sous la ligne d'horizon");
       dispatch(setIsAligned(false));
@@ -183,35 +194,15 @@ const styles = StyleSheet.create({
 
   headerPadding: {
     width: "100%",
-    height: 150,
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 10,
+    marginVertical: 40,
   },
 
   content: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-
-  titre: {
-    fontSize: 48,
-    color: "#FFFFFF",
-    fontWeight: "bold",
-    fontFamily: "Inter",
-  },
-
-  h2: {
-    fontSize: 32,
-    color: "#FFFFFF",
-    fontFamily: "Inter",
-  },
-
-  h3: {
-    fontSize: 24,
-    color: "#5B8CFF",
-    fontFamily: "Inter",
   },
 
   body: {
@@ -221,12 +212,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  body2: {
-    fontSize: 14,
-    color: "#ADB5BD",
-    fontFamily: "Inter",
-  },
-
   card: {
     backgroundColor: "#151C2F",
     paddingHorizontal: 20,
@@ -234,29 +219,10 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderRadius: 15,
     alignSelf: "stretch",
-    marginTop: 20,
     borderWidth: 1,
     borderColor: "#1D2F49",
     color: "#FFFFFF",
     marginHorizontal: 20,
-  },
-
-  button: {
-    alignSelf: "stretch",
-    backgroundColor: "#5B8CFF",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    marginTop: 30,
-    alignItems: "center",
-  },
-
-  buttonPressed: {
-    backgroundColor: "#3E63DD",
-  },
-  buttonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
+    marginVertical: 30,
   },
 });
