@@ -5,9 +5,12 @@ import {
   Animated,
   StyleSheet,
   Dimensions,
+  Easing,
 } from "react-native";
 
 const { width, height } = Dimensions.get("window");
+
+const COLORS = ["#FF6B9D", "#C084FC", "#60A5FA", "#FCD34D", "#FFFFFF"];
 
 const generateStars = (count) => {
   return Array.from({ length: count }, (_, i) => ({
@@ -17,10 +20,11 @@ const generateStars = (count) => {
     size: Math.random() * 3 + 1,
     delay: Math.random() * 300,
     duration: Math.random() * 500 + 500,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)], //couleur aléatoire
   }));
 };
 
-const STARS = generateStars(60);
+const STARS = generateStars(200);
 
 function Star({ star }) {
   const opacity = useRef(new Animated.Value(0)).current;
@@ -32,11 +36,13 @@ function Star({ star }) {
         Animated.timing(opacity, {
           toValue: 1,
           duration: star.duration,
+          easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
         Animated.timing(opacity, {
           toValue: 0.1,
           duration: star.duration,
+          easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
       ]).start(() => animate());
@@ -53,7 +59,7 @@ function Star({ star }) {
         width: star.size,
         height: star.size,
         borderRadius: star.size / 2,
-        backgroundColor: "#FFFFFF",
+        backgroundColor: star.color,
         opacity,
       }}
     />
@@ -61,33 +67,76 @@ function Star({ star }) {
 }
 
 export default function LoadingModal({ visible }) {
-  const rotate = useRef(new Animated.Value(0)).current;
+  const scaleIcon = useRef(new Animated.Value(1)).current;
+  const scaleText = useRef(new Animated.Value(0.8)).current;
+  const opacityText = useRef(new Animated.Value(1)).current;
 
-  const scale = useRef(new Animated.Value(1)).current;
-
-useEffect(() => {
-  if (visible) {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(scale, {
-          toValue: 1.2,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-        Animated.timing(scale, {
-          toValue: 1,
-          duration: 800,
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-  }
-}, [visible]);
-
-  const spin = rotate.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0deg", "360deg"],
-  });
+  useEffect(() => {
+    if (visible) {
+      Animated.loop(
+        Animated.sequence([
+          //logo pulse, texte discret
+          Animated.parallel([
+            Animated.sequence([
+              Animated.timing(scaleIcon, {
+                toValue: 1.2,
+                duration: 600,
+                easing: Easing.inOut(Easing.ease),
+                useNativeDriver: true,
+              }),
+              Animated.timing(scaleIcon, {
+                toValue: 1,
+                duration: 600,
+                easing: Easing.inOut(Easing.ease),
+                useNativeDriver: true,
+              }),
+            ]),
+            Animated.timing(opacityText, {
+              toValue: 0.8,
+              duration: 600,
+              easing: Easing.inOut(Easing.ease),
+              useNativeDriver: true,
+            }),
+            Animated.timing(scaleText, {
+              toValue: 0.9,
+              duration: 600,
+              easing: Easing.inOut(Easing.ease),
+              useNativeDriver: true,
+            }),
+          ]),
+          //texte pulse, logo discret
+          Animated.parallel([
+            Animated.sequence([
+              Animated.timing(scaleText, {
+                toValue: 1.2,
+                duration: 600,
+                easing: Easing.inOut(Easing.ease),
+                useNativeDriver: true,
+              }),
+              Animated.timing(scaleText, {
+                toValue: 1,
+                duration: 600,
+                easing: Easing.inOut(Easing.ease),
+                useNativeDriver: true,
+              }),
+            ]),
+            Animated.timing(opacityText, {
+              toValue: 1,
+              duration: 600,
+              easing: Easing.inOut(Easing.ease),
+              useNativeDriver: true,
+            }),
+            Animated.timing(scaleIcon, {
+              toValue: 0.9,
+              duration: 600,
+              easing: Easing.inOut(Easing.ease),
+              useNativeDriver: true,
+            }),
+          ]),
+        ])
+      ).start();
+    }
+  }, [visible]);
 
   return (
     <Modal visible={visible} transparent animationType="fade">
@@ -95,13 +144,25 @@ useEffect(() => {
         {STARS.map((star) => (
           <Star key={star.id} star={star} />
         ))}
-        <Animated.View style={{ transform: [{ scale }] }}>
-  <Animated.Image
-    source={require("../assets/Logo_Astrodex_icon.png")}
-    style={styles.logo}
-    resizeMode="contain"
-  />
-</Animated.View>
+        <Animated.View style={{ transform: [{ scale: scaleIcon }] }}>
+          <Animated.Image
+            source={require("../assets/Logo_icon_only.png")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </Animated.View>
+        <Animated.Image
+  source={require("../assets/Logo_text_only.png")}
+  style={[
+    styles.textLogo,
+    {
+      transform: [{ scale: scaleText }],
+      opacity: opacityText,
+      tintColor: "#C9A84C", //texte doré
+    },
+  ]}
+  resizeMode="contain"
+/>
       </View>
     </Modal>
   );
@@ -115,7 +176,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    width: 250,
-    height: 250,
+    width: 200,
+    height: 200,
+  },
+  textLogo: {
+    width: 200,
+    height: 80,
+    marginTop: 10,
   },
 });
