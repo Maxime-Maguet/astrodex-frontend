@@ -125,11 +125,11 @@ export default function ObservationScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar hidden={true} />
-      {/* <ScrollView
+       <ScrollView
         nestedScrollEnabled={true}
         style={{ width: "100%" }}
         contentContainerStyle={styles.scrollContent}
-      > */}
+      > 
       <Header title="Observation" />
       {equip()}
       {platformOS()}
@@ -139,7 +139,7 @@ export default function ObservationScreen({ navigation }) {
         onPress={handleCapture}
       />
       <ObservationModal visible={modalVisible} closeModal={closeModal} />
-      {/* </ScrollView> */}
+       </ScrollView> 
     </View>
   );
 }
