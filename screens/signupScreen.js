@@ -11,7 +11,7 @@ import {
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
+import GradientImage from "../components/GradientImage";
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
 
@@ -76,6 +76,7 @@ export default function SignupScreen({ navigation }) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <View style={styles.container}>
+        <GradientImage />
         <Text style={styles.title}>Inscription</Text>
         <View style={styles.formContainer}>
           <TextInput

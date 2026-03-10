@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image } from "react-native";
 export default function AstreCard(props) {
   return (
     <View style={styles.card}>
-      <Image source={{ uri: props.imageUrl }} style={styles.image}  />
+      <Image source={{ uri: props.imageUrl }} style={styles.image} />
       <View style={styles.container}>
         <Text style={styles.astreName}>{props.name}</Text>
       </View>
@@ -18,15 +18,13 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginHorizontal: 20,
     alignItems: "center",
-    
   },
 
   image: {
     width: 110,
     height: 110,
-borderRadius: 55,
+    borderRadius: 55,
     marginBottom: 10,
-    
   },
 
   container: {

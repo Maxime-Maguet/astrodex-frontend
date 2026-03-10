@@ -121,7 +121,7 @@ export default function HomeScreen() {
 
       setVisibleAstresState(filteredAstres);
       dispatch(setVisibleAstres(visibles));
-       setTimeout(() => setIsLoading(false), 4000); //4 secondes de chargement
+      setTimeout(() => setIsLoading(false), 4000); //4 secondes de chargement
     }
   }, [astres, weather]);
 
@@ -183,7 +183,9 @@ export default function HomeScreen() {
               message={message}
             />
           ) : (
-            <Text style={{ color: "grey" }}>Impossible d'afficher la météo</Text>
+            <Text style={{ color: "grey" }}>
+              Impossible d'afficher la météo
+            </Text>
           )}
         </View>
       </View>

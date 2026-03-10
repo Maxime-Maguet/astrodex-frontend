@@ -32,7 +32,7 @@ export default function ObservationScreen({ navigation }) {
   const selectedAstre = useSelector((state) => state.astre.astreFocus);
   const capturedAstres = useSelector((state) => state.astre.value);
   const user = useSelector((state) => state.user.value);
-  console.log(equipement);
+  //console.log(equipement);
   const isAlreadyCaptured = capturedAstres.some(
     (astre) => astre.name === selectedAstre,
   );
