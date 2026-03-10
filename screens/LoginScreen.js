@@ -81,13 +81,13 @@ export default function LoginScreen({ navigation }) {
       });
   };
   // permet de mettre la font en place
-  const [fontsLoaded] = useFonts({
-    ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
-  });
+  // const [fontsLoaded] = useFonts({
+  //   ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
+  // });
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
 
   return (
     // KeyboardAvoidingView évite de cacher les inputs
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   inner: { flexGrow: 1, alignItems: "center" },
   title: {
-    fontWeight: "bold",
+    // fontWeight: "bold",
     marginBottom: 70,
     color: "#FFFFFF",
   },

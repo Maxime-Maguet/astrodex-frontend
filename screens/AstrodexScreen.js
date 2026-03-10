@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#0B0F1A",
-    paddingTop: Platform.OS === "ios" ? 20 : 0,
+    paddingTop: 20,
   },
   scrollView: {
     flex: 1,

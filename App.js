@@ -19,6 +19,7 @@ import AstrodexScreen from "./screens/AstrodexScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import EquipementSelectionScreen from "./screens/EquipementSelectionScreen";
 import { LinearGradient } from "expo-linear-gradient";
+import { useFonts } from "expo-font";
 
 // import {
 //   persistStore,
@@ -84,6 +85,13 @@ function TabNavigator() {
 }
 
 export default function App() {
+  const [fontsLoaded] = useFonts({
+    ShuttleX: require("./assets/fonts/SHUTTLE-X.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
   return (
     <Provider store={store}>
       <NavigationContainer>
@@ -96,7 +104,6 @@ export default function App() {
           />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
-      
       </NavigationContainer>
     </Provider>
   );

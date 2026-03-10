@@ -51,8 +51,8 @@ export default function SignupScreen({ navigation }) {
         password: password,
       }),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         console.log(data);
         if (data.token) {
           dispatch(
@@ -73,14 +73,14 @@ export default function SignupScreen({ navigation }) {
     }
   }
 
-  // permet de mettre la font en place
-  const [fontsLoaded] = useFonts({
-    ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
-  });
+  // // permet de mettre la font en place
+  // const [fontsLoaded] = useFonts({
+  //   ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
+  // });
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
 
   return (
     <View style={{ flex: 1 }}>
@@ -88,7 +88,8 @@ export default function SignupScreen({ navigation }) {
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <View style={styles.container}>
           <View style={styles.image}>
             <Image
@@ -99,14 +100,15 @@ export default function SignupScreen({ navigation }) {
 
           <ScrollView contentContainerStyle={styles.formContainer}>
             <Text
-              style={[styles.title, { fontFamily: "ShuttleX", fontSize: 45 }]}>
+              style={[styles.title, { fontFamily: "ShuttleX", fontSize: 45 }]}
+            >
               Inscription
             </Text>
             <View style={styles.formContainer}>
               <TextInput
                 placeholder="Email"
                 placeholderTextColor="#000000"
-                onChangeText={value => {
+                onChangeText={(value) => {
                   setEmail(value);
                   if (emailError) {
                     setEmailError(false);
@@ -121,7 +123,7 @@ export default function SignupScreen({ navigation }) {
               <TextInput
                 placeholder="Pseudo"
                 placeholderTextColor="#000000"
-                onChangeText={value => {
+                onChangeText={(value) => {
                   setUsername(value);
                   if (usernameError) {
                     setUsernameError(false);
@@ -138,7 +140,7 @@ export default function SignupScreen({ navigation }) {
               <View style={styles.passwordContainer}>
                 <TextInput
                   placeholder="Mot de passe"
-                  onChangeText={value => setPassword(value)}
+                  onChangeText={(value) => setPassword(value)}
                   placeholderTextColor="#000000"
                   secureTextEntry={!passwordVisible}
                   value={password}
@@ -147,7 +149,8 @@ export default function SignupScreen({ navigation }) {
 
                 <TouchableOpacity
                   onPress={() => setPasswordVisible(!passwordVisible)}
-                  style={{ paddingRight: 15 }}>
+                  style={{ paddingRight: 15 }}
+                >
                   <MaterialCommunityIcons
                     name={getIconName()}
                     size={22}
@@ -161,7 +164,8 @@ export default function SignupScreen({ navigation }) {
               <Text style={styles.Soustitle}>Vous avez un compte ?</Text>
               <TouchableOpacity
                 onPress={() => navigation.navigate("Login")}
-                style={styles.button1}>
+                style={styles.button1}
+              >
                 <Text style={styles.buttonSigup}>Retour</Text>
               </TouchableOpacity>
             </View>

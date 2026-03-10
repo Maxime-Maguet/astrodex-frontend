@@ -88,7 +88,7 @@ export default function EquipementSelectionScreen({ navigation }) {
         colors={["#0B0F1A", "#1E2A44"]}
       >
         <View style={styles.container}>
-          <Text style={styles.choixEquipement}>Choisis ton équipement</Text>
+          <Text style={styles.choixEquipement}>Quel est ton matériel ?</Text>
           <View style={styles.buttoncontainer}>
             {equipementsData.map((item) => (
               <View key={item.id} style={styles.allIcons}>
@@ -160,11 +160,10 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#0B0F1A",
-    paddingTop: Platform.OS === "ios" ? 20 : 0,
+    paddingTop: 20,
   },
   container: {
     flex: 1,
-    // backgroundColor: "#0B0F1A",
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
@@ -234,13 +233,15 @@ const styles = StyleSheet.create({
     color: "#3B6DED",
     fontSize: 22,
     fontWeight: "700",
-    marginBottom: 40,
+    marginBottom: 60,
     letterSpacing: 3,
   },
   desc: {
     fontSize: 16,
     color: "#ffffff",
     marginTop: 3,
+    textAlign: "center",
+    letterSpacing: 2,
   },
 
   modalOverlay: {
@@ -257,10 +258,18 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: "center",
     gap: 10,
+    shadowColor: "#5B8CFF",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    elevation: 10,
+    borderWidth: 1,
+    borderColor: "rgba(91, 140, 255, 0.2)",
   },
   modalTitle: {
     color: "#3B6DED",
     fontSize: 20,
     fontWeight: "bold",
+    letterSpacing: 2,
   },
 });

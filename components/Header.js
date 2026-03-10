@@ -2,10 +2,12 @@ import { StyleSheet, Text, View, SafeAreaView } from "react-native";
 
 export default function Header(props) {
   return (
-    <SafeAreaView style={styles.safeArea } >
+    <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <Text style={[styles.titre, { fontFamily: "ShuttleX", fontSize: 48 }]} >{props.title}</Text>
-      </View> 
+        <Text style={[styles.titre, { fontFamily: "ShuttleX", fontSize: 48 }]}>
+          {props.title}
+        </Text>
+      </View>
     </SafeAreaView>
   );
 }
@@ -23,7 +25,7 @@ const styles = StyleSheet.create({
   titre: {
     fontSize: 48,
     color: "#FFFFFF",
-    fontWeight: "bold",
-    fontFamily: "Inter",
+    // fontWeight: "bold",
+    // fontFamily: "Inter",
   },
 });
