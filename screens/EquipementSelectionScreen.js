@@ -37,13 +37,9 @@ export default function EquipementSelectionScreen({ navigation }) {
       body: JSON.stringify({ equipement: equipement, token: user.token }),
     })
       .then((response) => response.json())
-      .then((data) => {
-        //console.log(data);
+      .then((data) => {  
         if (data) {
-          console.log(data.equipement, " Equipement reçu !");
-
-          navigation.navigate("TabNavigator", { screen: "Acceuil" });
-
+         
           dispatch(updateEquipement(data.equipement));
         }
         const ecranOrigine = route.params?.from;
@@ -99,7 +95,7 @@ export default function EquipementSelectionScreen({ navigation }) {
           <TouchableOpacity
             onPress={() => setEquipement("Lunette astronomique")}
             style={[
-              styles.button,
+              styles.button , 
               equipement === "Lunette astronomique" && {
                 backgroundColor: "#1A237E",
               },

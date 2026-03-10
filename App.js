@@ -19,7 +19,7 @@ import AstrodexScreen from "./screens/AstrodexScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import EquipementSelectionScreen from "./screens/EquipementSelectionScreen";
 import { LinearGradient } from "expo-linear-gradient";
-import { useSelector } from "react-redux";
+
 // import {
 //   persistStore,
 //   persistReducer,
@@ -83,36 +83,6 @@ function TabNavigator() {
   );
 }
 
-//return (
-//<NavigationContainer>
-//<Stack.Navigator screenOptions={{ headerShown: false }}>
-
-//</Stack.Navigator>
-//</NavigationContainer>
-//);
-
-function AppNavigator() {
-  const token = useSelector((state) => state.user.value.token);
-
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {token ? (
-        <>
-          <Stack.Screen name="TabNavigator" component={TabNavigator} />
-          <Stack.Screen
-            name="EquipementSelectionScreen"
-            component={EquipementSelectionScreen}
-          />
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Inscription" component={SignupScreen} />
-        </>
-      )}
-    </Stack.Navigator>
-  );
-}
 export default function App() {
   return (
     <Provider store={store}>
@@ -126,6 +96,7 @@ export default function App() {
           />
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
         </Stack.Navigator>
+      
       </NavigationContainer>
     </Provider>
   );
