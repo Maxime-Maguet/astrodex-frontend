@@ -1,4 +1,5 @@
 import { StyleSheet, View, Text, Dimensions } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const ZOOM_FACTOR = 4;
@@ -43,8 +44,9 @@ const CompassContent = ({ targetAzimuth, isAligned }) => (
 
     {targetAzimuth !== null && isAligned && (
       <View style={[styles.target, { left: targetAzimuth * ZOOM_FACTOR - 15 }]}>
-        <Text style={{ fontSize: 10 }}>⭕</Text>
-        {console.log(targetAzimuth * ZOOM_FACTOR - 15)}
+        <Text>
+          <Ionicons name="planet" size={16} color="#FFFFFF" />
+        </Text>
       </View>
     )}
   </View>
@@ -53,15 +55,19 @@ const CompassContent = ({ targetAzimuth, isAligned }) => (
 const styles = StyleSheet.create({
   container: {
     width: SCREEN_WIDTH,
-    height: 80,
+    height: 100,
     backgroundColor: "rgba(255, 255, 255, 0)",
     justifyContent: "center",
     overflow: "hidden",
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    borderColor: "#1D2F49",
   },
 
   target: {
     position: "absolute",
-    top: "50%",
+    top: "42%",
+    bottom: "42%",
     width: 20,
     height: 20,
     alignItems: "center",

@@ -124,7 +124,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     width: "100%",
     alignItems: "center",
-    paddingBottom: 40,
   },
 
   button: {
@@ -133,7 +132,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
-    marginTop: 30,
     alignItems: "center",
     marginHorizontal: 20,
     minWidth: "90%",
@@ -157,6 +155,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#FFFFFF",
     fontFamily: "Inter",
-    marginBottom: 10,
   },
 });
