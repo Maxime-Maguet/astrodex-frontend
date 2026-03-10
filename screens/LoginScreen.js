@@ -17,7 +17,7 @@ import { login } from "../reducers/user";
 import { TouchableWithoutFeedback } from "react-native";
 import LoadingModal from "../components/LoadingModal";
 import GradientImage from "../components/GradientImage";
-
+import { useFonts } from "expo-font";
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function LoginScreen({ navigation }) {
@@ -29,7 +29,7 @@ export default function LoginScreen({ navigation }) {
   const [loading, setLoading] = useState(false); //Chargement
   const handleSubmit = async () => {
     Keyboard.dismiss(); //fermeture du clavier
-    await new Promise((resolve) => setTimeout(resolve, 100)); //temps pour que le clavier se ferme
+    await new Promise(resolve => setTimeout(resolve, 100)); //temps pour que le clavier se ferme
 
     //reset erreurs
     setUsernameError("");
@@ -51,13 +51,18 @@ export default function LoginScreen({ navigation }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username, password: password }),
     })
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         setLoading(false);
 
         if (data.result) {
           dispatch(
-            login({ token: data.token, username: username, xp: data.xp, avatar: data.avatar }),
+            login({
+              token: data.token,
+              username: username,
+              xp: data.xp,
+              avatar: data.avatar,
+            }),
           );
 
           navigation.replace("TabNavigator");
@@ -72,6 +77,15 @@ export default function LoginScreen({ navigation }) {
         }
       });
   };
+  // permet de mettre la font en place
+  const [fontsLoaded] = useFonts({
+    ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     // KeyboardAvoidingView évite de cacher les inputs
     <View style={{ flex: 1 }}>
@@ -79,12 +93,11 @@ export default function LoginScreen({ navigation }) {
       <LoadingModal visible={loading} />
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+        behavior={Platform.OS === "ios" ? "padding" : undefined}>
         <View style={styles.image}>
           <Image
             source={require("../assets/Astrodex.png")}
-            style={{ width: 200, height: 200 }}
+            style={styles.astrodex}
           />
         </View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -92,12 +105,15 @@ export default function LoginScreen({ navigation }) {
             <Text style={styles.Gtitle}>
               Explore le ciel et collecte les astres !
             </Text>
-            <Text style={styles.title}>Connexion</Text>
+            <Text
+              style={[styles.title, { fontFamily: "ShuttleX", fontSize: 45 }]}>
+              Connexion
+            </Text>
 
             <TextInput
               placeholder="Username"
               placeholderTextColor="#000000"
-              onChangeText={(value) => setUsername(value)}
+              onChangeText={value => setUsername(value)}
               value={username}
               style={styles.input}
             />
@@ -109,7 +125,7 @@ export default function LoginScreen({ navigation }) {
               placeholder="Mot de passe"
               placeholderTextColor="#000000"
               secureTextEntry={true}
-              onChangeText={(value) => setPassword(value)}
+              onChangeText={value => setPassword(value)}
               value={password}
               style={styles.input}
             />
@@ -120,8 +136,7 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity
               onPress={handleSubmit}
               style={[styles.button, loading && styles.buttonDisabled]}
-              disabled={loading}
-            >
+              disabled={loading}>
               <Text style={styles.buttonText}>
                 {loading ? "Connexion en cours..." : "SE CONNECTER"}
               </Text>
@@ -130,8 +145,7 @@ export default function LoginScreen({ navigation }) {
             <Text style={styles.Soustitle}>Vous n'avez pas de compte ?</Text>
             <TouchableOpacity
               onPress={() => navigation.navigate("Inscription")}
-              style={styles.button1}
-            >
+              style={styles.button1}>
               <Text style={styles.buttonSignin}>S'inscrire</Text>
             </TouchableOpacity>
           </ScrollView>
@@ -143,12 +157,17 @@ export default function LoginScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  inner: { flexGrow: 1, justifyContent: "center", alignItems: "center" },
+  inner: { flexGrow: 1, alignItems: "center" },
   title: {
-    fontSize: 32,
     fontWeight: "bold",
-    marginBottom: 40,
+    marginBottom: 70,
     color: "#FFFFFF",
+  },
+
+  astrodex: {
+    width: 100,
+    height: 100,
+    marginVertical: 35,
   },
   input: {
     width: "85%",
@@ -165,9 +184,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
   },
+
   buttonText: { color: "#FFFFFF", fontWeight: "bold", fontSize: 16 },
+
   Soustitle: {
     color: "white",
+    marginVertical: 20,
+    fontFamily: "Inter",
+    fontWeight: "bold",
   },
   buttonSignin: {
     color: "#2f95dc",

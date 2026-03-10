@@ -24,7 +24,8 @@ import { updateXp } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingModal from "../components/LoadingModal";
 import { MagnitudeLimite } from "../modules/filtreAstresParEquipement";
-
+import { useFonts } from "expo-font";
+import Header from "../components/Header";
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
 
@@ -156,13 +157,21 @@ export default function HomeScreen() {
     );
   });
 
+  const [fontsLoaded] = useFonts({
+    ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <LoadingModal visible={isLoading} />
       <StatusBar hidden={true} />
       <View style={styles.container}>
         <View style={styles.accueil}>
-          <Text style={styles.accueil1}>Accueil</Text>
+          <Header title="Accueil"/>
           <View style={styles.card}>
             {astroInfo && (
               <View style={styles.imageContainer}>

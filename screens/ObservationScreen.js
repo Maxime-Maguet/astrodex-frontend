@@ -8,7 +8,7 @@ import * as NavigationBar from "expo-navigation-bar";
 import { useDispatch, useSelector } from "react-redux";
 import { addAstre } from "../reducers/astre";
 import { updateEquipement } from "../reducers/user";
-
+import { useFonts } from "expo-font";
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function ObservationScreen({ navigation }) {
@@ -90,6 +90,16 @@ export default function ObservationScreen({ navigation }) {
     }
   }, []);
 
+
+
+  const [fontsLoaded] = useFonts({
+    ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar hidden={true} />
@@ -98,7 +108,7 @@ export default function ObservationScreen({ navigation }) {
         style={{ width: "100%" }}
         contentContainerStyle={styles.scrollContent}
       >
-        <Header title="Observation" />
+        <Header title="Observation"  />
         <Text style={styles.body}>
           Tu utilises comme équipement : {equipement ?? "Oeil nu"}
         </Text>

@@ -31,7 +31,6 @@ export default function ProfileScreen(route) {
   const [modalDecoVisible, setModalDecoVisible] = useState(false);
   const [image, setImage] = useState(null);
 
-
   useEffect(() => {
     if (isFocused && user.token) {
       fetch(`${apiUrl}/users/profile/${user.token}`)
@@ -95,40 +94,39 @@ export default function ProfileScreen(route) {
     }
   }
 
-
   const takePicture = async () => {
-// Demande la permission d'utiliser la caméra avec ImagePicker
+    // Demande la permission d'utiliser la caméra avec ImagePicker
     const permission = await ImagePicker.requestCameraPermissionsAsync();
-// Si l'utilisateur refuse, on arrête
+    // Si l'utilisateur refuse, on arrête
     if (!permission.granted) {
       Alert.alert("Permission caméra requise");
       return;
     }
-  // Ouvre la caméra du téléphone
+    // Ouvre la caméra du téléphone
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.8,
     });
-// Si l'utilisateur annule la prise de photo, on arrête (utilisation de canceled comme vu sur expo)
+    // Si l'utilisateur annule la prise de photo, on arrête (utilisation de canceled comme vu sur expo)
     if (result.canceled) return;
 
-// On récupère la photo prise
+    // On récupère la photo prise
     const photo = result.assets[0];
 
     setImage(photo.uri);
 
     const formData = new FormData();
- // Ajoute la photo au FormData
+    // Ajoute la photo au FormData
     formData.append("photoFromFront", {
       uri: photo.uri,
       name: "photo.jpg",
       type: "image/jpeg",
     });
-  // Ajoute le token utilisateur pour identifier le user
+    // Ajoute le token utilisateur pour identifier le user
     formData.append("token", user.token);
 
-// Envoie la photo au backend
+    // Envoie la photo au backend
     fetch(`${process.env.EXPO_PUBLIC_API_URL}/users/upload`, {
       method: "POST",
       body: formData,
@@ -139,20 +137,31 @@ export default function ProfileScreen(route) {
         dispatch(addPhoto(data.avatar));
       });
   };
-// image de l'avatar par défault
+  // image de l'avatar par défault
   const defaultAvatar =
     "https://res.cloudinary.com/dlywrsigk/image/upload/v1773055116/Profil_etvtzm.png";
+
+// on débute avec l'image de profil par défault
+let avatarSource = {uri: defaultAvatar} ;
+// on vérifie dans le backend si une image est stocké
+if (user.avatar) {
+  avatarSource = { uri: user.avatar };
+}
+// si l'utilisateur a pris la photo on la remplace par la nouvelle image
+if (image) {
+  avatarSource = { uri: image };
+}
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar hidden={true} />
       <Header title="Profil" />
-      <TouchableOpacity >
+      <TouchableOpacity>
         <Image
           style={styles.avatar}
-          source={{
-            uri: image || user.avatar || defaultAvatar,
-          }}
+          source={
+            avatarSource
+          }
         />
       </TouchableOpacity>
       <TouchableOpacity onPress={takePicture}>
@@ -218,13 +227,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  
-
   imageText: {
     color: "#FFFFFF",
-    marginTop: -10,
+
     marginBottom: 25,
-    
   },
 
   header: {

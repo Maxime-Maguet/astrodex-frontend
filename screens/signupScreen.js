@@ -7,11 +7,14 @@ import {
   TouchableOpacity,
   View,
   Platform,
+  Image,
+  ScrollView,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import GradientImage from "../components/GradientImage";
+import { useFonts } from "expo-font";
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
 
@@ -48,8 +51,8 @@ export default function SignupScreen({ navigation }) {
         password: password,
       }),
     })
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         console.log(data);
         if (data.token) {
           dispatch(
@@ -70,93 +73,133 @@ export default function SignupScreen({ navigation }) {
     }
   }
 
-  return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View style={styles.container}>
-        <GradientImage />
-        <Text style={styles.title}>Inscription</Text>
-        <View style={styles.formContainer}>
-          <TextInput
-            placeholder="Email"
-            placeholderTextColor="#000000"
-            onChangeText={(value) => {
-              setEmail(value);
-              if (emailError) {
-                setEmailError(false);
-              }
-            }}
-            value={email}
-            style={styles.input}
-          />
-          {emailError && (
-            <Text style={styles.error}>Adresse e-mail non valide</Text>
-          )}
-          <TextInput
-            placeholder="Pseudo"
-            placeholderTextColor="#000000"
-            onChangeText={(value) => {
-              setUsername(value);
-              if (usernameError) {
-                setUsernameError(false);
-              }
-            }}
-            value={username}
-            style={styles.input}
-          />
-          {usernameError && (
-            <Text style={styles.errorUsername}>Utilisateur déjà existant</Text>
-          )}
-          <View style={styles.passwordContainer}>
-            <TextInput
-              placeholder="Mot de passe"
-              onChangeText={(value) => setPassword(value)}
-              placeholderTextColor="#000000"
-              secureTextEntry={!passwordVisible}
-              value={password}
-              style={styles.passwordInput}
-            />
+  // permet de mettre la font en place
+  const [fontsLoaded] = useFonts({
+    ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
+  });
 
-            <TouchableOpacity
-              onPress={() => setPasswordVisible(!passwordVisible)}
-              style={{ paddingRight: 15 }}
-            >
-              <MaterialCommunityIcons
-                name={getIconName()}
-                size={22}
-                color="#131212"
-              />
-            </TouchableOpacity>
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  return (
+    <View style={{ flex: 1 }}>
+      <GradientImage />
+
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <View style={styles.container}>
+          <View style={styles.image}>
+            <Image
+              source={require("../assets/Astrodex.png")}
+              style={styles.astrodex}
+            />
           </View>
-          <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-            <Text style={styles.textButton}>S'inscrire</Text>
-          </TouchableOpacity>
-          <Text style={styles.Soustitle}>Vous avez un compte ?</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Login")}
-            style={styles.button1}
-          >
-            <Text style={styles.buttonSigup}>Retour</Text>
-          </TouchableOpacity>
+
+          <ScrollView contentContainerStyle={styles.formContainer}>
+            <Text
+              style={[styles.title, { fontFamily: "ShuttleX", fontSize: 45 }]}>
+              Inscription
+            </Text>
+            <View style={styles.formContainer}>
+              <TextInput
+                placeholder="Email"
+                placeholderTextColor="#000000"
+                onChangeText={value => {
+                  setEmail(value);
+                  if (emailError) {
+                    setEmailError(false);
+                  }
+                }}
+                value={email}
+                style={styles.input}
+              />
+              {emailError && (
+                <Text style={styles.error}>Adresse e-mail non valide</Text>
+              )}
+              <TextInput
+                placeholder="Pseudo"
+                placeholderTextColor="#000000"
+                onChangeText={value => {
+                  setUsername(value);
+                  if (usernameError) {
+                    setUsernameError(false);
+                  }
+                }}
+                value={username}
+                style={styles.input}
+              />
+              {usernameError && (
+                <Text style={styles.errorUsername}>
+                  Utilisateur déjà existant
+                </Text>
+              )}
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  placeholder="Mot de passe"
+                  onChangeText={value => setPassword(value)}
+                  placeholderTextColor="#000000"
+                  secureTextEntry={!passwordVisible}
+                  value={password}
+                  style={styles.passwordInput}
+                />
+
+                <TouchableOpacity
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                  style={{ paddingRight: 15 }}>
+                  <MaterialCommunityIcons
+                    name={getIconName()}
+                    size={22}
+                    color="#131212"
+                  />
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+                <Text style={styles.textButton}>S'inscrire</Text>
+              </TouchableOpacity>
+              <Text style={styles.Soustitle}>Vous avez un compte ?</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Login")}
+                style={styles.button1}>
+                <Text style={styles.buttonSigup}>Retour</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
         </View>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  formContainer: {
+    flexGrow: 1,
+    alignItems: "center",
+    width: "100%",
+    marginVertical: -5,
+  },
+
+  background: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+  },
+
   container: {
     flex: 1,
-    backgroundColor: "#0B0F1A",
-    alignItems: "center",
+  },
+
+  astrodex: {
+    width: 100,
+    height: 100,
+    marginVertical: 55,
   },
 
   title: {
     color: "#ffffff",
     fontSize: 48,
-    marginTop: 80,
+    marginVertical: 35,
   },
 
   button: {
@@ -184,13 +227,6 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontFamily: "Inter",
     borderRadius: 10,
-  },
-
-  formContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
   },
 
   error: {
@@ -225,7 +261,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontFamily: "Inter",
-    marginTop: 20,
+    marginVertical: 20,
   },
 
   passwordContainer: {
@@ -241,5 +277,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
     color: "#1A1C20",
+  },
+
+  image: {
+    alignItems: "center",
+    marginVertical: 35,
   },
 });
