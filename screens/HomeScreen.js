@@ -43,6 +43,7 @@ export default function HomeScreen() {
   const [astroInfo, setAstroInfo] = useState(null);
   const equipement = useSelector((state) => state.user.value.equipement);
   const user = useSelector((state) => state.user.value);
+  const capturedAstres = useSelector((state) => state.astre.value);
 
   useEffect(() => {
     if (user.token) {
@@ -147,14 +148,25 @@ export default function HomeScreen() {
   }, [astres, weather, equipement]);
 
   const astresList = visibleAstres.map((data, i) => {
+   //const validatedastre = capturedAstres.some((astre) => astre._id === data._id);
+   //if(validatedastre){
     return (
       <HomeAstresCard
         key={data._id}
         name={data.name}
         imageUrl={data.imageUrl}
+     // validatedastre={validatedastre}
       />
     );
+  //} else {
+    //return (
+      //<HomeAstresCard
+        //key={data._id}
+        //name={data.name}
+        //imageUrl={data.imageUrl} />
+    //)}
   });
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
