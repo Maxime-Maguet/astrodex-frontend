@@ -23,7 +23,7 @@ export default function ObservationScreen({ navigation }) {
   const selectedAstre = useSelector((state) => state.astre.astreFocus);
   const capturedAstres = useSelector((state) => state.astre.value);
   const user = useSelector((state) => state.user.value);
-  //console.log(equipement);
+  console.log(equipement);
   const isAlreadyCaptured = capturedAstres.some(
     (astre) => astre.name === selectedAstre,
   );
@@ -60,7 +60,6 @@ export default function ObservationScreen({ navigation }) {
           .then((data) => {
             if (data.result) {
               dispatch(addAstre(astreToCapture));
-              dispatch(updateEquipement(data.equipement));
               setModalVisible(true);
             } else {
               console.log("Erreur lors de la capture");
@@ -77,20 +76,18 @@ export default function ObservationScreen({ navigation }) {
     setModalVisible(false);
   };
 
-  useEffect(() => {
-    if (equipement === undefined || equipement === null) {
-      fetch(`${apiUrl}/users/profile/${user.token}`)
-        .then((res) => res.json())
-        .then((userData) => {
-          if (userData.result) {
-            const equip = userData.user.equipement;
-            dispatch(updateEquipement(equip ?? "Oeil nu"));
-          }
-        });
-    }
-  }, []);
-
-
+  //useEffect(() => {
+  //   if (equipement === undefined || equipement === null) {
+  // fetch(`${apiUrl}/users/profile/${user.token}`)
+  //   .then((res) => res.json())
+  //    .then((userData) => {
+  //       if (userData.result) {
+  //       const equip = userData.user.equipement;
+  //        dispatch(updateEquipement(equip));
+  //       }
+  //      });
+  //   }
+  // }, []);
 
   const [fontsLoaded] = useFonts({
     ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
@@ -108,9 +105,9 @@ export default function ObservationScreen({ navigation }) {
         style={{ width: "100%" }}
         contentContainerStyle={styles.scrollContent}
       >
-        <Header title="Observation"  />
+        <Header title="Observation" />
         <Text style={styles.body}>
-          Tu utilises comme équipement : {equipement ?? "Oeil nu"}
+          Tu utilises comme équipement : {equipement}
         </Text>
         <BoussoleIOS />
         <ButtonCapture
