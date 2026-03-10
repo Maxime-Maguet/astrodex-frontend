@@ -28,7 +28,7 @@ export default function AstrodexScreen() {
   const [modalVisible, setModalVisible] = useState(false); // Contrôle la visibilité de la modal
   const [captured, setCaptured] = useState(0); // Nombre d'astres capturés par l'utilisateur
   const [nombreAstre, setNombreAstre] = useState(0); // Nombre total d'astres disponibles
-
+  const [dateCapture, setDateCapture] = useState([]);
   // useIsFocused retourne true quand l'écran est actif — utilisé pour relancer les fetches à chaque visite
   const isFocused = useIsFocused();
 
@@ -96,6 +96,7 @@ export default function AstrodexScreen() {
             dispatch(setCapturedAstres(userData.user.capturedAstres));
             dispatch(updateXP(userData.user.xp));
             setCaptured(capture);
+            setDateCapture(userData.user.capturedDates);
           }
         });
     }
@@ -115,6 +116,8 @@ export default function AstrodexScreen() {
   // AstroCard affiche un overlay "NON CAPTURÉ" si isCaptured est false
   const astresList = filteredAstres.map((data, i) => {
     const isCaptured = capturedAstres.some((astre) => astre._id === data._id);
+    const capturedDate = dateCapture.find((e) => e.astreId === data._id);
+
     return (
       <AstroCard
         key={data._id}
@@ -123,6 +126,7 @@ export default function AstrodexScreen() {
         imageUrl={data.imageUrl}
         rarity={data.rarity_level}
         type={data.type}
+        date={capturedDate?.capturedAt}
         isCaptured={isCaptured}
         onDetails={() => handleDetails(data)}
       />

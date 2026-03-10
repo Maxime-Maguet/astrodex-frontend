@@ -15,6 +15,12 @@ export default function AstroCard(props) {
   // Couleur de bordure dynamique selon la rareté de l'astre
   const borderColor = rarityStyle[props.rarity];
 
+  const date = new Date(props.date).toLocaleDateString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
   return (
     <View style={styles.card}>
       {/* Image de l'astre avec verrou si non capturé */}
@@ -39,6 +45,12 @@ export default function AstroCard(props) {
         <Text style={styles.astreName}>{props.name}</Text>
         <Text style={styles.type}>{props.type}</Text>
         <Text style={styles.rarity}>{props.rarity}</Text>
+        {props.isCaptured && (
+          <View style={styles.dateContainer}>
+            <Ionicons name="calendar-clear-outline" size={20} color="#AAB3C5" />
+            <Text style={styles.date}>{date}</Text>
+          </View>
+        )}
       </View>
 
       {/* Bouton désactivé si l'astre n'est pas encore capturé */}
@@ -125,5 +137,18 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  date: {
+    color: "#AAB3C5",
+    fontSize: 12,
+    fontFamily: "Inter",
+  },
+
+  dateContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 4,
+    gap: 5,
   },
 });

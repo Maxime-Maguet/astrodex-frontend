@@ -54,12 +54,11 @@ export default function LoginScreen({ navigation }) {
       .then((data) => {
         setLoading(false);
 
-        console.log("data signin:", data);
         if (data.result) {
           dispatch(
             login({ token: data.token, username: username, xp: data.xp }),
           );
-          console.log(data.result, "bien Afficher");
+
           navigation.replace("TabNavigator");
         } else {
           if (data.error === "Username does not exist") {
@@ -75,67 +74,67 @@ export default function LoginScreen({ navigation }) {
   return (
     // KeyboardAvoidingView évite de cacher les inputs
     <View style={{ flex: 1 }}>
-    <LoadingModal visible={loading} />
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <View style={styles.image}>
-        <Image
-          source={require("../assets/Astrodex.png")}
-          style={{ width: 200, height: 200 }}
-        />
-      </View>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.inner}>
-          <Text style={styles.Gtitle}>
-            Explore le ciel et collecte les astres !
-          </Text>
-          <Text style={styles.title}>Connexion</Text>
-
-          <TextInput
-            placeholder="Username"
-            placeholderTextColor="#000000"
-            onChangeText={(value) => setUsername(value)}
-            value={username}
-            style={styles.input}
+      <LoadingModal visible={loading} />
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <View style={styles.image}>
+          <Image
+            source={require("../assets/Astrodex.png")}
+            style={{ width: 200, height: 200 }}
           />
-          {usernameError ? (
-            <Text style={styles.errorText}>{usernameError}</Text>
-          ) : null}
-
-          <TextInput
-            placeholder="Mot de passe"
-            placeholderTextColor="#000000"
-            secureTextEntry={true}
-            onChangeText={(value) => setPassword(value)}
-            value={password}
-            style={styles.input}
-          />
-          {passwordError ? (
-            <Text style={styles.errorText}>{passwordError}</Text>
-          ) : null}
-
-          <TouchableOpacity
-            onPress={handleSubmit}
-            style={[styles.button, loading && styles.buttonDisabled]}
-            disabled={loading}
-          >
-            <Text style={styles.buttonText}>
-              {loading ? "Connexion en cours..." : "SE CONNECTER"}
+        </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView contentContainerStyle={styles.inner}>
+            <Text style={styles.Gtitle}>
+              Explore le ciel et collecte les astres !
             </Text>
-          </TouchableOpacity>
+            <Text style={styles.title}>Connexion</Text>
 
-          <Text style={styles.Soustitle}>Vous n'avez pas de compte ?</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Inscription")}
-            style={styles.button1}
-          >
-            <Text style={styles.buttonSignin}>S'inscrire</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+            <TextInput
+              placeholder="Username"
+              placeholderTextColor="#000000"
+              onChangeText={(value) => setUsername(value)}
+              value={username}
+              style={styles.input}
+            />
+            {usernameError ? (
+              <Text style={styles.errorText}>{usernameError}</Text>
+            ) : null}
+
+            <TextInput
+              placeholder="Mot de passe"
+              placeholderTextColor="#000000"
+              secureTextEntry={true}
+              onChangeText={(value) => setPassword(value)}
+              value={password}
+              style={styles.input}
+            />
+            {passwordError ? (
+              <Text style={styles.errorText}>{passwordError}</Text>
+            ) : null}
+
+            <TouchableOpacity
+              onPress={handleSubmit}
+              style={[styles.button, loading && styles.buttonDisabled]}
+              disabled={loading}
+            >
+              <Text style={styles.buttonText}>
+                {loading ? "Connexion en cours..." : "SE CONNECTER"}
+              </Text>
+            </TouchableOpacity>
+
+            <Text style={styles.Soustitle}>Vous n'avez pas de compte ?</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Inscription")}
+              style={styles.button1}
+            >
+              <Text style={styles.buttonSignin}>S'inscrire</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     </View>
   );
 }

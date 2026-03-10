@@ -76,7 +76,6 @@ export default function AstroModal(props) {
               style={{ maxHeight: 100, width: "100%" }}
               contentContainerStyle={styles.scrollContent}
             >
-              {" "}
               {/* Stats techniques de l'astre */}
               <View style={styles.statsContainer}>
                 <View style={styles.stat}>

@@ -49,7 +49,7 @@ export default function BoussoleAndroid() {
               lat: location.coords.latitude,
               lon: location.coords.longitude,
             };
-            console.log("📍 Update GPS :", coords);
+
             // On met à jour l'état
             setCurrentPosition(location.coords);
             // On envoie les coordonnées dans Redux pour les utiliser partout dans l'app
