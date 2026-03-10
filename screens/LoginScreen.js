@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { login } from "../reducers/user";
 import { TouchableWithoutFeedback } from "react-native";
 import LoadingModal from "../components/LoadingModal";
+import GradientImage from "../components/GradientImage";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -74,6 +75,7 @@ export default function LoginScreen({ navigation }) {
   return (
     // KeyboardAvoidingView évite de cacher les inputs
     <View style={{ flex: 1 }}>
+      <GradientImage />
       <LoadingModal visible={loading} />
       <KeyboardAvoidingView
         style={styles.container}
@@ -140,7 +142,7 @@ export default function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0B0F1A" },
+  container: { flex: 1 },
   inner: { flexGrow: 1, justifyContent: "center", alignItems: "center" },
   title: {
     fontSize: 32,
