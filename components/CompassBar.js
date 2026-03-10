@@ -15,22 +15,22 @@ const MARKERS = [
   { label: "NW", degree: 315 },
 ];
 
-export default function CompassBar({ degree, targetAzimuth }) {
+export default function CompassBar({ degree, targetAzimuth, isAligned }) {
   const translateX = SCREEN_WIDTH / 2 - degree * ZOOM_FACTOR - CONTENT_WIDTH;
 
   return (
     <View style={styles.container}>
       <View style={styles.cursor} />
       <View style={[styles.ribbon, { transform: [{ translateX }] }]}>
-        <CompassContent targetAzimuth={targetAzimuth} />
-        <CompassContent targetAzimuth={targetAzimuth} />
-        <CompassContent targetAzimuth={targetAzimuth} />
+        <CompassContent targetAzimuth={targetAzimuth} isAligned={isAligned} />
+        <CompassContent targetAzimuth={targetAzimuth} isAligned={isAligned} />
+        <CompassContent targetAzimuth={targetAzimuth} isAligned={isAligned} />
       </View>
     </View>
   );
 }
 
-const CompassContent = ({ targetAzimuth }) => (
+const CompassContent = ({ targetAzimuth, isAligned }) => (
   <View style={{ width: CONTENT_WIDTH, position: "relative", height: 80 }}>
     {MARKERS.map(({ label, degree }) => (
       <Text
@@ -41,9 +41,10 @@ const CompassContent = ({ targetAzimuth }) => (
       </Text>
     ))}
 
-    {targetAzimuth !== null && (
+    {targetAzimuth !== null && isAligned && (
       <View style={[styles.target, { left: targetAzimuth * ZOOM_FACTOR - 15 }]}>
         <Text style={{ fontSize: 10 }}>⭕</Text>
+        {console.log(targetAzimuth * ZOOM_FACTOR - 15)}
       </View>
     )}
   </View>

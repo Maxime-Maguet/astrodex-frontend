@@ -1,12 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  Platform,
-  StatusBar,
-  Text,
-} from "react-native";
+import { StyleSheet, View, ScrollView, StatusBar, Text } from "react-native";
 import Header from "../components/Header";
 import BoussoleIOS from "../components/CompIos";
 import ButtonCapture from "../components/buttonCapture";
@@ -34,6 +27,7 @@ export default function ObservationScreen({ navigation }) {
   const isAlreadyCaptured = capturedAstres.some(
     (astre) => astre.name === selectedAstre,
   );
+  const isAligned = useSelector((state) => state.astre.isAligned);
 
   const handleCapture = () => {
     if (isAlreadyCaptured) {
@@ -113,6 +107,7 @@ export default function ObservationScreen({ navigation }) {
           style={styles.button}
           textStyle={styles.buttonText}
           onPress={handleCapture}
+          disabled={!isAligned}
         />
         <ObservationModal visible={modalVisible} closeModal={closeModal} />
       </ScrollView>

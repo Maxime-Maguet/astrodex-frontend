@@ -19,6 +19,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import LogoutButton from "../components/LogoutButton";
 import { AstresVisibles } from "../modules/logiqueAstres";
 import { setVisibleAstres } from "../reducers/astre";
+import { setCapturedAstres } from "../reducers/astre";
+import { updateXp } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingModal from "../components/LoadingModal";
 import { MagnitudeLimite } from "../modules/filtreAstresParEquipement";
@@ -40,6 +42,20 @@ export default function HomeScreen() {
   const dispatch = useDispatch();
   const [astroInfo, setAstroInfo] = useState(null);
   const equipement = useSelector((state) => state.user.value.equipement);
+  const user = useSelector((state) => state.user.value);
+
+  useEffect(() => {
+    if (user.token) {
+      fetch(`${apiUrl}/users/profile/${user.token}`)
+        .then((res) => res.json())
+        .then((userData) => {
+          if (userData.result) {
+            dispatch(setCapturedAstres(userData.user.capturedAstres));
+            dispatch(updateXp(userData.user.xp));
+          }
+        });
+    }
+  }, []);
 
   useEffect(() => {
     NavigationBar.setVisibilityAsync("hidden");
