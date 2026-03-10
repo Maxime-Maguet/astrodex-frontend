@@ -76,6 +76,7 @@ export default function ObservationScreen({ navigation }) {
     setModalVisible(false);
   };
 
+<<<<<<< HEAD
   //useEffect(() => {
   //   if (equipement === undefined || equipement === null) {
   // fetch(`${apiUrl}/users/profile/${user.token}`)
@@ -88,6 +89,20 @@ export default function ObservationScreen({ navigation }) {
   //      });
   //   }
   // }, []);
+=======
+  useEffect(() => {
+    if (equipement === undefined || equipement === null) {
+      fetch(`${apiUrl}/users/profile/${user.token}`)
+        .then((res) => res.json())
+        .then((userData) => {
+          if (userData.result) {
+            const equip = userData.user.equipement;
+            dispatch(updateEquipement(equip ?? "Oeil nu"));
+          }
+        });
+    }
+  }, []);
+>>>>>>> 7d0e6d9ddc3cde05b841c88f31513d63f4f82c8c
 
   const [fontsLoaded] = useFonts({
     ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),

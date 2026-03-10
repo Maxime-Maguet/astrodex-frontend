@@ -56,6 +56,8 @@ export default function LoginScreen({ navigation }) {
         setLoading(false);
 
         if (data.result) {
+          console.log("login=>", data);
+
           dispatch(
             login({
               token: data.token,
