@@ -60,7 +60,6 @@ export default function ObservationScreen({ navigation }) {
           .then((data) => {
             if (data.result) {
               dispatch(addAstre(astreToCapture));
-              dispatch(updateEquipement(data.equipement));
               setModalVisible(true);
             } else {
               console.log("Erreur lors de la capture");
@@ -90,8 +89,6 @@ export default function ObservationScreen({ navigation }) {
     }
   }, []);
 
-
-
   const [fontsLoaded] = useFonts({
     ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
   });
@@ -108,7 +105,7 @@ export default function ObservationScreen({ navigation }) {
         style={{ width: "100%" }}
         contentContainerStyle={styles.scrollContent}
       >
-        <Header title="Observation"  />
+        <Header title="Observation" />
         <Text style={styles.body}>
           Tu utilises comme équipement : {equipement ?? "Oeil nu"}
         </Text>

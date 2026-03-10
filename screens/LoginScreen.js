@@ -29,7 +29,7 @@ export default function LoginScreen({ navigation }) {
   const [loading, setLoading] = useState(false); //Chargement
   const handleSubmit = async () => {
     Keyboard.dismiss(); //fermeture du clavier
-    await new Promise(resolve => setTimeout(resolve, 100)); //temps pour que le clavier se ferme
+    await new Promise((resolve) => setTimeout(resolve, 100)); //temps pour que le clavier se ferme
 
     //reset erreurs
     setUsernameError("");
@@ -51,17 +51,20 @@ export default function LoginScreen({ navigation }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username, password: password }),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setLoading(false);
 
         if (data.result) {
+          console.log("login=>", data);
+
           dispatch(
             login({
               token: data.token,
               username: username,
               xp: data.xp,
               avatar: data.avatar,
+              equipement: data.equipement,
             }),
           );
 
@@ -93,7 +96,8 @@ export default function LoginScreen({ navigation }) {
       <LoadingModal visible={loading} />
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}>
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
         <View style={styles.image}>
           <Image
             source={require("../assets/Astrodex.png")}
@@ -106,14 +110,15 @@ export default function LoginScreen({ navigation }) {
               Explore le ciel et collecte les astres !
             </Text>
             <Text
-              style={[styles.title, { fontFamily: "ShuttleX", fontSize: 45 }]}>
+              style={[styles.title, { fontFamily: "ShuttleX", fontSize: 45 }]}
+            >
               Connexion
             </Text>
 
             <TextInput
               placeholder="Username"
               placeholderTextColor="#000000"
-              onChangeText={value => setUsername(value)}
+              onChangeText={(value) => setUsername(value)}
               value={username}
               style={styles.input}
             />
@@ -125,7 +130,7 @@ export default function LoginScreen({ navigation }) {
               placeholder="Mot de passe"
               placeholderTextColor="#000000"
               secureTextEntry={true}
-              onChangeText={value => setPassword(value)}
+              onChangeText={(value) => setPassword(value)}
               value={password}
               style={styles.input}
             />
@@ -136,7 +141,8 @@ export default function LoginScreen({ navigation }) {
             <TouchableOpacity
               onPress={handleSubmit}
               style={[styles.button, loading && styles.buttonDisabled]}
-              disabled={loading}>
+              disabled={loading}
+            >
               <Text style={styles.buttonText}>
                 {loading ? "Connexion en cours..." : "SE CONNECTER"}
               </Text>
@@ -145,7 +151,8 @@ export default function LoginScreen({ navigation }) {
             <Text style={styles.Soustitle}>Vous n'avez pas de compte ?</Text>
             <TouchableOpacity
               onPress={() => navigation.navigate("Inscription")}
-              style={styles.button1}>
+              style={styles.button1}
+            >
               <Text style={styles.buttonSignin}>S'inscrire</Text>
             </TouchableOpacity>
           </ScrollView>
