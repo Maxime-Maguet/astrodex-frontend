@@ -24,10 +24,10 @@ export default function ObservationModal(props) {
   const token = useSelector((state) => state.user.value.token);
 
   const rarityStyle = {
-    Commune: { color: "#22C55E", xp: 10 },
-    Rare: { color: "#3B82F6", xp: 25 },
-    Épique: { color: "#A855F7", xp: 60 },
-    Légendaire: { color: "#FACC15", xp: 150 },
+    Commune: { color: "#22C55E", xp: 100 },
+    Rare: { color: "#3B82F6", xp: 250 },
+    Épique: { color: "#A855F7", xp: 500 },
+    Légendaire: { color: "#FACC15", xp: 1000 },
   };
 
   const textColor = observation

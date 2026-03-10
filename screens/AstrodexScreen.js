@@ -8,6 +8,7 @@ import {
   StatusBar,
   Platform,
 } from "react-native";
+import Octicons from "@expo/vector-icons/Octicons";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCapturedAstres } from "../reducers/astre";
@@ -24,19 +25,27 @@ export default function AstrodexScreen() {
   const [astres, setAstres] = useState([]); // Tous les astres
   const [showCapturedOnly, setShowCapturedOnly] = useState(false); // Filtre "Mes captures"
   const [selectedAstre, setSelectedAstre] = useState(null); // Astre sélectionné pour la modal
-  const [modalVisible, setModalVisible] = useState(false); // Etat de la modal
-  const [captured, setCaptured] = useState(0);
-  const [nombreAstre, setNombreAstre] = useState(0);
+  const [modalVisible, setModalVisible] = useState(false); // Contrôle la visibilité de la modal
+  const [captured, setCaptured] = useState(0); // Nombre d'astres capturés par l'utilisateur
+  const [nombreAstre, setNombreAstre] = useState(0); // Nombre total d'astres disponibles
+
+  // useIsFocused retourne true quand l'écran est actif — utilisé pour relancer les fetches à chaque visite
   const isFocused = useIsFocused();
 
-  const route = useRoute(); // Pour récupérer les params envoyés depuis ObservationScreen
+  // useRoute permet de récupérer les paramètres de navigation (ex: astreName envoyé depuis ObservationScreen)
+  const route = useRoute();
   const dispatch = useDispatch();
+
+  // Données utilisateur depuis Redux (token, xp...)
   const user = useSelector((state) => state.user.value);
+  // Liste des astres capturés stockée dans Redux, mise à jour après chaque capture
   const capturedAstres = useSelector((state) => state.astre.value);
 
+  // Inverse l'état du switch "Mes captures"
   const toggleSwitch = () =>
     setShowCapturedOnly((previsousState) => !previsousState);
 
+  // Ouvre la modal de détails pour un astre spécifique
   const handleDetails = (astre) => {
     setSelectedAstre(astre);
     setModalVisible(true);
@@ -46,12 +55,13 @@ export default function AstrodexScreen() {
     setModalVisible(false);
   };
 
-  //permet de ne pas avoir la barre de navigation du téléphone
+  // Cache la barre de navigation Android pour un rendu fullscreen
   useEffect(() => {
     NavigationBar.setVisibilityAsync("hidden");
   }, []);
 
-  // Ouvre la modal si un astre vient d'être capturé
+  // Si on arrive depuis ObservationScreen avec un astreName en paramètre,
+  // on trouve l'astre correspondant et on ouvre directement sa modal
   useEffect(() => {
     if (route.params?.astreName) {
       const astre = astres.find((e) => e.name === route.params.astreName);
@@ -62,7 +72,7 @@ export default function AstrodexScreen() {
     }
   }, [route.params, astres]);
 
-  // Fetch tous les astres
+  // Charge tous les astres de la BDD au premier rendu
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
@@ -74,7 +84,8 @@ export default function AstrodexScreen() {
       });
   }, []);
 
-  // Fetch astres capturés par l'utilisateur
+  // Se relance à chaque fois que l'écran devient actif (isFocused)
+  // Resynchronise les astres capturés et l'XP depuis la BDD vers Redux
   useEffect(() => {
     if (isFocused && user.token) {
       fetch(`${apiUrl}/users/profile/${user.token}`)
@@ -90,9 +101,8 @@ export default function AstrodexScreen() {
     }
   }, [isFocused]);
 
-  // Filtre les astres selon le switch "Mes captures"
-  // Si showCapturedOnly est true, ne garde que les astres déjà capturés
-  // Sinon, renvoie tous les astres
+  // Si le filtre est actif, ne garde que les astres présents dans capturedAstres (Redux)
+  // Sinon retourne tous les astres
   const filteredAstres = astres.filter((item) => {
     if (showCapturedOnly) {
       return capturedAstres.some((e) => e._id === item._id);
@@ -101,7 +111,8 @@ export default function AstrodexScreen() {
     }
   });
 
-  // Pour chaque astre filtré, on vérifie s'il est capturé
+  // Pour chaque astre filtré, vérifie s'il est capturé pour passer isCaptured à AstroCard
+  // AstroCard affiche un overlay "NON CAPTURÉ" si isCaptured est false
   const astresList = filteredAstres.map((data, i) => {
     const isCaptured = capturedAstres.some((astre) => astre._id === data._id);
     return (
@@ -122,10 +133,15 @@ export default function AstrodexScreen() {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar hidden={true} />
       <Header title="AstroDex" />
+
+      {/* Bandeau de stats : XP et progression de capture */}
       <View style={styles.rangéeStats}>
         <View style={styles.badgeStat}>
-          <Text style={styles.valeurStat}>⭐ {user.xp}</Text>
-          <Text style={styles.libelleStat}>XP</Text>
+          <View style={styles.xp}>
+            <Octicons name="star-fill" size={24} color="gold" />
+            <Text style={styles.valeurStat}>{user.xp}</Text>
+            <Text style={styles.libelleStat}>XP</Text>
+          </View>
         </View>
         <View style={styles.séparateurStat} />
         <View style={styles.badgeStat}>
@@ -135,6 +151,8 @@ export default function AstrodexScreen() {
           <Text style={styles.libelleStat}>Astres capturés</Text>
         </View>
       </View>
+
+      {/* Switch pour filtrer uniquement les astres capturés */}
       <View style={styles.toggleContainer}>
         <Switch
           trackColor={{ false: "#767577", true: "#767577" }}
@@ -151,6 +169,7 @@ export default function AstrodexScreen() {
         {astresList}
       </ScrollView>
 
+      {/* Modal de détails — ne se monte que si un astre est sélectionné */}
       {selectedAstre && (
         <AstroModal
           visible={modalVisible}
@@ -206,6 +225,12 @@ const styles = StyleSheet.create({
   badgeStat: {
     flex: 1,
     alignItems: "center",
+  },
+
+  xp: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
   },
   valeurStat: {
     color: "#FFFFFF",
