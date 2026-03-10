@@ -3,29 +3,29 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Location from "expo-location";
 import { StyleSheet, Text, View } from "react-native";
 import { updateLocation } from "../reducers/user";
+import { setIsAligned } from "../reducers/astre";
 import CompassBar from "../components/CompassBar";
 import AstreSelector from "../components/AstresVisibles";
 import * as Astronomy from "astronomy-engine";
 import { FIXED_COORDINATES } from "../modules/logiqueAstres";
-//import { filtrerAstresParEquipement } from "../modules/filtreAstres";
-// Liste des astres, pour l'instant système solaire pour test
-
-const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-
-let Alignement;
+import { filtrerAstresParEquipement } from "../modules/filtreAstresParEquipement";
 
 export default function BoussoleAndroid() {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.user.value); // On récupère les infos du store (token, nickname, etc.)
   const visibleAstres = useSelector((state) => state.astre.visibleAstres);
+  const equipement = useSelector((state) => state.user.value.equipement);
+  const astresFiltrés = filtrerAstresParEquipement(visibleAstres, equipement);
 
   const [currentPosition, setCurrentPosition] = useState(null); // État local pour afficher la position direct sur l'écran
   const [target, setTarget] = useState("..."); // L'astre visé
   const [targetAzimuth, setTargetAzimuth] = useState(null);
   const [astreFocus, setAstreFocus] = useState(null);
   const [locationHeading, setLocationHeading] = useState(0);
-
+  const isAligned = useSelector((state) => state.astre.isAligned);
+  // console.log(visibleAstres);
+  // console.log(useSelector((state) => state.astre));
   useEffect(() => {
     let subscription; // On prépare une variable pour pouvoir dire "quand je ne suis pas sur l'app, je n'actualise pas"
 
@@ -126,12 +126,14 @@ export default function BoussoleAndroid() {
     const distanceHorizontale = Math.min(diff, 360 - diff);
 
     if (horFocus.altitude > 0) {
+      dispatch(setIsAligned(distanceHorizontale <= 3));
       if (distanceHorizontale <= 3) setTarget(`⭐ ${astreFocus} en vue !`);
       else if (distanceHorizontale < 10) setTarget("🥵 C'est chaud...");
       else if (distanceHorizontale < 20) setTarget("🫠 Tu te rapproches...");
       else setTarget("🥶 C'est froid...");
     } else {
       setTarget("L'astre est sous la ligne d'horizon");
+      dispatch(setIsAligned(false));
     }
   }, [currentPosition, locationHeading, astreFocus]);
 
@@ -139,13 +141,17 @@ export default function BoussoleAndroid() {
     <View style={styles.container}>
       <View style={styles.headerPadding}>
         <AstreSelector
-          visibleBodies={visibleAstres}
+          visibleBodies={astresFiltrés}
           currentFocus={astreFocus}
           onSelect={(body) => setAstreFocus(body)}
         />
       </View>
       <View>
-        <CompassBar degree={locationHeading} targetAzimuth={targetAzimuth} />
+        <CompassBar
+          degree={locationHeading}
+          targetAzimuth={targetAzimuth}
+          isAligned={isAligned}
+        />
       </View>
       <View style={styles.card}>
         <Text style={styles.body}>

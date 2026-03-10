@@ -4,6 +4,7 @@ const initialState = {
   value: [],
   astreFocus: null,
   visibleAstres: [],
+  isAligned: false,
 };
 
 export const astreSlice = createSlice({
@@ -29,10 +30,19 @@ export const astreSlice = createSlice({
     setVisibleAstres: (state, action) => {
       state.visibleAstres = action.payload;
     },
+
+    setIsAligned: (state, action) => {
+      state.isAligned = action.payload;
+    },
   },
 });
 
-export const { addAstre, setAstreFocus, setVisibleAstres, setCapturedAstres } =
-  astreSlice.actions;
+export const {
+  addAstre,
+  setAstreFocus,
+  setVisibleAstres,
+  setCapturedAstres,
+  setIsAligned,
+} = astreSlice.actions;
 
 export default astreSlice.reducer;

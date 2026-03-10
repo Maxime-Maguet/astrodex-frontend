@@ -19,8 +19,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import LogoutButton from "../components/LogoutButton";
 import { AstresVisibles } from "../modules/logiqueAstres";
 import { setVisibleAstres } from "../reducers/astre";
-import { useDispatch } from "react-redux";
+import { setCapturedAstres } from "../reducers/astre";
+import { updateXp } from "../reducers/user";
+import { useDispatch, useSelector } from "react-redux";
 import LoadingModal from "../components/LoadingModal";
+import { MagnitudeLimite } from "../modules/filtreAstresParEquipement";
 
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
@@ -38,6 +41,21 @@ export default function HomeScreen() {
   const [visibleAstres, setVisibleAstresState] = useState([]);
   const dispatch = useDispatch();
   const [astroInfo, setAstroInfo] = useState(null);
+  const equipement = useSelector((state) => state.user.value.equipement);
+  const user = useSelector((state) => state.user.value);
+
+  useEffect(() => {
+    if (user.token) {
+      fetch(`${apiUrl}/users/profile/${user.token}`)
+        .then((res) => res.json())
+        .then((userData) => {
+          if (userData.result) {
+            dispatch(setCapturedAstres(userData.user.capturedAstres));
+            dispatch(updateXp(userData.user.xp));
+          }
+        });
+    }
+  }, []);
 
   useEffect(() => {
     NavigationBar.setVisibilityAsync("hidden");
@@ -111,19 +129,22 @@ export default function HomeScreen() {
   useEffect(() => {
     if (astres.length > 0 && weather?.coords) {
       const allNames = astres.map((a) => a.name);
-
       const visibles = AstresVisibles(allNames, {
         latitude: weather.coords.latitude,
         longitude: weather.coords.longitude,
       });
 
-      const filteredAstres = astres.filter((a) => visibles.includes(a.name));
+      const magnitudeMax = MagnitudeLimite[equipement] ?? 0; //filtre par équipement (si pas déquipement on filtre par rapport a la magnitude 0 (oeil nu par défaut))
+
+      const filteredAstres = astres
+        .filter((a) => visibles.includes(a.name))
+        .filter((a) => a.magnitude <= magnitudeMax); //filtre par magnitude
 
       setVisibleAstresState(filteredAstres);
-      dispatch(setVisibleAstres(visibles));
-      setTimeout(() => setIsLoading(false), 4000); //4 secondes de chargement
+      dispatch(setVisibleAstres(filteredAstres.map((a) => a.name)));
+      setTimeout(() => setIsLoading(false), 4000);
     }
-  }, [astres, weather]);
+  }, [astres, weather, equipement]);
 
   const astresList = visibleAstres.map((data, i) => {
     return (

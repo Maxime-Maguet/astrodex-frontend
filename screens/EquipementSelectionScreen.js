@@ -10,7 +10,7 @@ const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 export default function EquipementSelectionScreen({ navigation }) {
   const route = useRoute();
   //const Equipement_LIMITS = {
-  //"Oeil nue": { maxMagnitude: 4, label: "Œil nu", xpBonus: 100 }, //Configuration basé sur la magnétude
+  //"Oeil nu": { maxMagnitude: 4, label: "Œil nu", xpBonus: 100 }, //Configuration basé sur la magnétude
   //"Jumelles": { maxMagnitude: 8, label: "Jumelle", xpBonus: 250 },
   //"Lunette astronomique": {
   //maxMagnitude: 15,
@@ -59,10 +59,10 @@ export default function EquipementSelectionScreen({ navigation }) {
         <View style={styles.buttoncontainer}>
           <FontAwesome style={styles.icon} name="eye" />
           <TouchableOpacity
-            onPress={() => setEquipement("Oeil nue")}
+            onPress={() => setEquipement("Oeil nu")}
             style={[
               styles.button,
-              equipement === "Oeil nue" && { backgroundColor: "#1A237E" },
+              equipement === "Oeil nu" && { backgroundColor: "#1A237E" },
             ]}
             activeOpacity={0.8}
           >
