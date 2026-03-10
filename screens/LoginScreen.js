@@ -57,7 +57,7 @@ export default function LoginScreen({ navigation }) {
         console.log("data signin:", data);
         if (data.result) {
           dispatch(
-            login({ token: data.token, username: username, xp: data.xp }),
+            login({ token: data.token, username: username, xp: data.xp, avatar: data.avatar }),
           );
           console.log(data.result, "bien Afficher");
           navigation.replace("TabNavigator");
