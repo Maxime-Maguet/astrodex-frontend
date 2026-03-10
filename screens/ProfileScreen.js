@@ -25,7 +25,7 @@ export default function ProfileScreen(route) {
   const [name, setName] = useState("");
   const [captured, setCaptured] = useState(0);
   const [astreData, setAstreData] = useState(0);
-  const user = useSelector(state => state.user.value);
+  const user = useSelector((state) => state.user.value);
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [modalDecoVisible, setModalDecoVisible] = useState(false);
@@ -34,8 +34,8 @@ export default function ProfileScreen(route) {
   useEffect(() => {
     if (isFocused && user.token) {
       fetch(`${apiUrl}/users/profile/${user.token}`)
-        .then(res => res.json())
-        .then(userData => {
+        .then((res) => res.json())
+        .then((userData) => {
           if (userData.result) {
             //console.log("equipement :", userData.user.equipement);
             //console.log("test", userData.user.capturedAstres.length);
@@ -61,8 +61,8 @@ export default function ProfileScreen(route) {
 
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
-      .then(res => res.json())
-      .then(astresData => {
+      .then((res) => res.json())
+      .then((astresData) => {
         if (astresData.result) {
           setAstreData(Number(astresData.astres.length));
         }
@@ -131,8 +131,8 @@ export default function ProfileScreen(route) {
       method: "POST",
       body: formData,
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         console.log("upload response:", data);
         dispatch(addPhoto(data.avatar));
       });
@@ -179,7 +179,10 @@ if (image) {
       </View>
       <View style={styles.card}>
         <View style={styles.container}>
-          <Text style={styles.body}>Ton équipement : {equipement}</Text>
+          <Text style={styles.body}>
+            Ton équipement :{" "}
+            {equipement === "Lunette astronomique" ? "Telescope" : equipement}
+          </Text>
         </View>
         <TouchableOpacity
           onPress={() =>
@@ -188,14 +191,16 @@ if (image) {
             })
           }
           style={[styles.button]}
-          activeOpacity={0.8}>
+          activeOpacity={0.8}
+        >
           <Text style={styles.buttonText}>Changer</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.modalView}>
         <TouchableOpacity
           style={styles.buttonDeco}
-          onPress={() => setModalDecoVisible(true)}>
+          onPress={() => setModalDecoVisible(true)}
+        >
           <Text style={styles.text}>Se déconnecter</Text>
         </TouchableOpacity>
       </View>
@@ -209,7 +214,8 @@ if (image) {
             <LogoutButton />
             <TouchableOpacity
               style={styles.buttonDeco}
-              onPress={() => setModalDecoVisible(false)}>
+              onPress={() => setModalDecoVisible(false)}
+            >
               <Text style={styles.text}>Annuler</Text>
             </TouchableOpacity>
           </View>
