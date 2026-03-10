@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 import {
   Modal,
   View,
-  Text,
   Animated,
   StyleSheet,
   Dimensions,
@@ -62,26 +61,33 @@ function Star({ star }) {
 }
 
 export default function LoadingModal({ visible }) {
-  const textOpacity = useRef(new Animated.Value(0)).current;
+  const rotate = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    if (visible) {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(textOpacity, {
-            toValue: 1,
-            duration: 800,
-            useNativeDriver: true,
-          }),
-          Animated.timing(textOpacity, {
-            toValue: 0.3,
-            duration: 800,
-            useNativeDriver: true,
-          }),
-        ])
-      ).start();
-    }
-  }, [visible]);
+  const scale = useRef(new Animated.Value(1)).current;
+
+useEffect(() => {
+  if (visible) {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(scale, {
+          toValue: 1.2,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+        Animated.timing(scale, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }
+}, [visible]);
+
+  const spin = rotate.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["0deg", "360deg"],
+  });
 
   return (
     <Modal visible={visible} transparent animationType="fade">
@@ -89,9 +95,13 @@ export default function LoadingModal({ visible }) {
         {STARS.map((star) => (
           <Star key={star.id} star={star} />
         ))}
-        <Animated.Text style={[styles.text, { opacity: textOpacity }]}>
-          Chargement...
-        </Animated.Text>
+        <Animated.View style={{ transform: [{ scale }] }}>
+  <Animated.Image
+    source={require("../assets/Logo_Astrodex_icon.png")}
+    style={styles.logo}
+    resizeMode="contain"
+  />
+</Animated.View>
       </View>
     </Modal>
   );
@@ -104,11 +114,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  text: {
-    color: "#FFFFFF",
-    fontSize: 18,
-    fontWeight: "bold",
-    letterSpacing: 2,
-    marginTop: 20,
+  logo: {
+    width: 250,
+    height: 250,
   },
 });
