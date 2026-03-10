@@ -20,6 +20,7 @@ export const userSlice = createSlice({
       state.value.username = action.payload.username;
       state.value.equipement = action.payload.equipement;
       state.value.xp = action.payload.xp;
+      state.value.avatar = action.payload.avatar;
       console.log("xp reducer => ", action.payload.xp);
     },
     logout: (state) => {
