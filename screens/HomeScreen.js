@@ -25,6 +25,7 @@ import LoadingModal from "../components/LoadingModal";
 import { MagnitudeLimite } from "../modules/filtreAstresParEquipement";
 //import { useFonts } from "expo-font";
 import Header from "../components/Header";
+import ZoomableImage from "../components/ZoomableImage";
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
 
@@ -187,23 +188,18 @@ export default function HomeScreen() {
           <View style={styles.card}>
             {astroInfo && (
               <View style={styles.imageContainer}>
-                <Image
-                  source={{ uri: astroInfo.image }}
+                <ZoomableImage
+                  imageUrl={astroInfo.image}
                   style={styles.nasaImage}
                 />
-                <View>
+                <LinearGradient
+                  colors={["transparent", "rgba(0,0,0,0.5)"]}
+                  style={styles.gradient}></LinearGradient>
+                <View style={styles.overlay}>
                   <Text style={styles.nomNasa}>
-                    NASA • Image du jour {astroInfo.title}{" "}
+                    🚀 NASA • Image du jour {astroInfo.title}
                   </Text>
                 </View>
-                {/* <View style={styles.overlay}>
-                  <Text style={styles.nomNasa}>NASA • Image du jour</Text>
-                  <ScrollView style={styles.textScroll}>
-                    <Text style={styles.description}>
-                      {astroInfo.description}
-                    </Text>
-                  </ScrollView>
-                </View> */}
               </View>
             )}
           </View>
@@ -286,7 +282,8 @@ const styles = StyleSheet.create({
     color: "white",
     fontFamily: "Inter",
     textAlign: "center",
-    marginTop: 35,
+    marginTop: 20,
+    letterSpacing: 1,
   },
 
   ScrollView: {
@@ -317,6 +314,8 @@ const styles = StyleSheet.create({
 
   imageContainer: {
     position: "relative",
+    borderRadius: 16,
+    overflow: "hidden",
   },
 
   nasaImage: {
@@ -327,12 +326,14 @@ const styles = StyleSheet.create({
   },
 
   nomNasa: {
-    color: "white",
-    fontSize: 15,
-    // marginBottom: 5,
-    textShadowColor: "rgba(0,0,0,0.9)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#FF6A00",
+    textAlign: "center",
+    letterSpacing: 1,
+    // textShadowColor: "rgba(0,0,0,0.9)",
+    // textShadowOffset: { width: 0, height: 1 },
+    // textShadowRadius: 4,
   },
 
   // description: {
@@ -343,15 +344,15 @@ const styles = StyleSheet.create({
   //   textShadowRadius: 4,
   // },
 
-  // overlay: {
-  //   position: "absolute",
-  //   bottom: 10,
-  //   left: 10,
-  //   right: 10,
-  //   backgroundColor: "rgba(0,0,0,0.25)",
-  //   padding: 10,
-  //   borderRadius: 10,
-  // },
+  overlay: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    right: 10,
+    backgroundColor: "rgba(0,0,0,0.15)",
+    padding: 10,
+    borderRadius: 20,
+  },
 
   textScroll: {
     height: 65,
@@ -363,5 +364,17 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
+    borderRadius: 16,
+    elevation: 43,
+  },
+
+  gradient: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 12,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
 });
