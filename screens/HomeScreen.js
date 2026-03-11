@@ -24,10 +24,6 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingModal from "../components/LoadingModal";
 import { MagnitudeLimite } from "../modules/filtreAstresParEquipement";
 import { LinearGradient } from "expo-linear-gradient";
-<<<<<<< HEAD
-
-=======
->>>>>>> dev
 import Header from "../components/Header";
 import ZoomableImage from "../components/ZoomableImage";
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
