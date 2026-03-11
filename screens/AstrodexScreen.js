@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   ScrollView,
   Switch,
-  
   Platform,
   Pressable,
 } from "react-native";
@@ -31,7 +30,7 @@ export default function AstrodexScreen() {
   const [captured, setCaptured] = useState(0); // Nombre d'astres capturés par l'utilisateur
   const [nombreAstre, setNombreAstre] = useState(0); // Nombre total d'astres disponibles
   const [dateCapture, setDateCapture] = useState([]);
-  const [isInfoVisible, setIsInfoVisible] = useState(false);
+  const [showXP, setShowXP] = useState(false);
   // useIsFocused retourne true quand l'écran est actif — utilisé pour relancer les fetches à chaque visite
   const isFocused = useIsFocused();
 
@@ -40,16 +39,16 @@ export default function AstrodexScreen() {
   const dispatch = useDispatch();
 
   // Données utilisateur depuis Redux (token, xp...)
-  const user = useSelector(state => state.user.value);
+  const user = useSelector((state) => state.user.value);
   // Liste des astres capturés stockée dans Redux, mise à jour après chaque capture
-  const capturedAstres = useSelector(state => state.astre.value);
+  const capturedAstres = useSelector((state) => state.astre.value);
 
   // Inverse l'état du switch "Mes captures"
   const toggleSwitch = () =>
-    setShowCapturedOnly(previsousState => !previsousState);
+    setShowCapturedOnly((previsousState) => !previsousState);
 
   // Ouvre la modal de détails pour un astre spécifique
-  const handleDetails = astre => {
+  const handleDetails = (astre) => {
     setSelectedAstre(astre);
     setModalVisible(true);
   };
@@ -58,13 +57,11 @@ export default function AstrodexScreen() {
     setModalVisible(false);
   };
 
-
-
   // Si on arrive depuis ObservationScreen avec un astreName en paramètre,
   // on trouve l'astre correspondant et on ouvre directement sa modal
   useEffect(() => {
     if (route.params?.astreName) {
-      const astre = astres.find(e => e.name === route.params.astreName);
+      const astre = astres.find((e) => e.name === route.params.astreName);
       if (astre) {
         setSelectedAstre(astre);
         setModalVisible(true);
@@ -75,8 +72,8 @@ export default function AstrodexScreen() {
   // Charge tous les astres de la BDD au premier rendu
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
-      .then(res => res.json())
-      .then(astresData => {
+      .then((res) => res.json())
+      .then((astresData) => {
         if (astresData.result) {
           setAstres(astresData.astres);
           setNombreAstre(Number(astresData.astres.length));
@@ -89,8 +86,8 @@ export default function AstrodexScreen() {
   useEffect(() => {
     if (isFocused && user.token) {
       fetch(`${apiUrl}/users/profile/${user.token}`)
-        .then(res => res.json())
-        .then(userData => {
+        .then((res) => res.json())
+        .then((userData) => {
           if (userData.result) {
             let capture = Number(userData.user.capturedAstres.length);
             dispatch(setCapturedAstres(userData.user.capturedAstres));
@@ -104,9 +101,9 @@ export default function AstrodexScreen() {
 
   // Si le filtre est actif, ne garde que les astres présents dans capturedAstres (Redux)
   // Sinon retourne tous les astres
-  const filteredAstres = astres.filter(item => {
+  const filteredAstres = astres.filter((item) => {
     if (showCapturedOnly) {
-      return capturedAstres.some(e => e._id === item._id);
+      return capturedAstres.some((e) => e._id === item._id);
     } else {
       return true;
     }
@@ -115,8 +112,8 @@ export default function AstrodexScreen() {
   // Pour chaque astre filtré, vérifie s'il est capturé pour passer isCaptured à AstroCard
   // AstroCard affiche un overlay "NON CAPTURÉ" si isCaptured est false
   const astresList = filteredAstres.map((data, i) => {
-    const isCaptured = capturedAstres.some(astre => astre._id === data._id);
-    const capturedDate = dateCapture.find(e => e.astreId === data._id);
+    const isCaptured = capturedAstres.some((astre) => astre._id === data._id);
+    const capturedDate = dateCapture.find((e) => e.astreId === data._id);
 
     return (
       <AstroCard
@@ -134,17 +131,23 @@ export default function AstrodexScreen() {
   });
 
   //calcul du niveau
+  let xpLimit = 250;
   let xps = user.xp;
-  let niveau = Math.floor(xps / 250); //on arrondi pour avoir un niveau sans virgule.
+  let niveau = Math.floor(xps / xpLimit); //on arrondi pour avoir un niveau sans virgule.
   if (niveau >= 100) {
     niveau = null;
   }
+
+  let xpSur250 = xps - niveau * xpLimit;
+  let xpDeBarre = xpSur250 / xpLimit;
+  //console.log(xpDeBarre);
 
   return (
     <View style={styles.safeArea}>
       <Header title="AstroDex" />
 
       {/* Bandeau de stats : XP et progression de capture */}
+
       <View style={styles.rangéeStats}>
         <View style={styles.badgeStat}>
           <View style={styles.xp}>
@@ -152,31 +155,34 @@ export default function AstrodexScreen() {
             <Text style={styles.valeurStat}>{niveau}</Text>
           </View>
           <Pressable
-            onLongPress={() => setIsInfoVisible(true)} // Affiche l'info au clic long
-            onPressOut={() => setIsInfoVisible(false)} // Cache l'info quand on relâche
-            delayLongPress={200} // Durée de l'appui long en ms (optionnel, 500ms par défaut)
-            style={({ pressed }) => [
-              styles.button,
-              pressed && styles.buttonPressed, // Style optionnel pendant l'appui
-            ]}>
-            {!isInfoVisible && (
-              <View style={styles.infoBox}>
-                <Text style={styles.infoText}>
-                  <Progress.Bar progress={0.5} width={"80%"} />
-                </Text>
+            onPress={() => setShowXP((prev) => !prev)}
+            style={{ paddingTop: 10 }}
+          >
+            {showXP ? (
+              <View style={styles.xp}>
+                <Octicons name="star-fill" size={16} color="gold" />
+                <Text style={styles.valeurStat}>{user.xp}</Text>
+                <Text style={styles.libelleStat}>XP</Text>
               </View>
-            )}
-            {isInfoVisible && (
-              <View>
-                <View style={styles.xp}>
-                  <Octicons name="star-fill" size={24} color="gold" />
-                  <Text style={styles.valeurStat}>{user.xp}</Text>
-                  <Text style={styles.libelleStat}>XP</Text>
-                </View>
-              </View>
+            ) : (
+              <Text style={{ marginBottom: 1 }}>
+                <Progress.Bar
+                  color={"rgba(91, 140, 255, 1)"}
+                  unfilledColor={"rgba(0, 122, 255, 0)"}
+                  borderColor={"#AAB3C5"}
+                  progress={xpDeBarre}
+                  width={100}
+                  height={16}
+                >
+                  <Text style={styles.textDansBarre}>
+                    {xpSur250}/{xpLimit}
+                  </Text>
+                </Progress.Bar>
+              </Text>
             )}
           </Pressable>
         </View>
+
         <View style={styles.séparateurStat} />
         <View style={styles.badgeStat}>
           <Text style={styles.valeurStat}>
@@ -198,7 +204,8 @@ export default function AstrodexScreen() {
       </View>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
-        style={styles.scrollView}>
+        style={styles.scrollView}
+      >
         {astresList}
       </ScrollView>
 
@@ -207,7 +214,8 @@ export default function AstrodexScreen() {
         <AstroModal
           visible={modalVisible}
           closeModale={closeModal}
-          infoAstre={selectedAstre}></AstroModal>
+          infoAstre={selectedAstre}
+        ></AstroModal>
       )}
     </View>
   );
@@ -228,6 +236,13 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     alignItems: "center",
     marginTop: 20,
+  },
+
+  textDansBarre: {
+    color: "rgba(255, 255, 255, 0.7)",
+    position: "absolute",
+    alignSelf: "center",
+    fontSize: 12,
   },
 
   toggleContainer: {
@@ -272,7 +287,7 @@ const styles = StyleSheet.create({
   libelleStat: {
     color: "#AAB3C5",
     fontSize: 11,
-    marginTop: 2,
+    //marginTop: 2,
   },
   séparateurStat: {
     width: 1,
