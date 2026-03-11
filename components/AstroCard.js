@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import ZoomableImage from "./ZoomableImage";
 
 // Composant carte d'un astre affiché dans l'AstrodexScreen
 // Props : name, imageUrl, type, rarity, isCaptured, onDetails
@@ -25,8 +26,8 @@ export default function AstroCard(props) {
     <View style={styles.card}>
       {/* Image de l'astre avec verrou si non capturé */}
       <View>
-        <Image
-          source={{ uri: props.imageUrl }}
+        <ZoomableImage
+          imageUrl={props.imageUrl}
           style={[
             styles.image,
             { borderColor: borderColor, borderWidth: 2 },
