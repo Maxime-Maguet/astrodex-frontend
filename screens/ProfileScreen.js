@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   StatusBar,
   TouchableOpacity,
-  Platform,
   Image,
   Modal,
 } from "react-native";
@@ -141,28 +140,23 @@ export default function ProfileScreen(route) {
   const defaultAvatar =
     "https://res.cloudinary.com/dlywrsigk/image/upload/v1773055116/Profil_etvtzm.png";
 
-// on débute avec l'image de profil par défault
-let avatarSource = {uri: defaultAvatar} ;
-// on vérifie dans le backend si une image est stocké
-if (user.avatar) {
-  avatarSource = { uri: user.avatar };
-}
-// si l'utilisateur a pris la photo on la remplace par la nouvelle image
-if (image) {
-  avatarSource = { uri: image };
-}
+  // on débute avec l'image de profil par défault
+  let avatarSource = { uri: defaultAvatar };
+  // on vérifie dans le backend si une image est stocké
+  if (user.avatar) {
+    avatarSource = { uri: user.avatar };
+  }
+  // si l'utilisateur a pris la photo on la remplace par la nouvelle image
+  if (image) {
+    avatarSource = { uri: image };
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar hidden={true} />
       <Header title="Profil" />
       <TouchableOpacity>
-        <Image
-          style={styles.avatar}
-          source={
-            avatarSource
-          }
-        />
+        <Image style={styles.avatar} source={avatarSource} />
       </TouchableOpacity>
       <TouchableOpacity onPress={takePicture}>
         <Text style={styles.imageText}>Changer d'avatar</Text>
@@ -229,7 +223,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#0B0F1A",
-    paddingTop: Platform.OS === "ios" ? 20 : 0,
+    paddingTop: 20,
     alignItems: "center",
   },
 
