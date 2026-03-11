@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Modal,
   View,
@@ -20,7 +20,7 @@ const generateStars = (count) => {
     size: Math.random() * 3 + 1,
     delay: Math.random() * 300,
     duration: Math.random() * 500 + 500,
-    color: COLORS[Math.floor(Math.random() * COLORS.length)], //couleur aléatoire
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
   }));
 };
 
@@ -70,12 +70,13 @@ export default function LoadingModal({ visible }) {
   const scaleIcon = useRef(new Animated.Value(1)).current;
   const scaleText = useRef(new Animated.Value(0.8)).current;
   const opacityText = useRef(new Animated.Value(1)).current;
+  const [logoReady, setLogoReady] = useState(false);
 
   useEffect(() => {
-    if (visible) {
+    if (visible && logoReady) {
       Animated.loop(
         Animated.sequence([
-          //logo pulse, texte discret
+          // logo pulse, texte discret
           Animated.parallel([
             Animated.sequence([
               Animated.timing(scaleIcon, {
@@ -104,7 +105,7 @@ export default function LoadingModal({ visible }) {
               useNativeDriver: true,
             }),
           ]),
-          //texte pulse, logo discret
+          // texte pulse, logo discret
           Animated.parallel([
             Animated.sequence([
               Animated.timing(scaleText, {
@@ -136,7 +137,7 @@ export default function LoadingModal({ visible }) {
         ])
       ).start();
     }
-  }, [visible]);
+  }, [visible, logoReady]);
 
   return (
     <Modal visible={visible} transparent animationType="fade">
@@ -149,20 +150,21 @@ export default function LoadingModal({ visible }) {
             source={require("../assets/Logo_icon_only.png")}
             style={styles.logo}
             resizeMode="contain"
+            onLoad={() => setLogoReady(true)}
           />
         </Animated.View>
         <Animated.Image
-  source={require("../assets/Logo_text_only.png")}
-  style={[
-    styles.textLogo,
-    {
-      transform: [{ scale: scaleText }],
-      opacity: opacityText,
-      tintColor: "#C9A84C", //texte doré
-    },
-  ]}
-  resizeMode="contain"
-/>
+          source={require("../assets/Logo_text_only.png")}
+          style={[
+            styles.textLogo,
+            {
+              transform: [{ scale: scaleText }],
+              opacity: opacityText,
+              tintColor: "#C9A84C",
+            },
+          ]}
+          resizeMode="contain"
+        />
       </View>
     </Modal>
   );
