@@ -152,7 +152,7 @@ export default function ProfileScreen(route) {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <StatusBar hidden={true} />
       <Header title="Profil" />
       <TouchableOpacity>
@@ -215,7 +215,7 @@ export default function ProfileScreen(route) {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+   </View>
   );
 }
 
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#0B0F1A",
-    paddingTop: 20,
+    // paddingTop: 20,
     alignItems: "center",
   },
 

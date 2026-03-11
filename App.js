@@ -20,7 +20,7 @@ import ProfileScreen from "./screens/ProfileScreen";
 import EquipementSelectionScreen from "./screens/EquipementSelectionScreen";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFonts } from "expo-font";
-
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 // import {
 //   persistStore,
 //   persistReducer,
@@ -42,6 +42,7 @@ const store = configureStore({
 
 function TabNavigator() {
   return (
+
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: "#5B8CFF",
@@ -93,6 +94,7 @@ export default function App() {
     return null;
   }
   return (
+<SafeAreaProvider>
     <Provider store={store}>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -106,5 +108,6 @@ export default function App() {
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
+</SafeAreaProvider>
   );
 }

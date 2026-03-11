@@ -29,7 +29,7 @@ import Header from "../components/Header";
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
 const MAX_VISIBILITY = 10000; // 10 000 m = visibilité parfaite (100%)
 
-const visibilityToPercent = (meters) =>
+const visibilityToPercent = meters =>
   Math.min(Math.round((meters / MAX_VISIBILITY) * 100), 100);
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -42,15 +42,15 @@ export default function HomeScreen() {
   const [visibleAstres, setVisibleAstresState] = useState([]);
   const dispatch = useDispatch();
   const [astroInfo, setAstroInfo] = useState(null);
-  const equipement = useSelector((state) => state.user.value.equipement);
-  const user = useSelector((state) => state.user.value);
-  const capturedAstres = useSelector((state) => state.astre.value);
+  const equipement = useSelector(state => state.user.value.equipement);
+  const user = useSelector(state => state.user.value);
+  const capturedAstres = useSelector(state => state.astre.value);
 
   useEffect(() => {
     if (user.token) {
       fetch(`${apiUrl}/users/profile/${user.token}`)
-        .then((res) => res.json())
-        .then((userData) => {
+        .then(res => res.json())
+        .then(userData => {
           if (userData.result) {
             dispatch(setCapturedAstres(userData.user.capturedAstres));
             dispatch(updateXp(userData.user.xp));
@@ -111,17 +111,17 @@ export default function HomeScreen() {
 
   useEffect(() => {
     fetch(`${apiUrl}/astres/info`)
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         setAstroInfo(data);
       })
-      .catch((error) => console.log(error));
+      .catch(error => console.log(error));
   }, []);
 
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         if (data.result) {
           setAstres(data.astres);
         }
@@ -130,7 +130,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (astres.length > 0 && weather?.coords) {
-      const allNames = astres.map((a) => a.name);
+      const allNames = astres.map(a => a.name);
       const visibles = AstresVisibles(allNames, {
         latitude: weather.coords.latitude,
         longitude: weather.coords.longitude,
@@ -139,11 +139,11 @@ export default function HomeScreen() {
       const magnitudeMax = MagnitudeLimite[equipement] ?? 0; //filtre par équipement (si pas déquipement on filtre par rapport a la magnitude 0 (oeil nu par défaut))
 
       const filteredAstres = astres
-        .filter((a) => visibles.includes(a.name))
-        .filter((a) => a.magnitude <= magnitudeMax); //filtre par magnitude
+        .filter(a => visibles.includes(a.name))
+        .filter(a => a.magnitude <= magnitudeMax); //filtre par magnitude
 
       setVisibleAstresState(filteredAstres);
-      dispatch(setVisibleAstres(filteredAstres.map((a) => a.name)));
+      dispatch(setVisibleAstres(filteredAstres.map(a => a.name)));
       setTimeout(() => setIsLoading(false), 4000);
     }
   }, [astres, weather, equipement]);
@@ -177,7 +177,7 @@ export default function HomeScreen() {
   // }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <LoadingModal visible={isLoading} />
       <StatusBar hidden={true} />
       <View style={styles.container}>
@@ -209,8 +209,7 @@ export default function HomeScreen() {
             <ScrollView
               horizontal={true} // permet de mettre VieW en scroll horizontale
               showsHorizontalScrollIndicator={false}
-              style={styles.astresScroll}
-            >
+              style={styles.astresScroll}>
               {astresList}
             </ScrollView>
           </View>
@@ -230,7 +229,7 @@ export default function HomeScreen() {
           )}
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -242,7 +241,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingVertical: 20,
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
   },
   header: {
     alignItems: "center",

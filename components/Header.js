@@ -1,14 +1,18 @@
-import { StyleSheet, Text, View, SafeAreaView } from "react-native";
-
+import { StyleSheet, Text, View,} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 export default function Header(props) {
+
+const insets = useSafeAreaInsets();
+
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
+    <View style={styles.safeArea}>
+      <View style={[styles.container, {paddingTop: insets.top}]}>
         <Text style={[styles.titre, { fontFamily: "ShuttleX", fontSize: 48 }]}>
           {props.title}
         </Text>
       </View>
-    </SafeAreaView>
+   </View>
   );
 }
 
@@ -18,7 +22,7 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: 20,
-    paddingTop: 25,
+    
     paddingBottom: 20,
     alignItems: "center",
   },

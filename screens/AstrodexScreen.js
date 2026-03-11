@@ -134,10 +134,10 @@ export default function AstrodexScreen() {
   });
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       <StatusBar hidden={true} />
       <Header title="AstroDex" />
-
+ 
       {/* Bandeau de stats : XP et progression de capture */}
       <View style={styles.rangéeStats}>
         <View style={styles.badgeStat}>
@@ -181,15 +181,17 @@ export default function AstrodexScreen() {
           infoAstre={selectedAstre}
         ></AstroModal>
       )}
-    </SafeAreaView>
+</View>
   );
 }
 
 const styles = StyleSheet.create({
+
   safeArea: {
     flex: 1,
     backgroundColor: "#0B0F1A",
-    paddingTop: 20,
+    // paddingTop: 20,
+
   },
   scrollView: {
     flex: 1,
