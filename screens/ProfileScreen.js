@@ -4,7 +4,6 @@ import {
   View,
   Text,
   SafeAreaView,
-  
   TouchableOpacity,
   Image,
   Modal,
@@ -153,12 +152,11 @@ export default function ProfileScreen(route) {
 
   return (
     <View style={styles.safeArea}>
-     
       <Header title="Profil" />
       <TouchableOpacity onPress={takePicture}>
         <Image style={styles.avatar} source={avatarSource} />
       </TouchableOpacity>
-      <TouchableOpacity onPress={takePicture} >
+      <TouchableOpacity onPress={takePicture}>
         <Text style={styles.imageText}>Changer d'avatar</Text>
       </TouchableOpacity>
       <View style={styles.card}>
@@ -175,7 +173,7 @@ export default function ProfileScreen(route) {
         <View style={styles.container}>
           <Text style={styles.body}>
             Ton équipement :{" "}
-            {equipement === "Lunette astronomique" ? "Telescope" : equipement}
+            {equipement === "Telescope" ? "Telescope" : equipement}
           </Text>
         </View>
         <TouchableOpacity
