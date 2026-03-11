@@ -14,7 +14,6 @@ import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import GradientImage from "../components/GradientImage";
-import { useFonts } from "expo-font";
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
 
@@ -72,15 +71,6 @@ export default function SignupScreen({ navigation }) {
       return "eye";
     }
   }
-
-  // // permet de mettre la font en place
-  // const [fontsLoaded] = useFonts({
-  //   ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
-  // });
-
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
 
   return (
     <View style={{ flex: 1 }}>

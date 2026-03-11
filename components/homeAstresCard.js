@@ -1,20 +1,29 @@
 import { View, Text, StyleSheet, Image } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function AstreCard(props) {
+  const isCaptured = props.validatedastre;
+
   return (
     <View style={styles.card}>
-      {props.validatedastre && (
-        <Text style={styles.astreValidated} >Déjà Capturé !</Text> //Props passé pour pouvoir afficher la phrase
-      )}
-      <Image source={{ uri: props.imageUrl }} style={styles.image} />
+      <View style={styles.imageContainer}>
+        <Image
+          source={{ uri: props.imageUrl }}
+          style={[styles.image, !isCaptured && { opacity: 0.35 }]}
+        />
+        {!isCaptured && (
+          <View style={styles.lockedImage}>
+            <Ionicons name="lock-closed" size={32} color="#AAB3C5" />
+          </View>
+        )}
+      </View>
       <View style={styles.container}>
         <Text style={styles.astreName}>{props.name}</Text>
       </View>
-      
-      
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#0B0F1A",
@@ -23,13 +32,23 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginHorizontal: 20,
     alignItems: "center",
+    position: "relative",
+  },
+
+  imageContainer: {
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    marginBottom: 10,
+    overflow: "hidden",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   image: {
     width: 110,
     height: 110,
     borderRadius: 55,
-    marginBottom: 10,
   },
 
   container: {
@@ -40,13 +59,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "white",
-    marginBottom: 5,
     fontFamily: "Inter",
+    marginBottom: 5,
   },
-  astreValidated : {
-  fontSize: 15,
-  color: "white",
-  fontWeight: "bold",
-  marginTop : -25,
-  }
-  });
+
+  lockedImage: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(11,15,26,0.6)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
