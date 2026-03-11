@@ -71,7 +71,7 @@ export default function ProfileScreen(route) {
   //calcul du niveau
   let xps = xp;
   let txtNiv = "";
-  let niveau = Math.floor(xps / 1000); //on arrondi exemple: si xp=2500 le math.floor va transfomer le 2.5 en 2
+  let niveau = Math.floor(xps / 250); //on arrondi pour avoir un niveau sans virgule.
   if (niveau >= 100) {
     niveau = null;
     txtNiv = "Niveau maximum atteint";
