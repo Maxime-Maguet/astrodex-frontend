@@ -111,7 +111,7 @@ export default function LoginScreen({ navigation }) {
             </Text>
 
             <TextInput
-              placeholder="Username"
+              placeholder="Pseudo"
               placeholderTextColor="#000000"
               onChangeText={(value) => setUsername(value)}
               value={username}
