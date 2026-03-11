@@ -81,78 +81,80 @@ export default function EquipementSelectionScreen({ navigation }) {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar hidden />
       <Header title="Equipement" />
-      {/* <LinearGradient
+      <LinearGradient
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}
         style={styles.gradient}
         colors={["#0B0F1A", "#1E2A44"]}
-      > */}
-      <GradientBackground>
-        <View style={styles.container}>
-          <Text style={styles.choixEquipement}>Quel est ton matériel ?</Text>
-          <View style={styles.buttoncontainer}>
-            {equipementsData.map((item) => (
-              <View key={item.id} style={styles.allIcons}> {/* Chaque élément généré par map doit avoir une 'key' unique pour que React s'y retrouve */}
-                <TouchableOpacity
-                  onPress={() => setEquipement(item.id)}
-                  style={[
-                    styles.button,
-                    equipement === item.id && styles.buttonSelected,
-                  ]}
-                >
-                  <Ionicons
-                    name={item.icon}
-                    size={30}
-                    color={equipement === item.id ? "#FFFFFF" : "#6C768F"}
-                  />
-                </TouchableOpacity>
-                <Text
-                  style={[
-                    styles.buttonText,
-                    equipement === item.id && { color: "#3B6DED" },
-                  ]}
-                >
-                  {item.id === "Telescope" ? "Telescope" : item.id}
-                </Text>
-                <TouchableOpacity
-                  style={styles.infoBulle}
-                  onPress={() => setInfoVisible(item)}
-                >
-                  <Ionicons
-                    name="information-circle-outline"
-                    size={20}
-                    color="white"
-                  />
-                </TouchableOpacity>
-              </View>
-            ))}
-          </View>
-          <TouchableOpacity
-            onPress={() => Observation()}
-            style={styles.confirmBtn}
-          >
-            <Text style={styles.buttonConfirmer}>Confirmer</Text>
-          </TouchableOpacity>
-          <Modal
-            visible={infoVisible !== null}
-            transparent
-            animationType="fade"
-          >
-            <TouchableOpacity
-              style={styles.modalOverlay}
-              onPress={() => setInfoVisible(null)}
-            >
-              {infoVisible && (
-                <View style={styles.modalContent}>
-                  <Text style={styles.modalTitle}>{infoVisible?.id}</Text>
-                  <Text style={styles.desc}>{infoVisible?.desc}</Text>
+      >
+        <GradientBackground>
+          <View style={styles.container}>
+            <Text style={styles.choixEquipement}>Quel est ton matériel ?</Text>
+            <View style={styles.buttoncontainer}>
+              {equipementsData.map((item) => (
+                <View key={item.id} style={styles.allIcons}>
+                  {" "}
+                  {/* Chaque élément généré par map doit avoir une 'key' unique pour que React s'y retrouve */}
+                  <TouchableOpacity
+                    onPress={() => setEquipement(item.id)}
+                    style={[
+                      styles.button,
+                      equipement === item.id && styles.buttonSelected,
+                    ]}
+                  >
+                    <Ionicons
+                      name={item.icon}
+                      size={30}
+                      color={equipement === item.id ? "#FFFFFF" : "#6C768F"}
+                    />
+                  </TouchableOpacity>
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      equipement === item.id && { color: "#3B6DED" },
+                    ]}
+                  >
+                    {item.id === "Telescope" ? "Telescope" : item.id}
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.infoBulle}
+                    onPress={() => setInfoVisible(item)}
+                  >
+                    <Ionicons
+                      name="information-circle-outline"
+                      size={20}
+                      color="white"
+                    />
+                  </TouchableOpacity>
                 </View>
-              )}
+              ))}
+            </View>
+            <TouchableOpacity
+              onPress={() => Observation()}
+              style={styles.confirmBtn}
+            >
+              <Text style={styles.buttonConfirmer}>Confirmer</Text>
             </TouchableOpacity>
-          </Modal>
-        </View>
-      </GradientBackground>
-      {/* </LinearGradient> */}
+            <Modal
+              visible={infoVisible !== null}
+              transparent
+              animationType="fade"
+            >
+              <TouchableOpacity
+                style={styles.modalOverlay}
+                onPress={() => setInfoVisible(null)}
+              >
+                {infoVisible && (
+                  <View style={styles.modalContent}>
+                    <Text style={styles.modalTitle}>{infoVisible?.id}</Text>
+                    <Text style={styles.desc}>{infoVisible?.desc}</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            </Modal>
+          </View>
+        </GradientBackground>
+      </LinearGradient>
     </SafeAreaView>
   );
 }
