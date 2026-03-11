@@ -20,7 +20,9 @@ import ProfileScreen from "./screens/ProfileScreen";
 import EquipementSelectionScreen from "./screens/EquipementSelectionScreen";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFonts } from "expo-font";
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import * as NavigationBar from "expo-navigation-bar";
+import { useEffect} from "react";
 // import {
 //   persistStore,
 //   persistReducer,
@@ -41,8 +43,13 @@ const store = configureStore({
 });
 
 function TabNavigator() {
-  return (
 
+  // Cache la barre de navigation Android pour un rendu fullscreen
+  useEffect(() => {
+    NavigationBar.setVisibilityAsync("hidden");
+  }, []);
+
+  return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: "#5B8CFF",
@@ -75,8 +82,7 @@ function TabNavigator() {
           return <FontAwesome name={iconName} size={size} color={color} />;
         },
         headerShown: false,
-      })}
-    >
+      })}>
       <Tab.Screen name="Acceuil" component={HomeScreen} />
       <Tab.Screen name="Observation" component={ObservationScreen} />
       <Tab.Screen name="Astrodex" component={AstrodexScreen} />
@@ -94,20 +100,21 @@ export default function App() {
     return null;
   }
   return (
-<SafeAreaProvider>
-    <Provider store={store}>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Inscription" component={SignupScreen} />
-          <Stack.Screen
-            name="EquipementSelectionScreen"
-            component={EquipementSelectionScreen}
-          />
-          <Stack.Screen name="TabNavigator" component={TabNavigator} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </Provider>
-</SafeAreaProvider>
+    <SafeAreaProvider>
+      <Provider store={store}>
+        <NavigationContainer>
+          <StatusBar hidden={true} />
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Inscription" component={SignupScreen} />
+            <Stack.Screen
+              name="EquipementSelectionScreen"
+              component={EquipementSelectionScreen}
+            />
+            <Stack.Screen name="TabNavigator" component={TabNavigator} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
+    </SafeAreaProvider>
   );
 }

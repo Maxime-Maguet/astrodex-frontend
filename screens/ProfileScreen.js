@@ -4,7 +4,7 @@ import {
   View,
   Text,
   SafeAreaView,
-  StatusBar,
+  
   TouchableOpacity,
   Image,
   Modal,
@@ -153,12 +153,12 @@ export default function ProfileScreen(route) {
 
   return (
     <View style={styles.safeArea}>
-      <StatusBar hidden={true} />
+     
       <Header title="Profil" />
-      <TouchableOpacity>
+      <TouchableOpacity onPress={takePicture}>
         <Image style={styles.avatar} source={avatarSource} />
       </TouchableOpacity>
-      <TouchableOpacity onPress={takePicture}>
+      <TouchableOpacity onPress={takePicture} >
         <Text style={styles.imageText}>Changer d'avatar</Text>
       </TouchableOpacity>
       <View style={styles.card}>
@@ -167,7 +167,7 @@ export default function ProfileScreen(route) {
           <Text style={styles.bodyContainer1}>
             Ton Niveau : {niveau} {txtNiv}
           </Text>
-          <Text style={styles.bodyContainerBottom}>Ton xp : {xp}</Text>
+          <Text style={styles.bodyContainerBottom}>Ton xp total : {xp}</Text>
           <Text>{captured100()}</Text>
         </View>
       </View>
@@ -215,7 +215,7 @@ export default function ProfileScreen(route) {
           </View>
         </View>
       </Modal>
-   </View>
+    </View>
   );
 }
 
