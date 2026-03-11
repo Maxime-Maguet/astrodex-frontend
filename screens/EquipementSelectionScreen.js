@@ -39,7 +39,7 @@ export default function EquipementSelectionScreen({ navigation }) {
       desc: "L'équilibre idéal pour explorer les champs étoilés et les amas ouverts.",
     },
     {
-      id: "Lunette astronomique",
+      id: "Telescope",
       icon: "telescope",
       desc: "Débusquez les astres les plus sombres et les galaxies les plus lointaines.",
     },
@@ -112,7 +112,7 @@ export default function EquipementSelectionScreen({ navigation }) {
                     equipement === item.id && { color: "#3B6DED" },
                   ]}
                 >
-                  {item.id === "Lunette astronomique" ? "Telescope" : item.id}
+                  {item.id === "Telescope" ? "Telescope" : item.id}
                 </Text>
                 <TouchableOpacity
                   style={styles.infoBulle}

@@ -1,7 +1,7 @@
 export const MagnitudeLimite = {
   "Oeil nu": 0,
   Jumelles: 4,
-  "Lunette astronomique": 15,
+  Telescope: 15,
 };
 
 //par soucis de temps (et j'avais pas envie de tout casser), j'ai mis les données en brut, plus tard, il faudra fetch au démarrage les magnitudes de la bdd et les stockées dans le reducer

@@ -93,7 +93,7 @@ export default function LoginScreen({ navigation }) {
     // KeyboardAvoidingView évite de cacher les inputs
     <View style={{ flex: 1 }}>
       <GradientImage />
-      <LoadingModal visible={loading} />
+      {/* <LoadingModal visible={loading} /> */}
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -106,7 +106,9 @@ export default function LoginScreen({ navigation }) {
         </View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView contentContainerStyle={styles.inner}>
-             <Text style={[styles.title, { fontFamily: "ShuttleX", fontSize: 30 }]}>
+            <Text
+              style={[styles.title, { fontFamily: "ShuttleX", fontSize: 30 }]}
+            >
               Astrodex
             </Text>
             <Text style={styles.Gtitle}>
