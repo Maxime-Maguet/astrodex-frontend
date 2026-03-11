@@ -106,6 +106,9 @@ export default function LoginScreen({ navigation }) {
         </View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView contentContainerStyle={styles.inner}>
+             <Text style={[styles.title, { fontFamily: "ShuttleX", fontSize: 30 }]}>
+              Astrodex
+            </Text>
             <Text style={styles.Gtitle}>
               Explore le ciel et collecte les astres !
             </Text>
@@ -167,7 +170,7 @@ const styles = StyleSheet.create({
   inner: { flexGrow: 1, alignItems: "center" },
   title: {
     // fontWeight: "bold",
-    marginBottom: 70,
+    marginBottom: 50,
     color: "#FFFFFF",
   },
 
@@ -216,7 +219,7 @@ const styles = StyleSheet.create({
   Gtitle: {
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 40,
+    marginBottom: 20,
     color: "#FFFFFF",
   },
 

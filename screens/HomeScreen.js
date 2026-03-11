@@ -149,23 +149,23 @@ export default function HomeScreen() {
   }, [astres, weather, equipement]);
 
   const astresList = visibleAstres.map((data, i) => {
-    //const validatedastre = capturedAstres.some((astre) => astre._id === data._id);
-    //if(validatedastre){
+    const validatedastre = capturedAstres.some((astre) => astre._id === data._id);
+    if(validatedastre){
     return (
       <HomeAstresCard
         key={data._id}
         name={data.name}
         imageUrl={data.imageUrl}
-        // validatedastre={validatedastre}
+         validatedastre={validatedastre}
       />
     );
-    //} else {
-    //return (
-    //<HomeAstresCard
-    //key={data._id}
-    //name={data.name}
-    //imageUrl={data.imageUrl} />
-    //)}
+    } else {
+    return (
+    <HomeAstresCard
+    key={data._id}
+    name={data.name}
+    imageUrl={data.imageUrl} />
+    )}
   });
 
   // const [fontsLoaded] = useFonts({
