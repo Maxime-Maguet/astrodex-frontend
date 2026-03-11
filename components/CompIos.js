@@ -25,6 +25,7 @@ export default function BoussoleAndroid() {
   const [targetAzimuth, setTargetAzimuth] = useState(null);
   const [astreFocus, setAstreFocus] = useState(null);
   const [locationHeading, setLocationHeading] = useState(0);
+  const [headingBuffer, setHeadingBuffer] = useState([]); //normal que le headingBuffer n'est pas utilisé, j'utilise juste le tableau pour sauvegarder les 5 dernières valeurs
   const isAligned = useSelector((state) => state.astre.isAligned);
 
   // console.log(visibleAstres);
@@ -70,6 +71,26 @@ export default function BoussoleAndroid() {
     };
   }, []);
 
+  // useEffect(() => {
+  //   (async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       console.log("Permission to access location was denied");
+  //       return;
+  //     }
+
+  //     let locationSubscription = await Location.watchHeadingAsync(
+  //       (locationHeading) => {
+  //         setLocationHeading(Number(locationHeading.trueHeading.toFixed(0)));
+  //       },
+  //     );
+
+  //     return () => {
+  //       locationSubscription && locationSubscription.remove();
+  //     };
+  //   })();
+  // }, []);
+
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -78,13 +99,41 @@ export default function BoussoleAndroid() {
         return;
       }
 
+      // On écoute les changements de direction de la boussole en temps réel
       let locationSubscription = await Location.watchHeadingAsync(
-        (locationHeading) => {
-          setLocationHeading(Number(locationHeading.trueHeading.toFixed(0)));
+        (newHeading) => {
+          // On arrondit la valeur de la boussole à l'entier le plus proche
+          const value = Number(newHeading.trueHeading.toFixed(0));
+
+          setHeadingBuffer((prev) => {
+            // On garde les 5 dernières valeurs pour lisser le résultats (exemple: si on bouge d'un coup sec la boussole, ça donnera [10, 12, 11, 45, 13], la moyenne donnera 18)
+            // +  la valeur dans le slice est grande, plus ce sera lisse mais + c'est lent à réagir
+            const buffer = [...prev, value].slice(-5);
+
+            // Moyenne circulaire : on convertit les degrés en sinus et cosinus
+            // pour éviter les sauts entre 359° et 0° (plein Nord)
+            const sin = buffer.reduce(
+              (a, b) => a + Math.sin((b * Math.PI) / 180),
+              0,
+            );
+            const cos = buffer.reduce(
+              (a, b) => a + Math.cos((b * Math.PI) / 180),
+              0,
+            );
+
+            // On reconvertit le résultat en degrés (0° à 360°)
+            const moyenne =
+              Math.round((Math.atan2(sin, cos) * 180) / Math.PI + 360) % 360;
+
+            // On met à jour la boussole avec la valeur lissée
+            setLocationHeading(moyenne);
+            return buffer;
+          });
         },
       );
 
       return () => {
+        // on arrête d'écouter la boussole quand on quitte l'écran
         locationSubscription && locationSubscription.remove();
       };
     })();
@@ -93,6 +142,9 @@ export default function BoussoleAndroid() {
   useEffect(() => {
     if (!isFocused) {
       setAstreFocus(null);
+      setTarget("...");
+      dispatch(setIsAligned(false));
+      setTargetAzimuth(null);
     }
   }, [isFocused]);
 
