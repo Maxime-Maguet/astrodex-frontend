@@ -23,7 +23,7 @@ import { updateXp } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingModal from "../components/LoadingModal";
 import { MagnitudeLimite } from "../modules/filtreAstresParEquipement";
-
+import { LinearGradient } from "expo-linear-gradient";
 import Header from "../components/Header";
 import ZoomableImage from "../components/ZoomableImage";
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes en ms
@@ -182,7 +182,8 @@ export default function HomeScreen() {
                 />
                 <LinearGradient
                   colors={["transparent", "rgba(0,0,0,0.5)"]}
-                  style={styles.gradient}></LinearGradient>
+                  style={styles.gradient}
+                ></LinearGradient>
                 <View style={styles.overlay}>
                   <Text style={styles.nomNasa}>
                     🚀 NASA • Image du jour {astroInfo.title}
