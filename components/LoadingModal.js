@@ -72,72 +72,72 @@ export default function LoadingModal({ visible }) {
   const opacityText = useRef(new Animated.Value(1)).current;
   const [logoReady, setLogoReady] = useState(false);
 
-  useEffect(() => {
-    if (visible && logoReady) {
-      Animated.loop(
-        Animated.sequence([
-          // logo pulse, texte discret
-          Animated.parallel([
-            Animated.sequence([
-              Animated.timing(scaleIcon, {
-                toValue: 1.2,
-                duration: 600,
-                easing: Easing.inOut(Easing.ease),
-                useNativeDriver: true,
-              }),
-              Animated.timing(scaleIcon, {
-                toValue: 1,
-                duration: 600,
-                easing: Easing.inOut(Easing.ease),
-                useNativeDriver: true,
-              }),
-            ]),
-            Animated.timing(opacityText, {
-              toValue: 0.8,
-              duration: 600,
-              easing: Easing.inOut(Easing.ease),
-              useNativeDriver: true,
-            }),
-            Animated.timing(scaleText, {
-              toValue: 0.9,
-              duration: 600,
-              easing: Easing.inOut(Easing.ease),
-              useNativeDriver: true,
-            }),
-          ]),
-          // texte pulse, logo discret
-          Animated.parallel([
-            Animated.sequence([
-              Animated.timing(scaleText, {
-                toValue: 1.2,
-                duration: 600,
-                easing: Easing.inOut(Easing.ease),
-                useNativeDriver: true,
-              }),
-              Animated.timing(scaleText, {
-                toValue: 1,
-                duration: 600,
-                easing: Easing.inOut(Easing.ease),
-                useNativeDriver: true,
-              }),
-            ]),
-            Animated.timing(opacityText, {
-              toValue: 1,
-              duration: 600,
-              easing: Easing.inOut(Easing.ease),
-              useNativeDriver: true,
-            }),
-            Animated.timing(scaleIcon, {
-              toValue: 0.9,
-              duration: 600,
-              easing: Easing.inOut(Easing.ease),
-              useNativeDriver: true,
-            }),
-          ]),
-        ])
-      ).start();
-    }
-  }, [visible, logoReady]);
+  // useEffect(() => {
+  //   if (visible && logoReady) {
+  //     Animated.loop(
+  //       Animated.sequence([
+  //         // logo pulse, texte discret
+  //         Animated.parallel([
+  //           Animated.sequence([
+  //             Animated.timing(scaleIcon, {
+  //               toValue: 1.2,
+  //               duration: 600,
+  //               easing: Easing.inOut(Easing.ease),
+  //               useNativeDriver: true,
+  //             }),
+  //             Animated.timing(scaleIcon, {
+  //               toValue: 1,
+  //               duration: 600,
+  //               easing: Easing.inOut(Easing.ease),
+  //               useNativeDriver: true,
+  //             }),
+  //           ]),
+  //           Animated.timing(opacityText, {
+  //             toValue: 0.8,
+  //             duration: 600,
+  //             easing: Easing.inOut(Easing.ease),
+  //             useNativeDriver: true,
+  //           }),
+  //           Animated.timing(scaleText, {
+  //             toValue: 0.9,
+  //             duration: 600,
+  //             easing: Easing.inOut(Easing.ease),
+  //             useNativeDriver: true,
+  //           }),
+  //         ]),
+  //         // texte pulse, logo discret
+  //         Animated.parallel([
+  //           Animated.sequence([
+  //             Animated.timing(scaleText, {
+  //               toValue: 1.2,
+  //               duration: 600,
+  //               easing: Easing.inOut(Easing.ease),
+  //               useNativeDriver: true,
+  //             }),
+  //             Animated.timing(scaleText, {
+  //               toValue: 1,
+  //               duration: 600,
+  //               easing: Easing.inOut(Easing.ease),
+  //               useNativeDriver: true,
+  //             }),
+  //           ]),
+  //           Animated.timing(opacityText, {
+  //             toValue: 1,
+  //             duration: 600,
+  //             easing: Easing.inOut(Easing.ease),
+  //             useNativeDriver: true,
+  //           }),
+  //           Animated.timing(scaleIcon, {
+  //             toValue: 0.9,
+  //             duration: 600,
+  //             easing: Easing.inOut(Easing.ease),
+  //             useNativeDriver: true,
+  //           }),
+  //         ]),
+  //       ])
+  //     ).start();
+  //   }
+  // }, [visible, logoReady]);
 
   return (
     <Modal visible={visible} transparent animationType="fade">

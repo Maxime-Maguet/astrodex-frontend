@@ -17,7 +17,7 @@ import { login } from "../reducers/user";
 import { TouchableWithoutFeedback } from "react-native";
 import LoadingModal from "../components/LoadingModal";
 import GradientImage from "../components/GradientImage";
-import { useFonts } from "expo-font";
+
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function LoginScreen({ navigation }) {
@@ -56,8 +56,6 @@ export default function LoginScreen({ navigation }) {
         setLoading(false);
 
         if (data.result) {
-          console.log("login=>", data);
-
           dispatch(
             login({
               token: data.token,
@@ -80,23 +78,15 @@ export default function LoginScreen({ navigation }) {
         }
       });
   };
-  // permet de mettre la font en place
-  // const [fontsLoaded] = useFonts({
-  //   ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
-  // });
-
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
 
   return (
     // KeyboardAvoidingView évite de cacher les inputs
     <View style={{ flex: 1 }}>
       <GradientImage />
-      <LoadingModal visible={loading} />
+      {/* <LoadingModal visible={loading} /> */}
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.image}>
           <Image
@@ -106,7 +96,9 @@ export default function LoginScreen({ navigation }) {
         </View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView contentContainerStyle={styles.inner}>
-             <Text style={[styles.title, { fontFamily: "ShuttleX", fontSize: 30 }]}>
+            <Text
+              style={[styles.title, { fontFamily: "ShuttleX", fontSize: 30 }]}
+            >
               Astrodex
             </Text>
             <Text style={styles.Gtitle}>

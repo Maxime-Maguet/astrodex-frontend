@@ -191,15 +191,19 @@ export default function HomeScreen() {
                   source={{ uri: astroInfo.image }}
                   style={styles.nasaImage}
                 />
-
-                <View style={styles.overlay}>
+                <View>
+                  <Text style={styles.nomNasa}>
+                    NASA • Image du jour {astroInfo.title}{" "}
+                  </Text>
+                </View>
+                {/* <View style={styles.overlay}>
                   <Text style={styles.nomNasa}>NASA • Image du jour</Text>
                   <ScrollView style={styles.textScroll}>
                     <Text style={styles.description}>
                       {astroInfo.description}
                     </Text>
                   </ScrollView>
-                </View>
+                </View> */}
               </View>
             )}
           </View>
@@ -263,17 +267,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-astresScroll: {
-marginTop: 10,
-
-},
+  astresScroll: {
+    marginTop: 10,
+  },
   weatherContainer: {
     width: "100%",
     marginVertical: 20,
     paddingHorizontal: 0,
   },
   compassContainer: {
-    marginBottom: 50, 
+    marginBottom: 50,
     width: "100%",
   },
 
@@ -296,7 +299,6 @@ marginTop: 10,
   },
 
   accueil: {
-    
     justifyContent: "flex-start",
   },
 
@@ -321,34 +323,35 @@ marginTop: 10,
     width: "100%",
     height: 200,
     borderRadius: 16,
+    marginBottom: 5,
   },
 
   nomNasa: {
-    color: "#FF8C42",
+    color: "white",
     fontSize: 15,
-    marginBottom: 5,
+    // marginBottom: 5,
     textShadowColor: "rgba(0,0,0,0.9)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
   },
 
-  description: {
-    fontSize: 14,
-    color: "#FFFFFF",
-    textShadowColor: "rgba(0,0,0,0.9)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
-  },
+  // description: {
+  //   fontSize: 14,
+  //   color: "#FFFFFF",
+  //   textShadowColor: "rgba(0,0,0,0.9)",
+  //   textShadowOffset: { width: 0, height: 1 },
+  //   textShadowRadius: 4,
+  // },
 
-  overlay: {
-    position: "absolute",
-    bottom: 10,
-    left: 10,
-    right: 10,
-    backgroundColor: "rgba(0,0,0,0.25)",
-    padding: 10,
-    borderRadius: 10,
-  },
+  // overlay: {
+  //   position: "absolute",
+  //   bottom: 10,
+  //   left: 10,
+  //   right: 10,
+  //   backgroundColor: "rgba(0,0,0,0.25)",
+  //   padding: 10,
+  //   borderRadius: 10,
+  // },
 
   textScroll: {
     height: 65,
