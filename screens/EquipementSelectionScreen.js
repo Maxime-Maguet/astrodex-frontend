@@ -92,7 +92,7 @@ export default function EquipementSelectionScreen({ navigation }) {
           <Text style={styles.choixEquipement}>Quel est ton matériel ?</Text>
           <View style={styles.buttoncontainer}>
             {equipementsData.map((item) => (
-              <View key={item.id} style={styles.allIcons}>
+              <View key={item.id} style={styles.allIcons}> {/* Chaque élément généré par map doit avoir une 'key' unique pour que React s'y retrouve */}
                 <TouchableOpacity
                   onPress={() => setEquipement(item.id)}
                   style={[
