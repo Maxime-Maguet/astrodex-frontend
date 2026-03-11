@@ -5,7 +5,6 @@ import {
   Text,
   SafeAreaView,
   ImageBackground,
-  StatusBar,
   ScrollView,
   Image,
 } from "react-native";
@@ -149,23 +148,25 @@ export default function HomeScreen() {
   }, [astres, weather, equipement]);
 
   const astresList = visibleAstres.map((data, i) => {
-    const validatedastre = capturedAstres.some((astre) => astre._id === data._id);
-    if(validatedastre){
-    return (
-      <HomeAstresCard
-        key={data._id}
-        name={data.name}
-        imageUrl={data.imageUrl}
-         validatedastre={validatedastre}
-      />
-    );
+    const validatedastre = capturedAstres.some(astre => astre._id === data._id);
+    if (validatedastre) {
+      return (
+        <HomeAstresCard
+          key={data._id}
+          name={data.name}
+          imageUrl={data.imageUrl}
+          validatedastre={validatedastre}
+        />
+      );
     } else {
-    return (
-    <HomeAstresCard
-    key={data._id}
-    name={data.name}
-    imageUrl={data.imageUrl} />
-    )}
+      return (
+        <HomeAstresCard
+          key={data._id}
+          name={data.name}
+          imageUrl={data.imageUrl}
+        />
+      );
+    }
   });
 
   // const [fontsLoaded] = useFonts({
@@ -179,7 +180,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.safeArea}>
       <LoadingModal visible={isLoading} />
-      <StatusBar hidden={true} />
+
       <View style={styles.container}>
         <View style={styles.accueil}>
           <Header title="Accueil" />
@@ -240,7 +241,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingVertical: 20,
     justifyContent: "flex-start",
   },
   header: {
@@ -262,13 +262,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
+astresScroll: {
+marginTop: 10,
+
+},
   weatherContainer: {
     width: "100%",
-    marginBottom: 10,
+    marginVertical: 20,
     paddingHorizontal: 0,
   },
   compassContainer: {
-    marginBottom: 50, // On la décolle un peu du bas
+    marginBottom: 50, 
     width: "100%",
   },
 
@@ -287,12 +292,11 @@ const styles = StyleSheet.create({
   },
 
   astresSection: {
-    flex: 1,
     justifyContent: "center",
   },
 
   accueil: {
-    flex: 1,
+    
     justifyContent: "flex-start",
   },
 

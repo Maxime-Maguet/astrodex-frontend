@@ -5,7 +5,7 @@ import {
   SafeAreaView,
   ScrollView,
   Switch,
-  StatusBar,
+  
   Platform,
   Pressable,
 } from "react-native";
@@ -16,7 +16,7 @@ import { setCapturedAstres } from "../reducers/astre";
 import AstroCard from "../components/AstroCard";
 import Header from "../components/Header";
 import AstroModal from "../components/AstroModal";
-import * as NavigationBar from "expo-navigation-bar";
+
 import { useRoute, useIsFocused } from "@react-navigation/native";
 import { updateXP } from "../reducers/user";
 import * as Progress from "react-native-progress";
@@ -40,16 +40,16 @@ export default function AstrodexScreen() {
   const dispatch = useDispatch();
 
   // Données utilisateur depuis Redux (token, xp...)
-  const user = useSelector((state) => state.user.value);
+  const user = useSelector(state => state.user.value);
   // Liste des astres capturés stockée dans Redux, mise à jour après chaque capture
-  const capturedAstres = useSelector((state) => state.astre.value);
+  const capturedAstres = useSelector(state => state.astre.value);
 
   // Inverse l'état du switch "Mes captures"
   const toggleSwitch = () =>
-    setShowCapturedOnly((previsousState) => !previsousState);
+    setShowCapturedOnly(previsousState => !previsousState);
 
   // Ouvre la modal de détails pour un astre spécifique
-  const handleDetails = (astre) => {
+  const handleDetails = astre => {
     setSelectedAstre(astre);
     setModalVisible(true);
   };
@@ -58,16 +58,13 @@ export default function AstrodexScreen() {
     setModalVisible(false);
   };
 
-  // Cache la barre de navigation Android pour un rendu fullscreen
-  useEffect(() => {
-    NavigationBar.setVisibilityAsync("hidden");
-  }, []);
+
 
   // Si on arrive depuis ObservationScreen avec un astreName en paramètre,
   // on trouve l'astre correspondant et on ouvre directement sa modal
   useEffect(() => {
     if (route.params?.astreName) {
-      const astre = astres.find((e) => e.name === route.params.astreName);
+      const astre = astres.find(e => e.name === route.params.astreName);
       if (astre) {
         setSelectedAstre(astre);
         setModalVisible(true);
@@ -78,8 +75,8 @@ export default function AstrodexScreen() {
   // Charge tous les astres de la BDD au premier rendu
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
-      .then((res) => res.json())
-      .then((astresData) => {
+      .then(res => res.json())
+      .then(astresData => {
         if (astresData.result) {
           setAstres(astresData.astres);
           setNombreAstre(Number(astresData.astres.length));
@@ -92,8 +89,8 @@ export default function AstrodexScreen() {
   useEffect(() => {
     if (isFocused && user.token) {
       fetch(`${apiUrl}/users/profile/${user.token}`)
-        .then((res) => res.json())
-        .then((userData) => {
+        .then(res => res.json())
+        .then(userData => {
           if (userData.result) {
             let capture = Number(userData.user.capturedAstres.length);
             dispatch(setCapturedAstres(userData.user.capturedAstres));
@@ -107,9 +104,9 @@ export default function AstrodexScreen() {
 
   // Si le filtre est actif, ne garde que les astres présents dans capturedAstres (Redux)
   // Sinon retourne tous les astres
-  const filteredAstres = astres.filter((item) => {
+  const filteredAstres = astres.filter(item => {
     if (showCapturedOnly) {
-      return capturedAstres.some((e) => e._id === item._id);
+      return capturedAstres.some(e => e._id === item._id);
     } else {
       return true;
     }
@@ -118,8 +115,8 @@ export default function AstrodexScreen() {
   // Pour chaque astre filtré, vérifie s'il est capturé pour passer isCaptured à AstroCard
   // AstroCard affiche un overlay "NON CAPTURÉ" si isCaptured est false
   const astresList = filteredAstres.map((data, i) => {
-    const isCaptured = capturedAstres.some((astre) => astre._id === data._id);
-    const capturedDate = dateCapture.find((e) => e.astreId === data._id);
+    const isCaptured = capturedAstres.some(astre => astre._id === data._id);
+    const capturedDate = dateCapture.find(e => e.astreId === data._id);
 
     return (
       <AstroCard
@@ -145,9 +142,8 @@ export default function AstrodexScreen() {
 
   return (
     <View style={styles.safeArea}>
-      <StatusBar hidden={true} />
       <Header title="AstroDex" />
- 
+
       {/* Bandeau de stats : XP et progression de capture */}
       <View style={styles.rangéeStats}>
         <View style={styles.badgeStat}>
@@ -162,8 +158,7 @@ export default function AstrodexScreen() {
             style={({ pressed }) => [
               styles.button,
               pressed && styles.buttonPressed, // Style optionnel pendant l'appui
-            ]}
-          >
+            ]}>
             {!isInfoVisible && (
               <View style={styles.infoBox}>
                 <Text style={styles.infoText}>
@@ -203,8 +198,7 @@ export default function AstrodexScreen() {
       </View>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
-        style={styles.scrollView}
-      >
+        style={styles.scrollView}>
         {astresList}
       </ScrollView>
 
@@ -213,20 +207,17 @@ export default function AstrodexScreen() {
         <AstroModal
           visible={modalVisible}
           closeModale={closeModal}
-          infoAstre={selectedAstre}
-        ></AstroModal>
+          infoAstre={selectedAstre}></AstroModal>
       )}
-</View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-
   safeArea: {
     flex: 1,
     backgroundColor: "#0B0F1A",
     // paddingTop: 20,
-
   },
   scrollView: {
     flex: 1,

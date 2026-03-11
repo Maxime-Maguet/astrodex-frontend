@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { StyleSheet, View, ScrollView, StatusBar, Text } from "react-native";
+import { StyleSheet, View, ScrollView, Text } from "react-native";
 import Header from "../components/Header";
 import BoussoleIOS from "../components/CompIos";
 import ButtonCapture from "../components/buttonCapture";
@@ -99,7 +99,7 @@ export default function ObservationScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar hidden={true} />
+      
       <ScrollView
         nestedScrollEnabled={true}
         style={{ width: "100%" }}
