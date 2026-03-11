@@ -11,7 +11,7 @@ import {
   ScrollView,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
-
+import { LinearGradient } from "expo-linear-gradient";
 // Modal de détails d'un astre -> affichée depuis AstrodexScreen au clic sur "Détails"
 // Props : visible, closeModale, infoAstre (objet complet de l'astre)
 
@@ -77,37 +77,50 @@ export default function AstroModal(props) {
               />
             </View>
             {/* ScrollView pour les stats + description + lore si le contenu dépasse */}
-            <ScrollView
-              nestedScrollEnabled={true}
-              style={{ maxHeight: 100, width: "100%" }}
-              contentContainerStyle={styles.scrollContent}
-            >
-              {/* Stats techniques de l'astre */}
-              <View style={styles.statsContainer}>
-                <View style={styles.stat}>
-                  <Text style={styles.statText}>
-                    Distance : {astresData.distance}
-                  </Text>
+            <View style={{ maxHeight: 200, width: "100%" }}>
+              <ScrollView
+                nestedScrollEnabled={true}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={true}
+              >
+                {/* Stats techniques de l'astre */}
+                <View style={styles.statsContainer}>
+                  <View style={styles.stat}>
+                    <Text style={styles.statText}>
+                      Distance : {astresData.distance}
+                    </Text>
+                  </View>
+                  <View style={styles.stat}>
+                    <Text style={styles.statText}>
+                      Diamètre : {astresData.diametre}
+                    </Text>
+                  </View>
+                  <View style={styles.stat}>
+                    <Text style={styles.statText}>
+                      Masse : {astresData.masse}
+                    </Text>
+                  </View>
+                  {/* fun fact de l'astre */}
                 </View>
-                <View style={styles.stat}>
-                  <Text style={styles.statText}>
-                    Diamètre : {astresData.diametre}
-                  </Text>
-                </View>
-                <View style={styles.stat}>
-                  <Text style={styles.statText}>
-                    Masse : {astresData.masse}
-                  </Text>
-                </View>
-                {/* fun fact de l'astre */}
+                <Text style={styles.description}>
+                  {props.infoAstre.description}
+                  {/* Lore narratif de l'astre */}
+                </Text>
                 <Text style={styles.description}>...</Text>
-              </View>
-              <Text style={styles.description}>
-                {props.infoAstre.description}
-                {/* Lore narratif de l'astre */}
-              </Text>
-              <Text style={styles.lore}>{props.infoAstre.lore}</Text>
-            </ScrollView>
+                <Text style={styles.lore}>{props.infoAstre.lore}</Text>
+              </ScrollView>
+              <LinearGradient
+                colors={["transparent", "#111827"]}
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: 40,
+                }}
+                pointerEvents="none"
+              />
+            </View>
           </View>
         </View>
       </GestureHandlerRootView>
@@ -143,7 +156,8 @@ const styles = StyleSheet.create({
     padding: 25,
     // shadowColor: "#3B82F6",
     shadowOpacity: 0.5,
-
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 20,
     // elevation -> Androïde : Définit l'altitude d'une vue à l'aide de l'API d'altitude sous-jacente d'Android .
     //Ceci ajoute une ombre portée à l'élément et modifie l'ordre Z des vues superposées.
 

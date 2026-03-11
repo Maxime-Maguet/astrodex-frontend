@@ -62,7 +62,13 @@ export default function ObservationModal(props) {
   return (
     <Modal visible={props.visible} transparent animationType="fade">
       <View style={styles.overlay}>
-        <View style={styles.container}>
+        <View
+          style={[
+            styles.container,
+            { shadowColor: textColor },
+            { borderColor: textColor },
+          ]}
+        >
           {observation && (
             <>
               <Text style={[styles.rarity, { color: textColor }]}>
@@ -120,8 +126,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 25,
     borderWidth: 1.5,
-    borderColor: "rgba(56, 189, 248, 0.2)",
-    shadowColor: "#3B82F6",
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.4,
     shadowRadius: 20,
