@@ -167,7 +167,7 @@ export default function ProfileScreen(route) {
           <Text style={styles.bodyContainer1}>
             Ton Niveau : {niveau} {txtNiv}
           </Text>
-          <Text style={styles.bodyContainerBottom}>Ton xp : {xp}</Text>
+          <Text style={styles.bodyContainerBottom}>Ton xp total : {xp}</Text>
           <Text>{captured100()}</Text>
         </View>
       </View>
@@ -215,7 +215,7 @@ export default function ProfileScreen(route) {
           </View>
         </View>
       </Modal>
-   </View>
+    </View>
   );
 }
 
