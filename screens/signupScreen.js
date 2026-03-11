@@ -52,7 +52,6 @@ export default function SignupScreen({ navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         if (data.token) {
           dispatch(
             login({ token: data.token, username: username, xp: data.xp }),

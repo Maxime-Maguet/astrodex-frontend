@@ -149,38 +149,20 @@ export default function HomeScreen() {
     }
   }, [astres, weather, equipement]);
 
-  const astresList = visibleAstres.map((data, i) => {
-    const validatedastre = capturedAstres.some(
-      (astre) => astre._id === data._id,
+  const astresList = visibleAstres.map((data) => {
+    const isCaptured = capturedAstres.some((astre) => astre._id === data._id);
+    return (
+      <HomeAstresCard
+        key={data._id}
+        name={data.name}
+        imageUrl={data.imageUrl}
+        validatedAstre={isCaptured}
+        onPress={() => {
+          dispatch(setAstreFocus(data.name));
+          navigation.navigate("Observation");
+        }}
+      />
     );
-    if (validatedastre) {
-      return (
-        <HomeAstresCard
-          key={data._id}
-          name={data.name}
-          imageUrl={data.imageUrl}
-          validatedastre={validatedastre}
-          onPress={() => {
-            console.log("Planete cliquée =>", data.name);
-            dispatch(setAstreFocus(data.name));
-            navigation.navigate("Observation");
-          }}
-        />
-      );
-    } else {
-      return (
-        <HomeAstresCard
-          key={data._id}
-          name={data.name}
-          imageUrl={data.imageUrl}
-          onPress={() => {
-            console.log("Planete cliquée =>", data.name);
-            dispatch(setAstreFocus(data.name));
-            navigation.navigate("Observation");
-          }}
-        />
-      );
-    }
   });
 
   return (

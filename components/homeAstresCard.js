@@ -2,17 +2,15 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function AstreCard(props) {
-  const isCaptured = props.validatedastre;
-
   return (
     <TouchableOpacity onPress={props.onPress}>
       <View style={styles.card}>
         <View style={styles.imageContainer}>
           <Image
             source={{ uri: props.imageUrl }}
-            style={[styles.image, !isCaptured && { opacity: 0.35 }]}
+            style={[styles.image, !props.validatedAstre && { opacity: 0.35 }]}
           />
-          {!isCaptured && (
+          {!props.validatedAstre && (
             <View style={styles.lockedImage}>
               <Ionicons name="lock-closed" size={32} color="#AAB3C5" />
             </View>

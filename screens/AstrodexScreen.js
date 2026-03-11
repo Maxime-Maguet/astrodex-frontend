@@ -139,7 +139,6 @@ export default function AstrodexScreen() {
 
   let xpSur250 = xps - niveau * xpLimit;
   let xpDeBarre = xpSur250 / xpLimit;
-  //console.log(xpDeBarre);
 
   return (
     <View style={styles.safeArea}>

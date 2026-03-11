@@ -35,8 +35,6 @@ export default function ProfileScreen(route) {
         .then((res) => res.json())
         .then((userData) => {
           if (userData.result) {
-            //console.log("equipement :", userData.user.equipement);
-            //console.log("test", userData.user.capturedAstres.length);
             let name = userData.user.name;
             let xp = userData.user.xp;
             let equip = userData.user.equipement;
@@ -54,8 +52,6 @@ export default function ProfileScreen(route) {
         });
     }
   }, [isFocused]);
-  //console.log(equipement);
-  // console.log("cap : ", captured);
 
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
@@ -131,7 +127,6 @@ export default function ProfileScreen(route) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("upload response:", data);
         dispatch(addPhoto(data.avatar));
       });
   };
