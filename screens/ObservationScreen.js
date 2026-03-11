@@ -8,22 +8,19 @@ import * as NavigationBar from "expo-navigation-bar";
 import { useDispatch, useSelector } from "react-redux";
 import { addAstre } from "../reducers/astre";
 import { updateEquipement } from "../reducers/user";
-import { useFonts } from "expo-font";
+
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function ObservationScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
 
-  // const handleCapture = () => {
-  //   if (!selectedAstre) return;
-
   const equipement = useSelector((state) => state.user.value.equipement);
   const userToken = useSelector((state) => state.user.value.token);
   const selectedAstre = useSelector((state) => state.astre.astreFocus);
   const capturedAstres = useSelector((state) => state.astre.value);
   const user = useSelector((state) => state.user.value);
-  console.log(equipement);
+
   const isAlreadyCaptured = capturedAstres.some(
     (astre) => astre.name === selectedAstre,
   );
@@ -37,11 +34,6 @@ export default function ObservationScreen({ navigation }) {
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
       .then((astresData) => {
-        // console.log(
-        //   "Astres BDD:",
-        //   astresData.astres.map((a) => `"${a.name}"`),
-        // );
-        //console.log("selectedAstre:", `"${selectedAstre}"`);
         const astreToCapture = astresData.astres.find(
           (astre) => astre.name === selectedAstre,
         );
@@ -89,17 +81,8 @@ export default function ObservationScreen({ navigation }) {
     }
   }, []);
 
-  const [fontsLoaded] = useFonts({
-    ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
   return (
     <View style={styles.container}>
-      
       <ScrollView
         nestedScrollEnabled={true}
         style={{ width: "100%" }}

@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   ScrollView,
   Switch,
-  Platform,
   Pressable,
 } from "react-native";
 import Octicons from "@expo/vector-icons/Octicons";
@@ -156,7 +155,7 @@ export default function AstrodexScreen() {
           </View>
           <Pressable
             onPress={() => setShowXP((prev) => !prev)}
-            style={{ paddingTop: 10 }}
+            style={{ paddingTop: 10, height: 45 }}
           >
             {showXP ? (
               <View style={styles.xp}>

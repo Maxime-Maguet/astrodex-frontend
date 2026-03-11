@@ -24,6 +24,8 @@ export const astreSlice = createSlice({
     },
 
     setAstreFocus: (state, action) => {
+      console.log("reducer planete cliquée =>", action.payload);
+
       state.astreFocus = action.payload;
     },
 

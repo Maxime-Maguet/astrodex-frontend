@@ -27,8 +27,16 @@ export default function BoussoleAndroid() {
   const [locationHeading, setLocationHeading] = useState(0);
   const isAligned = useSelector((state) => state.astre.isAligned);
 
-  // console.log(visibleAstres);
-  // console.log(useSelector((state) => state.astre));
+  //ajouté par Max
+  const astreFromAccueil = useSelector((state) => state.astre.astreFocus);
+
+  //ajouté par Max
+  useEffect(() => {
+    if (astreFromAccueil && isFocused) {
+      setAstreFocus(astreFromAccueil);
+    }
+  }, [astreFromAccueil]);
+
   useEffect(() => {
     let subscription; // On prépare une variable pour pouvoir dire "quand je ne suis pas sur l'app, je n'actualise pas"
 
