@@ -116,7 +116,7 @@ export default function BoussoleAndroid() {
           setHeadingBuffer((prev) => {
             // On garde les 5 dernières valeurs pour lisser le résultats (exemple: si on bouge d'un coup sec la boussole, ça donnera [10, 12, 11, 45, 13], la moyenne donnera 18)
             // +  la valeur dans le slice est grande, plus ce sera lisse mais + c'est lent à réagir
-            const buffer = [...prev, value].slice(-5);
+            const buffer = [...prev, value].slice(-2);
 
             // Moyenne circulaire : on convertit les degrés en sinus et cosinus
             // pour éviter les sauts entre 359° et 0° (plein Nord)
