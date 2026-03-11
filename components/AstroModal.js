@@ -5,17 +5,22 @@ import {
   StyleSheet,
   Image,
   TouchableWithoutFeedback,
+  TouchableOpacity,
+  registerCallableModule,
 } from "react-native";
+import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import {
   ScrollView,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import { LinearGradient } from "expo-linear-gradient";
+
 // Modal de détails d'un astre -> affichée depuis AstrodexScreen au clic sur "Détails"
 // Props : visible, closeModale, infoAstre (objet complet de l'astre)
 
 export default function AstroModal(props) {
+  const [zoomVisible, setZoomVisible] = useState(false);
   // Associe chaque rareté à une couleur, un label et un nombre d'étoiles
   const rarityStyle = {
     Commune: { color: "#22C55E", label: "COMMUNE", stars: 1 },
@@ -71,10 +76,28 @@ export default function AstroModal(props) {
             <Text style={styles.name}>{props.infoAstre.name}</Text>
             <View style={styles.imageContainer}>
               {/* Image de l'astre */}
-              <Image
-                source={{ uri: props.infoAstre.imageUrl }}
-                style={styles.image}
-              />
+              <TouchableOpacity onPress={() => setZoomVisible(true)}>
+                <Image
+                  source={{ uri: props.infoAstre.imageUrl }}
+                  style={styles.image}
+                />
+              </TouchableOpacity>
+              <Modal visible={zoomVisible} animationType="fade" transparent>
+                <TouchableOpacity
+                  onPress={() => setZoomVisible(false)}
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "rgba(0, 0, 0, 0.85)",
+                  }}
+                >
+                  <Image
+                    source={{ uri: props.infoAstre.imageUrl }}
+                    style={styles.imageZoom}
+                  />
+                </TouchableOpacity>
+              </Modal>
             </View>
             {/* ScrollView pour les stats + description + lore si le contenu dépasse */}
             <View style={{ maxHeight: 200, width: "100%" }}>
@@ -167,6 +190,11 @@ const styles = StyleSheet.create({
   },
 
   image: { width: 160, height: 160, marginBottom: 20 },
+
+  imageZoom: {
+    width: 400,
+    height: 400,
+  },
 
   name: {
     fontSize: 24,
