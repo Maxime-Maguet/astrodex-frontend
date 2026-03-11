@@ -8,7 +8,7 @@ import * as NavigationBar from "expo-navigation-bar";
 import { useDispatch, useSelector } from "react-redux";
 import { addAstre } from "../reducers/astre";
 import { updateEquipement } from "../reducers/user";
-//import { useFonts } from "expo-font";
+import { useFonts } from "expo-font";
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function ObservationScreen({ navigation }) {
@@ -23,7 +23,7 @@ export default function ObservationScreen({ navigation }) {
   const selectedAstre = useSelector((state) => state.astre.astreFocus);
   const capturedAstres = useSelector((state) => state.astre.value);
   const user = useSelector((state) => state.user.value);
-
+  console.log(equipement);
   const isAlreadyCaptured = capturedAstres.some(
     (astre) => astre.name === selectedAstre,
   );
@@ -89,13 +89,13 @@ export default function ObservationScreen({ navigation }) {
     }
   }, []);
 
-  // const [fontsLoaded] = useFonts({
-  //   ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
-  // });
+  const [fontsLoaded] = useFonts({
+    ShuttleX: require("../assets/fonts/SHUTTLE-X.ttf"),
+  });
 
-  // if (!fontsLoaded) {
-  //   return null;
-  // }
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
@@ -107,7 +107,7 @@ export default function ObservationScreen({ navigation }) {
       >
         <Header title="Observation" />
         <Text style={styles.body}>
-          Tu utilises comme équipement : {equipement ?? "Oeil nu"}
+          Tu utilises comme équipement : {equipement}
         </Text>
         <BoussoleIOS />
         <ButtonCapture
@@ -124,7 +124,6 @@ export default function ObservationScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 20,
     flex: 1,
     backgroundColor: "#0B0F1A",
   },

@@ -7,6 +7,7 @@ import {
   Switch,
   StatusBar,
   Platform,
+  Pressable,
 } from "react-native";
 import Octicons from "@expo/vector-icons/Octicons";
 import { useEffect, useState } from "react";
@@ -18,6 +19,7 @@ import AstroModal from "../components/AstroModal";
 import * as NavigationBar from "expo-navigation-bar";
 import { useRoute, useIsFocused } from "@react-navigation/native";
 import { updateXP } from "../reducers/user";
+import * as Progress from "react-native-progress";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -29,6 +31,7 @@ export default function AstrodexScreen() {
   const [captured, setCaptured] = useState(0); // Nombre d'astres capturés par l'utilisateur
   const [nombreAstre, setNombreAstre] = useState(0); // Nombre total d'astres disponibles
   const [dateCapture, setDateCapture] = useState([]);
+  const [isInfoVisible, setIsInfoVisible] = useState(false);
   // useIsFocused retourne true quand l'écran est actif — utilisé pour relancer les fetches à chaque visite
   const isFocused = useIsFocused();
 
@@ -133,6 +136,13 @@ export default function AstrodexScreen() {
     );
   });
 
+  //calcul du niveau
+  let xps = user.xp;
+  let niveau = Math.floor(xps / 250); //on arrondi pour avoir un niveau sans virgule.
+  if (niveau >= 100) {
+    niveau = null;
+  }
+
   return (
     <View style={styles.safeArea}>
       <StatusBar hidden={true} />
@@ -142,10 +152,35 @@ export default function AstrodexScreen() {
       <View style={styles.rangéeStats}>
         <View style={styles.badgeStat}>
           <View style={styles.xp}>
-            <Octicons name="star-fill" size={24} color="gold" />
-            <Text style={styles.valeurStat}>{user.xp}</Text>
-            <Text style={styles.libelleStat}>XP</Text>
+            <Text style={styles.libelleStat}>Niveau : </Text>
+            <Text style={styles.valeurStat}>{niveau}</Text>
           </View>
+          <Pressable
+            onLongPress={() => setIsInfoVisible(true)} // Affiche l'info au clic long
+            onPressOut={() => setIsInfoVisible(false)} // Cache l'info quand on relâche
+            delayLongPress={200} // Durée de l'appui long en ms (optionnel, 500ms par défaut)
+            style={({ pressed }) => [
+              styles.button,
+              pressed && styles.buttonPressed, // Style optionnel pendant l'appui
+            ]}
+          >
+            {!isInfoVisible && (
+              <View style={styles.infoBox}>
+                <Text style={styles.infoText}>
+                  <Progress.Bar progress={0.5} width={"80%"} />
+                </Text>
+              </View>
+            )}
+            {isInfoVisible && (
+              <View>
+                <View style={styles.xp}>
+                  <Octicons name="star-fill" size={24} color="gold" />
+                  <Text style={styles.valeurStat}>{user.xp}</Text>
+                  <Text style={styles.libelleStat}>XP</Text>
+                </View>
+              </View>
+            )}
+          </Pressable>
         </View>
         <View style={styles.séparateurStat} />
         <View style={styles.badgeStat}>
