@@ -39,7 +39,7 @@ export default function EquipementSelectionScreen({ navigation }) {
       desc: "L'équilibre idéal pour explorer les champs étoilés et les amas ouverts.",
     },
     {
-      id: "Lunette astronomique",
+      id: "Telescope",
       icon: "telescope",
       desc: "Débusquez les astres les plus sombres et les galaxies les plus lointaines.",
     },
@@ -92,7 +92,7 @@ export default function EquipementSelectionScreen({ navigation }) {
           <Text style={styles.choixEquipement}>Quel est ton matériel ?</Text>
           <View style={styles.buttoncontainer}>
             {equipementsData.map((item) => (
-              <View key={item.id} style={styles.allIcons}>
+              <View key={item.id} style={styles.allIcons}> {/* Chaque élément généré par map doit avoir une 'key' unique pour que React s'y retrouve */}
                 <TouchableOpacity
                   onPress={() => setEquipement(item.id)}
                   style={[
@@ -112,7 +112,7 @@ export default function EquipementSelectionScreen({ navigation }) {
                     equipement === item.id && { color: "#3B6DED" },
                   ]}
                 >
-                  {item.id === "Lunette astronomique" ? "Telescope" : item.id}
+                  {item.id === "Telescope" ? "Telescope" : item.id}
                 </Text>
                 <TouchableOpacity
                   style={styles.infoBulle}
