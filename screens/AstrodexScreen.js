@@ -147,7 +147,7 @@ export default function AstrodexScreen() {
     <View style={styles.safeArea}>
       <StatusBar hidden={true} />
       <Header title="AstroDex" />
- 
+
       {/* Bandeau de stats : XP et progression de capture */}
       <View style={styles.rangéeStats}>
         <View style={styles.badgeStat}>
@@ -161,7 +161,7 @@ export default function AstrodexScreen() {
             delayLongPress={200} // Durée de l'appui long en ms (optionnel, 500ms par défaut)
             style={({ pressed }) => [
               styles.button,
-              pressed && styles.buttonPressed, // Style optionnel pendant l'appui
+              pressed && styles.buttonPressed,
             ]}
           >
             {!isInfoVisible && (
@@ -216,17 +216,15 @@ export default function AstrodexScreen() {
           infoAstre={selectedAstre}
         ></AstroModal>
       )}
-</View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-
   safeArea: {
     flex: 1,
     backgroundColor: "#0B0F1A",
     // paddingTop: 20,
-
   },
   scrollView: {
     flex: 1,

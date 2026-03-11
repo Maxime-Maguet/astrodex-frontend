@@ -215,7 +215,7 @@ export default function ProfileScreen(route) {
           </View>
         </View>
       </Modal>
-   </View>
+    </View>
   );
 }
 
