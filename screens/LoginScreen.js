@@ -93,19 +93,19 @@ export default function LoginScreen({ navigation }) {
             source={require("../assets/Astrodex.png")}
             style={styles.astrodex}
           />
-        </View>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView contentContainerStyle={styles.inner}>
             <Text
-              style={[styles.title, { fontFamily: "ShuttleX", fontSize: 30 }]}
+              style={[styles.titleAstro, { fontFamily: "ShuttleX", fontSize: 42 }]}
             >
               Astrodex
             </Text>
+        </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <ScrollView contentContainerStyle={styles.inner}>
             <Text style={styles.Gtitle}>
               Explore le ciel et collecte les astres !
             </Text>
             <Text
-              style={[styles.title, { fontFamily: "ShuttleX", fontSize: 45 }]}
+              style={[styles.title, { fontFamily: "ShuttleX", fontSize: 30 }]}
             >
               Connexion
             </Text>
@@ -167,9 +167,10 @@ const styles = StyleSheet.create({
   },
 
   astrodex: {
-    width: 100,
-    height: 100,
-    marginVertical: 35,
+    width: 70,
+    height: 70,
+    marginVertical: 40,
+    marginLeft : 220,
   },
   input: {
     width: "85%",
@@ -211,8 +212,9 @@ const styles = StyleSheet.create({
   Gtitle: {
     fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 40,
     color: "#FFFFFF",
+    marginTop : 70
   },
 
   image: {
@@ -230,4 +232,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#2a4fa3",
     opacity: 0.7,
   },
+  titleAstro :{
+    color : "white",
+    marginTop : -95,
+    marginRight : 140,
+  }
 });

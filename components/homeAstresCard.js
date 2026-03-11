@@ -6,16 +6,6 @@ export default function AstreCard(props) {
 
   return (
     <View style={styles.card}>
-<<<<<<< HEAD
-    <Image source={{ uri: props.imageUrl }} style={styles.image} />
-      <View style={styles.container}>
-        <Text style={styles.astreName}>{props.name}</Text>
-      </View>
-      {props.validatedastre && (
-        <Text style={styles.astreValidated} >Déjà Capturé !</Text> //Props passé pour pouvoir afficher la phrase
-      )}
-        
-=======
       <View style={styles.imageContainer}>
         <Image
           source={{ uri: props.imageUrl }}
@@ -30,7 +20,6 @@ export default function AstreCard(props) {
       <View style={styles.container}>
         <Text style={styles.astreName}>{props.name}</Text>
       </View>
->>>>>>> dev
     </View>
   );
 }
@@ -60,10 +49,6 @@ const styles = StyleSheet.create({
     width: 110,
     height: 110,
     borderRadius: 55,
-<<<<<<< HEAD
-    marginBottom: 5,
-=======
->>>>>>> dev
   },
 
   container: {
@@ -74,19 +59,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "white",
-<<<<<<< HEAD
-    marginBottom: 10,
-    fontFamily: "Inter",
-    marginTop : -10,
-  },
-  astreValidated : {
-  fontSize: 13,
-  color: "white",
-  fontWeight: "bold",
-  marginTop : -15,
-  }
-  });
-=======
     fontFamily: "Inter",
     marginBottom: 5,
   },
@@ -98,4 +70,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
->>>>>>> dev
