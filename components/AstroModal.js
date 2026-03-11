@@ -5,17 +5,22 @@ import {
   StyleSheet,
   Image,
   TouchableWithoutFeedback,
+  TouchableOpacity,
+  registerCallableModule,
 } from "react-native";
+import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import {
   ScrollView,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
+import { LinearGradient } from "expo-linear-gradient";
 
 // Modal de détails d'un astre -> affichée depuis AstrodexScreen au clic sur "Détails"
 // Props : visible, closeModale, infoAstre (objet complet de l'astre)
 
 export default function AstroModal(props) {
+  const [zoomVisible, setZoomVisible] = useState(false);
   // Associe chaque rareté à une couleur, un label et un nombre d'étoiles
   const rarityStyle = {
     Commune: { color: "#22C55E", label: "COMMUNE", stars: 1 },
@@ -71,43 +76,74 @@ export default function AstroModal(props) {
             <Text style={styles.name}>{props.infoAstre.name}</Text>
             <View style={styles.imageContainer}>
               {/* Image de l'astre */}
-              <Image
-                source={{ uri: props.infoAstre.imageUrl }}
-                style={styles.image}
-              />
+              <TouchableOpacity onPress={() => setZoomVisible(true)}>
+                <Image
+                  source={{ uri: props.infoAstre.imageUrl }}
+                  style={styles.image}
+                />
+              </TouchableOpacity>
+              <Modal visible={zoomVisible} animationType="fade" transparent>
+                <TouchableOpacity
+                  onPress={() => setZoomVisible(false)}
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "rgba(0, 0, 0, 0.85)",
+                  }}
+                >
+                  <Image
+                    source={{ uri: props.infoAstre.imageUrl }}
+                    style={styles.imageZoom}
+                  />
+                </TouchableOpacity>
+              </Modal>
             </View>
             {/* ScrollView pour les stats + description + lore si le contenu dépasse */}
-            <ScrollView
-              nestedScrollEnabled={true}
-              style={{ maxHeight: 100, width: "100%" }}
-              contentContainerStyle={styles.scrollContent}
-            >
-              {/* Stats techniques de l'astre */}
-              <View style={styles.statsContainer}>
-                <View style={styles.stat}>
-                  <Text style={styles.statText}>
-                    Distance : {astresData.distance}
-                  </Text>
+            <View style={{ maxHeight: 200, width: "100%" }}>
+              <ScrollView
+                nestedScrollEnabled={true}
+                contentContainerStyle={styles.scrollContent}
+                showsVerticalScrollIndicator={true}
+              >
+                {/* Stats techniques de l'astre */}
+                <View style={styles.statsContainer}>
+                  <View style={styles.stat}>
+                    <Text style={styles.statText}>
+                      Distance : {astresData.distance}
+                    </Text>
+                  </View>
+                  <View style={styles.stat}>
+                    <Text style={styles.statText}>
+                      Diamètre : {astresData.diametre}
+                    </Text>
+                  </View>
+                  <View style={styles.stat}>
+                    <Text style={styles.statText}>
+                      Masse : {astresData.masse}
+                    </Text>
+                  </View>
+                  {/* fun fact de l'astre */}
                 </View>
-                <View style={styles.stat}>
-                  <Text style={styles.statText}>
-                    Diamètre : {astresData.diametre}
-                  </Text>
-                </View>
-                <View style={styles.stat}>
-                  <Text style={styles.statText}>
-                    Masse : {astresData.masse}
-                  </Text>
-                </View>
-                {/* fun fact de l'astre */}
+                <Text style={styles.description}>
+                  {props.infoAstre.description}
+                  {/* Lore narratif de l'astre */}
+                </Text>
                 <Text style={styles.description}>...</Text>
-              </View>
-              <Text style={styles.description}>
-                {props.infoAstre.description}
-                {/* Lore narratif de l'astre */}
-              </Text>
-              <Text style={styles.lore}>{props.infoAstre.lore}</Text>
-            </ScrollView>
+                <Text style={styles.lore}>{props.infoAstre.lore}</Text>
+              </ScrollView>
+              <LinearGradient
+                colors={["transparent", "#111827"]}
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  height: 40,
+                }}
+                pointerEvents="none"
+              />
+            </View>
           </View>
         </View>
       </GestureHandlerRootView>
@@ -143,7 +179,8 @@ const styles = StyleSheet.create({
     padding: 25,
     // shadowColor: "#3B82F6",
     shadowOpacity: 0.5,
-
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 20,
     // elevation -> Androïde : Définit l'altitude d'une vue à l'aide de l'API d'altitude sous-jacente d'Android .
     //Ceci ajoute une ombre portée à l'élément et modifie l'ordre Z des vues superposées.
 
@@ -153,6 +190,11 @@ const styles = StyleSheet.create({
   },
 
   image: { width: 160, height: 160, marginBottom: 20 },
+
+  imageZoom: {
+    width: 400,
+    height: 400,
+  },
 
   name: {
     fontSize: 24,
