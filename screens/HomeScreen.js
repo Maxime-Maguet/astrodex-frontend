@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -6,6 +5,7 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  AppState,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
@@ -45,17 +45,13 @@ export default function HomeScreen() {
   const equipement = useSelector((state) => state.user.value.equipement);
   const user = useSelector((state) => state.user.value);
   const capturedAstres = useSelector((state) => state.astre.value);
-<<<<<<< HEAD
-  const imgcloud =
-    "https://res.cloudinary.com/dlywrsigk/image/upload/v1773220645/agdknaloihgtfgop5zbc.jpg";
-=======
   const hasLoaded = useSelector((state) => state.user.value.hasLoaded);
->>>>>>> origin/majsab
+  const appState = useRef(AppState.currentState);
 
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (user.token) {
+    if (!user.token) {
       fetch(`${apiUrl}/users/profile/${user.token}`)
         .then((res) => res.json())
         .then((userData) => {
@@ -128,11 +124,18 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (!hasLoaded) {
-    setIsLoading(true);
-    dispatch(setHasLoaded());
-  } else {
-    setIsLoading(false); // ← si déjà chargé, pas de modale
-  }
+      setIsLoading(true);
+      dispatch(setHasLoaded());
+    }
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (appState.current.match(/active/) && nextAppState.match(/inactive/)) {
+        // --- C'EST ICI QUE VOTRE FONCTION S'EXÉCUTE ---
+
+        setIsLoading(false);
+        // Exemple : sauvegarder des données, fermer une connexion, etc.
+      }
+    });
+
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
       .then((data) => {
@@ -162,19 +165,8 @@ export default function HomeScreen() {
     }
   }, [astres, weather, equipement]);
 
-  useEffect(() => {
-    if (astroInfo) {
-      setAstroInfo(astroInfo);
-    } else {
-      setAstroInfo({
-        image: imgcloud,
-      });
-    }
-  }, []);
-
   const astresList = visibleAstres.map((data) => {
     const isCaptured = capturedAstres.some((astre) => astre._id === data._id);
-
     return (
       <HomeAstresCard
         key={data._id}
@@ -200,7 +192,7 @@ export default function HomeScreen() {
             {astroInfo && (
               <View style={styles.imageContainer}>
                 <ZoomableImage
-                  imageUrl={astroInfo.image || imgcloud}
+                  imageUrl={astroInfo.image}
                   style={styles.nasaImage}
                 />
                 <LinearGradient

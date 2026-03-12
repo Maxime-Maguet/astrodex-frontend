@@ -34,6 +34,13 @@ export const astreSlice = createSlice({
     setIsAligned: (state, action) => {
       state.isAligned = action.payload;
     },
+
+    resetAstre: (state) => {
+      state.value = [];
+      state.astreFocus = null;
+      state.visibleAstres = [];
+      state.isAligned = false;
+    },
   },
 });
 
@@ -43,6 +50,7 @@ export const {
   setVisibleAstres,
   setCapturedAstres,
   setIsAligned,
+  resetAstre,
 } = astreSlice.actions;
 
 export default astreSlice.reducer;

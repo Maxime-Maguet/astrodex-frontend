@@ -24,6 +24,13 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [loading, setLoading] = useState(false); //Chargement
+  const token = useSelector((state) => state.user?.value?.token);
+
+  useEffect(() => {
+    if (token) {
+      navigation.replace("TabNavigator");
+    }
+  }, []);
 
   const handleSubmit = async () => {
     Keyboard.dismiss(); //fermeture du clavier
