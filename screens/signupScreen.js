@@ -74,91 +74,93 @@ export default function SignupScreen({ navigation }) {
   return (
     <View style={{ flex: 1 }}>
       <GradientImage />
+      <View style={styles.headerContainer}>
+        <View style={styles.header}>
+          <Image
+            source={require("../assets/Astrodex.png")}
+            style={styles.astrodex}
+          />
+          <Text
+            style={[
+              styles.titleAstro,
+              { fontFamily: "ShuttleX", fontSize: 63 },
+            ]}
+          >
+            Astrodex
+          </Text>
+        </View>
+      </View>
 
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
+        style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View style={styles.container}>
-          <View style={styles.image}>
-            <Image
-              source={require("../assets/Astrodex.png")}
-              style={styles.astrodex}
+        <View style={styles.inner}>
+          <View style={styles.formContainer}>
+            <TextInput
+              placeholder="Email"
+              placeholderTextColor="rgba(0, 0, 0, 0.50)"
+              onChangeText={(value) => {
+                setEmail(value);
+                if (emailError) {
+                  setEmailError(false);
+                }
+              }}
+              value={email}
+              style={styles.input}
             />
-          </View>
-
-          <ScrollView contentContainerStyle={styles.formContainer}>
-            <Text
-              style={[styles.title, { fontFamily: "ShuttleX", fontSize: 45 }]}
-            >
-              Inscription
-            </Text>
-            <View style={styles.formContainer}>
+            {emailError && (
+              <Text style={styles.error}>Adresse e-mail non valide</Text>
+            )}
+            <TextInput
+              placeholder="Pseudo"
+              placeholderTextColor="rgba(0, 0, 0, 0.50)"
+              onChangeText={(value) => {
+                setUsername(value);
+                if (usernameError) {
+                  setUsernameError(false);
+                }
+              }}
+              value={username}
+              style={styles.input}
+            />
+            {usernameError && (
+              <Text style={styles.errorUsername}>
+                Utilisateur déjà existant
+              </Text>
+            )}
+            <View style={styles.passwordContainer}>
               <TextInput
-                placeholder="Email"
-                placeholderTextColor="#000000"
-                onChangeText={(value) => {
-                  setEmail(value);
-                  if (emailError) {
-                    setEmailError(false);
-                  }
-                }}
-                value={email}
-                style={styles.input}
+                placeholder="Mot de passe"
+                onChangeText={(value) => setPassword(value)}
+                placeholderTextColor="rgba(0, 0, 0, 0.50)"
+                secureTextEntry={!passwordVisible}
+                value={password}
+                style={styles.passwordInput}
               />
-              {emailError && (
-                <Text style={styles.error}>Adresse e-mail non valide</Text>
-              )}
-              <TextInput
-                placeholder="Pseudo"
-                placeholderTextColor="#000000"
-                onChangeText={(value) => {
-                  setUsername(value);
-                  if (usernameError) {
-                    setUsernameError(false);
-                  }
-                }}
-                value={username}
-                style={styles.input}
-              />
-              {usernameError && (
-                <Text style={styles.errorUsername}>
-                  Utilisateur déjà existant
-                </Text>
-              )}
-              <View style={styles.passwordContainer}>
-                <TextInput
-                  placeholder="Mot de passe"
-                  onChangeText={(value) => setPassword(value)}
-                  placeholderTextColor="#000000"
-                  secureTextEntry={!passwordVisible}
-                  value={password}
-                  style={styles.passwordInput}
-                />
 
-                <TouchableOpacity
-                  onPress={() => setPasswordVisible(!passwordVisible)}
-                  style={{ paddingRight: 15 }}
-                >
-                  <MaterialCommunityIcons
-                    name={getIconName()}
-                    size={22}
-                    color="#131212"
-                  />
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-                <Text style={styles.textButton}>S'inscrire</Text>
-              </TouchableOpacity>
-              <Text style={styles.Soustitle}>Vous avez un compte ?</Text>
               <TouchableOpacity
-                onPress={() => navigation.navigate("Login")}
-                style={styles.button1}
+                onPress={() => setPasswordVisible(!passwordVisible)}
+                style={{ paddingRight: 15 }}
               >
-                <Text style={styles.buttonSigup}>Retour</Text>
+                <MaterialCommunityIcons
+                  name={getIconName()}
+                  size={22}
+                  color="#131212"
+                />
               </TouchableOpacity>
             </View>
-          </ScrollView>
+            <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+              <Text style={styles.textButton}>S'inscrire</Text>
+            </TouchableOpacity>
+            <Text style={styles.Soustitle}>Vous avez un compte ?</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Login")}
+              style={styles.button1}
+            >
+              <Text style={styles.buttonSigup}>Retour</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </View>
@@ -166,11 +168,38 @@ export default function SignupScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  formContainer: {
-    flexGrow: 1,
+  headerContainer: {
     alignItems: "center",
+    marginTop: 80,
+  },
+
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  astrodex: {
+    width: 55,
+    height: 55,
+    marginRight: 10,
+  },
+  titleAstro: {
+    color: "white",
+  },
+
+  container: {
+    flex: 1,
+  },
+
+  formContainer: {
     width: "100%",
-    marginVertical: -5,
+    alignItems: "center",
+  },
+
+  inner: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   background: {
@@ -181,12 +210,6 @@ const styles = StyleSheet.create({
 
   container: {
     flex: 1,
-  },
-
-  astrodex: {
-    width: 100,
-    height: 100,
-    marginVertical: 55,
   },
 
   title: {
