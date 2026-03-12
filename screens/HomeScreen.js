@@ -45,6 +45,8 @@ export default function HomeScreen() {
   const equipement = useSelector((state) => state.user.value.equipement);
   const user = useSelector((state) => state.user.value);
   const capturedAstres = useSelector((state) => state.astre.value);
+  const imgcloud =
+    "https://res.cloudinary.com/dlywrsigk/image/upload/v1773220645/agdknaloihgtfgop5zbc.jpg";
 
   const navigation = useNavigation();
 
@@ -147,15 +149,22 @@ export default function HomeScreen() {
       setVisibleAstresState(filteredAstres);
       dispatch(setVisibleAstres(filteredAstres.map((a) => a.name)));
       setTimeout(() => setIsLoading(false), 4000);
-
     }
   }, [astres, weather, equipement]);
 
-
-
+  useEffect(() => {
+    if (astroInfo) {
+      setAstroInfo(astroInfo);
+    } else {
+      setAstroInfo({
+        image: imgcloud,
+      });
+    }
+  }, []);
 
   const astresList = visibleAstres.map((data) => {
     const isCaptured = capturedAstres.some((astre) => astre._id === data._id);
+
     return (
       <HomeAstresCard
         key={data._id}
@@ -181,7 +190,7 @@ export default function HomeScreen() {
             {astroInfo && (
               <View style={styles.imageContainer}>
                 <ZoomableImage
-                  imageUrl={astroInfo.image}
+                  imageUrl={astroInfo.image || imgcloud}
                   style={styles.nasaImage}
                 />
                 <LinearGradient
