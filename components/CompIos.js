@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Location from "expo-location";
 import { StyleSheet, Text, View } from "react-native";
@@ -9,7 +9,7 @@ import AstreSelector from "../components/AstresVisibles";
 import * as Astronomy from "astronomy-engine";
 import { FIXED_COORDINATES } from "../modules/logiqueAstres";
 import { filtrerAstresParEquipement } from "../modules/filtreAstresParEquipement";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useFocusEffect } from "@react-navigation/native";
 
 export default function BoussoleAndroid() {
   const dispatch = useDispatch();
@@ -127,14 +127,16 @@ export default function BoussoleAndroid() {
     })();
   }, []);
 
-  useEffect(() => {
-    if (!isFocused) {
-      setAstreFocus(null);
-      setTarget("...");
-      dispatch(setIsAligned(false));
-      setTargetAzimuth(null);
-    }
-  }, [isFocused]);
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setAstreFocus(null);
+        setTarget("...");
+        setTargetAzimuth(null);
+        dispatch(setIsAligned(false));
+      };
+    }, []),
+  );
 
   useEffect(() => {
     if (!currentPosition || !astreFocus || astreFocus === "...") return;
