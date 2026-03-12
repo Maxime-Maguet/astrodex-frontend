@@ -6,16 +6,14 @@ import {
   TouchableOpacity,
   StyleSheet,
   KeyboardAvoidingView,
-  ScrollView,
   Platform,
   Image,
   Keyboard,
 } from "react-native";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { TouchableWithoutFeedback } from "react-native";
-import LoadingModal from "../components/LoadingModal";
 import GradientImage from "../components/GradientImage";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -24,8 +22,7 @@ export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [usernameError, setUsernameError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const [loginError, setLoginError] = useState("");
   const [loading, setLoading] = useState(false); //Chargement
 
   const handleSubmit = async () => {
@@ -34,18 +31,12 @@ export default function LoginScreen({ navigation }) {
 
     //reset erreurs
 
-    setUsernameError("");
-    setPasswordError("");
+    setLoginError("");
 
-    if (!username) {
-      setUsernameError("Veuillez saisir votre nom d'utilisateur");
+    if (!username || !password) {
+      setLoginError("Veuillez remplir tous les champs");
       return;
     }
-    if (!password) {
-      setPasswordError("Veuillez saisir votre mot de passe");
-      return;
-    }
-
     setLoading(true);
 
     fetch(`${apiUrl}/users/signin`, {
@@ -70,12 +61,8 @@ export default function LoginScreen({ navigation }) {
 
           navigation.replace("TabNavigator");
         } else {
-          if (data.error === "Username does not exist") {
-            setUsernameError("Nom d'utilisateur introuvable");
-          } else if (data.error === "Incorrect password") {
-            setPasswordError("Mot de passe incorrect");
-          } else {
-            setUsernameError("Identifiant ou mot de passe incorrect");
+          if (data.error) {
+            setLoginError("Identifiant ou mot de passe incorrect");
           }
         }
       });
@@ -85,8 +72,7 @@ export default function LoginScreen({ navigation }) {
     React.useCallback(() => {
       setPassword("");
       setUsername("");
-      setUsernameError("");
-      setPasswordError("");
+      setLoginError("");
     }, []),
   );
 
@@ -140,10 +126,10 @@ export default function LoginScreen({ navigation }) {
               <Text
                 style={[
                   styles.errorText,
-                  (usernameError || passwordError) && styles.errorTextVisible,
+                  loginError && styles.errorTextVisible,
                 ]}
               >
-                {usernameError || passwordError || ""}
+                {loginError || ""}
               </Text>
 
               <TouchableOpacity
@@ -227,6 +213,7 @@ const styles = StyleSheet.create({
     color: "rgb(255, 73, 57)",
     fontSize: 14,
     minHeight: 30,
+    fontFamily: "Inter",
   },
 
   errorTextVisible: {

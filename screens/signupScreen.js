@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -8,20 +8,21 @@ import {
   View,
   Platform,
   Image,
-  ScrollView,
+  Keyboard,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import GradientImage from "../components/GradientImage";
+import { useFocusEffect } from "@react-navigation/native";
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState(false);
-  const [usernameError, setUsernameError] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -29,13 +30,15 @@ export default function SignupScreen({ navigation }) {
   const EMAIL_REGEX =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    Keyboard.dismiss(); //fermeture du clavier
+    await new Promise((resolve) => setTimeout(resolve, 100)); //temps pour que le clavier se ferme
     // Vérifie si un des champs est vide
     if (email === "" || username === "" || password === "") return;
 
     // Vérifie si l'email est valide grâce à la REGEX
     if (!EMAIL_REGEX.test(email)) {
-      setEmailError(true); // Active l'état d'erreur pour afficher un message d'erreur dans l'interface
+      setEmailError("Adresse e-mail non valide"); // Active l'état d'erreur pour afficher un message d'erreur dans l'interface
       return;
     }
 
@@ -58,7 +61,7 @@ export default function SignupScreen({ navigation }) {
           );
           navigation.replace("EquipementSelectionScreen", { from: "Signup" });
         } else {
-          setUsernameError(true);
+          setUsernameError("Utilisateur déjà existant");
         }
       });
   };
@@ -70,6 +73,17 @@ export default function SignupScreen({ navigation }) {
       return "eye";
     }
   }
+
+  // pour reset l'écran quand on revient dessus
+  useFocusEffect(
+    React.useCallback(() => {
+      setEmail("");
+      setPassword("");
+      setUsername("");
+      setEmailError("");
+      setUsernameError("");
+    }, []),
+  );
 
   return (
     <View style={{ flex: 1 }}>
@@ -103,15 +117,12 @@ export default function SignupScreen({ navigation }) {
               onChangeText={(value) => {
                 setEmail(value);
                 if (emailError) {
-                  setEmailError(false);
+                  setEmailError("");
                 }
               }}
               value={email}
               style={styles.input}
             />
-            {emailError && (
-              <Text style={styles.error}>Adresse e-mail non valide</Text>
-            )}
             <TextInput
               placeholder="Pseudo"
               placeholderTextColor="rgba(0, 0, 0, 0.50)"
@@ -124,11 +135,6 @@ export default function SignupScreen({ navigation }) {
               value={username}
               style={styles.input}
             />
-            {usernameError && (
-              <Text style={styles.errorUsername}>
-                Utilisateur déjà existant
-              </Text>
-            )}
             <View style={styles.passwordContainer}>
               <TextInput
                 placeholder="Mot de passe"
@@ -150,16 +156,27 @@ export default function SignupScreen({ navigation }) {
                 />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-              <Text style={styles.textButton}>S'inscrire</Text>
-            </TouchableOpacity>
-            <Text style={styles.Soustitle}>Vous avez un compte ?</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Login")}
-              style={styles.button1}
+            <Text
+              style={[
+                styles.errorText,
+                (usernameError || emailError) && styles.errorTextVisible,
+              ]}
             >
-              <Text style={styles.buttonSigup}>Retour</Text>
+              {usernameError || emailError || ""}
+            </Text>
+
+            <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+              <Text style={styles.textButton}>S'INSCRIRE</Text>
             </TouchableOpacity>
+            <View style={styles.connexionContainer}>
+              <Text style={styles.Soustitle}>Vous avez un compte ?</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Login")}
+                style={styles.button1}
+              >
+                <Text style={styles.buttonSigup}>Retour</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -202,16 +219,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  background: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-  },
-
-  container: {
-    flex: 1,
-  },
-
   title: {
     color: "#ffffff",
     fontSize: 48,
@@ -219,18 +226,16 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: "#5B8CFF",
-    fontSize: 16,
-    alignItems: "center",
+    backgroundColor: "#3B6DED",
+    width: "80%",
+    padding: 18,
     borderRadius: 10,
-    width: "85%",
-    justifyContent: "center",
-    padding: 10,
-    marginTop: 20,
+    alignItems: "center",
+    marginTop: 12,
   },
 
   input: {
-    width: "85%",
+    width: "80%",
     backgroundColor: "#D9DEE3",
     padding: 15,
     borderRadius: 10,
@@ -239,51 +244,28 @@ const styles = StyleSheet.create({
   },
 
   textButton: {
-    fontSize: 24,
-    color: "#ffffff",
-    fontFamily: "Inter",
-    borderRadius: 10,
-  },
-
-  error: {
-    fontSize: 16,
-    color: "rgba(255, 21, 0, 0.53)",
-    fontFamily: "Inter",
-  },
-
-  errorUsername: {
-    fontSize: 16,
-    color: "rgba(255, 21, 0, 0.53)",
-    fontFamily: "Inter",
-  },
-
-  button1: {
-    padding: 10,
-    borderRadius: 10,
-    alignItems: "center",
-    backgroundColor: "transparent",
-    width: "50%",
-    borderWidth: 1,
-    borderColor: "#2f95dc",
-    marginTop: 10,
-  },
-
-  buttonSigup: {
-    color: "#2f95dc",
+    color: "#FFFFFF",
     fontWeight: "bold",
+    fontSize: 16,
   },
 
-  Soustitle: {
-    color: "white",
-    fontWeight: "bold",
+  errorText: {
+    color: "rgb(255, 73, 57)",
+    fontSize: 14,
+    minHeight: 30,
     fontFamily: "Inter",
-    marginVertical: 20,
+  },
+
+  errorTextVisible: {
+    backgroundColor: "rgba(8, 0, 0, 0.43)",
+    padding: 4,
+    borderRadius: 6,
   },
 
   passwordContainer: {
     flexDirection: "row",
     alignItems: "center",
-    width: "85%",
+    width: "80%",
     backgroundColor: "#D9DEE3",
     borderRadius: 10,
     marginBottom: 20,
@@ -295,8 +277,28 @@ const styles = StyleSheet.create({
     color: "#1A1C20",
   },
 
-  image: {
+  connexionContainer: {
+    flexDirection: "row",
     alignItems: "center",
-    marginVertical: 35,
+    marginTop: 15,
+    gap: 10,
+    justifyContent: "center",
+  },
+  Soustitle: {
+    color: "white",
+    fontFamily: "Inter",
+  },
+
+  button1: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#2f95dc",
+  },
+
+  buttonSigup: {
+    color: "#2f95dc",
+    fontWeight: "bold",
   },
 });
