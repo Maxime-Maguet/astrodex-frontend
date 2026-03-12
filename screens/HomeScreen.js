@@ -116,6 +116,7 @@ export default function HomeScreen() {
       .then((response) => response.json())
       .then((data) => {
         setAstroInfo(data);
+        setTimeout(() => setIsLoading(false), 4000);
       })
       .catch((error) => console.log(error));
   }, []);
@@ -146,7 +147,6 @@ export default function HomeScreen() {
 
       setVisibleAstresState(filteredAstres);
       dispatch(setVisibleAstres(filteredAstres.map((a) => a.name)));
-      setTimeout(() => setIsLoading(false), 4000);
     }
   }, [astres, weather, equipement]);
 

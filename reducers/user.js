@@ -23,10 +23,7 @@ export const userSlice = createSlice({
       state.value.avatar = action.payload.avatar;
     },
     logout: (state) => {
-      state.value.token = null;
-      state.value.username = null;
-      state.value.location = null;
-      state.value.avatar = null;
+      state.value = initialState.value;
     },
     updateLocation: (state, action) => {
       state.value.location = action.payload;

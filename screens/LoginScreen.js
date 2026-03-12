@@ -27,6 +27,14 @@ export default function LoginScreen({ navigation }) {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false); //Chargement
+  const token = useSelector((state) => state.user?.value?.token);
+
+  useEffect(() => {
+    if (token) {
+      navigation.replace("TabNavigator");
+    }
+  }, [token]);
+
   const handleSubmit = async () => {
     Keyboard.dismiss(); //fermeture du clavier
     await new Promise((resolve) => setTimeout(resolve, 100)); //temps pour que le clavier se ferme
@@ -93,11 +101,14 @@ export default function LoginScreen({ navigation }) {
             source={require("../assets/Astrodex.png")}
             style={styles.astrodex}
           />
-            <Text
-              style={[styles.titleAstro, { fontFamily: "ShuttleX", fontSize: 42 }]}
-            >
-              Astrodex
-            </Text>
+          <Text
+            style={[
+              styles.titleAstro,
+              { fontFamily: "ShuttleX", fontSize: 42 },
+            ]}
+          >
+            Astrodex
+          </Text>
         </View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView contentContainerStyle={styles.inner}>
@@ -170,7 +181,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     marginVertical: 40,
-    marginLeft : 220,
+    marginLeft: 220,
   },
   input: {
     width: "85%",
@@ -214,7 +225,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 40,
     color: "#FFFFFF",
-    marginTop : 70
+    marginTop: 70,
   },
 
   image: {
@@ -232,9 +243,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#2a4fa3",
     opacity: 0.7,
   },
-  titleAstro :{
-    color : "white",
-    marginTop : -95,
-    marginRight : 140,
-  }
+  titleAstro: {
+    color: "white",
+    marginTop: -95,
+    marginRight: 140,
+  },
 });
