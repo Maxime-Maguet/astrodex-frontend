@@ -1,3 +1,5 @@
+import React, { useState, useEffect, useRef } from "react";
+
 import {
   StyleSheet,
   View,
@@ -185,9 +187,7 @@ export default function HomeScreen() {
     if (astroInfo) {
       setAstroInfo(astroInfo);
     } else {
-      setAstroInfo({
-        image: imgcloud,
-      });
+      setAstroInfo({});
     }
   }, []);
 
