@@ -2,11 +2,11 @@ import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-// import FontAwesome from "react-native-vector-icons/FontAwesome";
+
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Provider } from "react-redux";
-// import { PersistGate } from 'redux-persist/integration/react';
+
 import ObservationScreen from "./screens/ObservationScreen";
 import LoginScreen from "./screens/LoginScreen";
 import user from "./reducers/user";
@@ -26,7 +26,7 @@ import { useEffect } from "react";
 import { persistStore, persistReducer } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-//import storage from "redux-persist/lib/storage";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createNativeStackNavigator();
@@ -105,7 +105,7 @@ export default function App() {
   useEffect(() => {
     AsyncStorage.getAllKeys().then((keys) => {
       AsyncStorage.multiGet(keys).then((values) => {
-        console.log("AsyncStorage contenu :", values);
+        //console.log("AsyncStorage contenu :", values);
       });
     });
   }, []);
