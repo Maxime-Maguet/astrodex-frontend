@@ -33,7 +33,7 @@ export default function LoginScreen({ navigation }) {
     if (token) {
       navigation.replace("TabNavigator");
     }
-  }, [token]);
+  }, []);
 
   const handleSubmit = async () => {
     Keyboard.dismiss(); //fermeture du clavier

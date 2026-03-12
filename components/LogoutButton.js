@@ -18,6 +18,7 @@ export default function LogoutButton() {
     dispatch(resetAstre());
     dispatch(clearWeather());
     navigation.replace("Login");
+    console.log("log out");
   };
 
   return (

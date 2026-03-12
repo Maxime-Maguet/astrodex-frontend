@@ -8,6 +8,7 @@ const initialState = {
     equipement: null,
     avatar: null,
     xp: null,
+    hasLoaded: false,
   },
 };
 
@@ -22,6 +23,7 @@ export const userSlice = createSlice({
       state.value.xp = action.payload.xp;
       state.value.avatar = action.payload.avatar;
     },
+
     logout: (state) => {
       state.value = initialState.value;
     },
@@ -37,6 +39,9 @@ export const userSlice = createSlice({
     updateXP: (state, action) => {
       state.value.xp = action.payload;
     },
+    setHasLoaded: (state) => {
+      state.value.hasLoaded = true;
+    },
   },
 });
 
@@ -47,5 +52,6 @@ export const {
   updateEquipement,
   addPhoto,
   updateXP,
+  setHasLoaded,
 } = userSlice.actions;
 export default userSlice.reducer;

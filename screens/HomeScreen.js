@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   StyleSheet,
   View,
@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  AppState,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
@@ -19,7 +20,7 @@ import {
   setCapturedAstres,
   setAstreFocus,
 } from "../reducers/astre";
-import { updateXp } from "../reducers/user";
+import { updateXp, setHasLoaded } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingModal from "../components/LoadingModal";
 import { MagnitudeLimite } from "../modules/filtreAstresParEquipement";
@@ -45,11 +46,13 @@ export default function HomeScreen() {
   const equipement = useSelector((state) => state.user.value.equipement);
   const user = useSelector((state) => state.user.value);
   const capturedAstres = useSelector((state) => state.astre.value);
+  const hasLoaded = useSelector((state) => state.user.value.hasLoaded);
+  const appState = useRef(AppState.currentState);
 
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (user.token) {
+    if (!user.token) {
       fetch(`${apiUrl}/users/profile/${user.token}`)
         .then((res) => res.json())
         .then((userData) => {
@@ -116,12 +119,24 @@ export default function HomeScreen() {
       .then((response) => response.json())
       .then((data) => {
         setAstroInfo(data);
-        setTimeout(() => setIsLoading(false), 4000);
       })
       .catch((error) => console.log(error));
   }, []);
 
   useEffect(() => {
+    if (!hasLoaded) {
+      setIsLoading(true);
+      dispatch(setHasLoaded());
+    }
+    const subscription = AppState.addEventListener("change", (nextAppState) => {
+      if (appState.current.match(/active/) && nextAppState.match(/inactive/)) {
+        // --- C'EST ICI QUE VOTRE FONCTION S'EXÉCUTE ---
+
+        setIsLoading(false);
+        // Exemple : sauvegarder des données, fermer une connexion, etc.
+      }
+    });
+
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
       .then((data) => {
@@ -147,6 +162,7 @@ export default function HomeScreen() {
 
       setVisibleAstresState(filteredAstres);
       dispatch(setVisibleAstres(filteredAstres.map((a) => a.name)));
+      setTimeout(() => setIsLoading(false), 4000);
     }
   }, [astres, weather, equipement]);
 

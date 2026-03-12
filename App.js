@@ -102,13 +102,13 @@ export default function App() {
     ShuttleX: require("./assets/fonts/SHUTTLE-X.ttf"),
   });
 
-  // useEffect(() => {
-  //   AsyncStorage.getAllKeys().then((keys) => {
-  //     AsyncStorage.multiGet(keys).then((values) => {
-  //       console.log("AsyncStorage contenu :", values);
-  //     });
-  //   });
-  // }, []);
+  useEffect(() => {
+    AsyncStorage.getAllKeys().then((keys) => {
+      AsyncStorage.multiGet(keys).then((values) => {
+        console.log("AsyncStorage contenu :", values);
+      });
+    });
+  }, []);
 
   if (!fontsLoaded) {
     return null;

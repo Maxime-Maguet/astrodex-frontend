@@ -60,11 +60,9 @@ export default function EquipementSelectionScreen({ navigation }) {
         }
         const ecranOrigine = route.params?.from;
         if (ecranOrigine === "Profil") {
-          navigation.navigate("TabNavigator", { screen: "Profil" });
+          navigation.replace("TabNavigator", { screen: "Profil" });
         } else if (ecranOrigine === "Signup") {
-          navigation.navigate("TabNavigator", { screen: "Accueil" });
-        } else {
-          navigation.navigate("TabNavigator", { screen: "Accueil" });
+          navigation.replace("TabNavigator", { screen: "Accueil" });
         }
       });
   };
