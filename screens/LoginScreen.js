@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
   Keyboard,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector  } from "react-redux";
 import { login } from "../reducers/user";
 import { TouchableWithoutFeedback } from "react-native";
 import GradientImage from "../components/GradientImage";
