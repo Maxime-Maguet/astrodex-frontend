@@ -129,7 +129,7 @@ export default function SignupScreen({ navigation }) {
               onChangeText={(value) => {
                 setUsername(value);
                 if (usernameError) {
-                  setUsernameError(false);
+                  setUsernameError("");
                 }
               }}
               value={username}
