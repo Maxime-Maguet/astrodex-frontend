@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "astrodex-frontend",
-    "slug": "astrodex-frontend",
+    "name": "Astrodex",
+    "slug": "Astrodex",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/Logo_icon_only.png",
