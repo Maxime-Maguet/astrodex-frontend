@@ -19,7 +19,7 @@ import {
   setCapturedAstres,
   setAstreFocus,
 } from "../reducers/astre";
-import { updateXp } from "../reducers/user";
+import { updateXp, setHasLoaded } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingModal from "../components/LoadingModal";
 import { MagnitudeLimite } from "../modules/filtreAstresParEquipement";
@@ -45,8 +45,12 @@ export default function HomeScreen() {
   const equipement = useSelector((state) => state.user.value.equipement);
   const user = useSelector((state) => state.user.value);
   const capturedAstres = useSelector((state) => state.astre.value);
+<<<<<<< HEAD
   const imgcloud =
     "https://res.cloudinary.com/dlywrsigk/image/upload/v1773220645/agdknaloihgtfgop5zbc.jpg";
+=======
+  const hasLoaded = useSelector((state) => state.user.value.hasLoaded);
+>>>>>>> origin/majsab
 
   const navigation = useNavigation();
 
@@ -123,6 +127,12 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
+    if (!hasLoaded) {
+    setIsLoading(true);
+    dispatch(setHasLoaded());
+  } else {
+    setIsLoading(false); // ← si déjà chargé, pas de modale
+  }
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
       .then((data) => {
