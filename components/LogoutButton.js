@@ -2,7 +2,6 @@ import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { logout } from "../reducers/user";
-import { resetAstre } from "../reducers/astre";
 import { clearWeather } from "../reducers/weather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { persistor } from "../App";
@@ -15,10 +14,8 @@ export default function LogoutButton() {
     await persistor.purge();
     await AsyncStorage.clear();
     dispatch(logout());
-    dispatch(resetAstre());
     dispatch(clearWeather());
     navigation.replace("Login");
-    console.log("log out");
   };
 
   return (
