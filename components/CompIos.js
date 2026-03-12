@@ -79,26 +79,6 @@ export default function BoussoleAndroid() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     let { status } = await Location.requestForegroundPermissionsAsync();
-  //     if (status !== "granted") {
-  //       console.log("Permission to access location was denied");
-  //       return;
-  //     }
-
-  //     let locationSubscription = await Location.watchHeadingAsync(
-  //       (locationHeading) => {
-  //         setLocationHeading(Number(locationHeading.trueHeading.toFixed(0)));
-  //       },
-  //     );
-
-  //     return () => {
-  //       locationSubscription && locationSubscription.remove();
-  //     };
-  //   })();
-  // }, []);
-
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();

@@ -66,54 +66,57 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    NavigationBar.setVisibilityAsync("hidden");
-  }, []);
-
-  useEffect(() => {
     let interval;
 
-    const loadWeather = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setMessage("GPS permission denied");
-        return;
+    const updateWeather = async (coords) => {
+      try {
+        const data = await fetchWeather(coords.latitude, coords.longitude);
+        setWeather({
+          ...data,
+          coords,
+          clartePercent: visibilityToPercent(data.visibility),
+        });
+        setMessage(
+          data.clouds > 70
+            ? "Trop nuageux pour l'observation"
+            : "Ciel dégagé pour l'observation",
+        );
+      } catch (err) {
+        console.error(err);
+        setMessage("Impossible de charger la météo");
       }
+    };
 
-      const location = await Location.getCurrentPositionAsync({});
-      const fetchAndUpdate = async () => {
-        try {
-          const data = await fetchWeather(
-            location.coords.latitude,
-            location.coords.longitude,
-          );
-          setWeather({
-            ...data,
-            coords: location.coords,
-            clartePercent: visibilityToPercent(data.visibility),
-          });
-          if (data.clouds > 70) {
-            setMessage("Trop nuageux pour l'observation");
-          } else {
-            setMessage("Ciel dégagé pour l'observation");
-          }
-        } catch (err) {
-          setMessage("Impossible de charger la météo");
+    const loadWeather = async () => {
+      try {
+        // 1. Demander les permissions
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          setMessage("Permission refusée");
+          return;
         }
-      };
-
-      //appel immédiat puis toutes les 30 min
-      await fetchAndUpdate();
-      interval = setInterval(fetchAndUpdate, REFRESH_INTERVAL);
+        // 2. Fonction pour obtenir la position actuelle et mettre à jour
+        const refreshLocation = async () => {
+          const location = await Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.Balanced,
+          });
+          await updateWeather(location.coords);
+        };
+        // 3. Appel initial
+        await refreshLocation();
+        // 4. Intervalle qui rafraîchit la position ET la météo
+        interval = setInterval(refreshLocation, REFRESH_INTERVAL);
+      } catch (err) {
+        console.error(err);
+        setMessage("Erreur localisation");
+      }
     };
 
     loadWeather();
-    //nettoyage au démontage
     return () => {
       if (interval) clearInterval(interval);
     };
   }, []);
-
-  // const shortText = astroInfo.description.slice(0, 250);
 
   useEffect(() => {
     fetch(`${apiUrl}/astres/info`)
@@ -129,14 +132,18 @@ export default function HomeScreen() {
       setIsLoading(true);
       dispatch(setHasLoaded());
     }
-    const subscription = AppState.addEventListener("change", (nextAppState) => {
-      if (appState.current.match(/active/) && nextAppState.match(/inactive/)) {
-        // --- C'EST ICI QUE VOTRE FONCTION S'EXÉCUTE ---
-
-        setIsLoading(false);
-        // Exemple : sauvegarder des données, fermer une connexion, etc.
-      }
-    });
+    const subscription = AppState.addEventListener(
+      "change",
+      (nextAppState) => {
+        if (
+          appState.current.match(/active/) &&
+          nextAppState.match(/inactive/)
+        ) {
+          setIsLoading(false);
+        }
+      },
+      [hasLoaded],
+    );
 
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
@@ -163,7 +170,7 @@ export default function HomeScreen() {
 
       setVisibleAstresState(filteredAstres);
       dispatch(setVisibleAstres(filteredAstres.map((a) => a.name)));
-      setTimeout(() => setIsLoading(false), 4000);
+      setIsLoading(false);
     }
   }, [astres, weather, equipement]);
 
@@ -182,14 +189,6 @@ export default function HomeScreen() {
       />
     );
   });
-
-  useEffect(() => {
-    if (astroInfo) {
-      setAstroInfo(astroInfo);
-    } else {
-      setAstroInfo({});
-    }
-  }, []);
 
   return (
     <View style={styles.safeArea}>
