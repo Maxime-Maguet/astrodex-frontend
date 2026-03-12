@@ -181,6 +181,16 @@ export default function HomeScreen() {
     );
   });
 
+  useEffect(() => {
+    if (astroInfo) {
+      setAstroInfo(astroInfo);
+    } else {
+      setAstroInfo({
+        image: imgcloud,
+      });
+    }
+  }, []);
+
   return (
     <View style={styles.safeArea}>
       <LoadingModal visible={isLoading} />
