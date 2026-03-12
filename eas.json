@@ -1,0 +1,10 @@
+{
+  "build": {
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://astrodex-backend.vercel.app"
+      }
+    }
+  },
+  "submit": {}
+}

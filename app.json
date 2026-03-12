@@ -16,8 +16,9 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.maxwhell.astrodex",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/Logo_icon_only.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true
