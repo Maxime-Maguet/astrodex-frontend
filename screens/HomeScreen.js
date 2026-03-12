@@ -147,8 +147,12 @@ export default function HomeScreen() {
       setVisibleAstresState(filteredAstres);
       dispatch(setVisibleAstres(filteredAstres.map((a) => a.name)));
       setTimeout(() => setIsLoading(false), 4000);
+
     }
   }, [astres, weather, equipement]);
+
+
+
 
   const astresList = visibleAstres.map((data) => {
     const isCaptured = capturedAstres.some((astre) => astre._id === data._id);
