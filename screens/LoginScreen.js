@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
   Image,
   Keyboard,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../reducers/user";
 import { TouchableWithoutFeedback } from "react-native";
@@ -27,11 +27,13 @@ export default function LoginScreen({ navigation }) {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false); //Chargement
+
   const handleSubmit = async () => {
     Keyboard.dismiss(); //fermeture du clavier
     await new Promise((resolve) => setTimeout(resolve, 100)); //temps pour que le clavier se ferme
 
     //reset erreurs
+
     setUsernameError("");
     setPasswordError("");
 
@@ -78,79 +80,95 @@ export default function LoginScreen({ navigation }) {
         }
       });
   };
+  // pour reset l'écran quand on revient dessus
+  useFocusEffect(
+    React.useCallback(() => {
+      setPassword("");
+      setUsername("");
+      setUsernameError("");
+      setPasswordError("");
+    }, []),
+  );
 
   return (
-    // KeyboardAvoidingView évite de cacher les inputs
     <View style={{ flex: 1 }}>
       <GradientImage />
-      {/* <LoadingModal visible={loading} /> */}
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <View style={styles.image}>
+      <View style={styles.headerContainer}>
+        <View style={styles.header}>
           <Image
             source={require("../assets/Astrodex.png")}
             style={styles.astrodex}
           />
-            <Text
-              style={[styles.titleAstro, { fontFamily: "ShuttleX", fontSize: 42 }]}
-            >
-              Astrodex
-            </Text>
+          <Text
+            style={[
+              styles.titleAstro,
+              { fontFamily: "ShuttleX", fontSize: 63 },
+            ]}
+          >
+            Astrodex
+          </Text>
         </View>
+        <Text style={styles.slogan}>
+          Explore le ciel et collecte les astres !
+        </Text>
+      </View>
+
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView contentContainerStyle={styles.inner}>
-            <Text style={styles.Gtitle}>
-              Explore le ciel et collecte les astres !
-            </Text>
-            <Text
-              style={[styles.title, { fontFamily: "ShuttleX", fontSize: 30 }]}
-            >
-              Connexion
-            </Text>
+          <View style={styles.inner}>
+            <View style={styles.formulaire}>
+              <TextInput
+                placeholder="Pseudo"
+                placeholderTextColor="rgba(0, 0, 0, 0.50)"
+                onChangeText={(value) => setUsername(value)}
+                value={username}
+                style={styles.input}
+              />
 
-            <TextInput
-              placeholder="Pseudo"
-              placeholderTextColor="#000000"
-              onChangeText={(value) => setUsername(value)}
-              value={username}
-              style={styles.input}
-            />
-            {usernameError ? (
-              <Text style={styles.errorText}>{usernameError}</Text>
-            ) : null}
+              <TextInput
+                placeholder="Mot de passe"
+                placeholderTextColor="rgba(0, 0, 0, 0.50)"
+                secureTextEntry={true}
+                onChangeText={(value) => setPassword(value)}
+                value={password}
+                style={styles.input}
+              />
 
-            <TextInput
-              placeholder="Mot de passe"
-              placeholderTextColor="#000000"
-              secureTextEntry={true}
-              onChangeText={(value) => setPassword(value)}
-              value={password}
-              style={styles.input}
-            />
-            {passwordError ? (
-              <Text style={styles.errorText}>{passwordError}</Text>
-            ) : null}
-
-            <TouchableOpacity
-              onPress={handleSubmit}
-              style={[styles.button, loading && styles.buttonDisabled]}
-              disabled={loading}
-            >
-              <Text style={styles.buttonText}>
-                {loading ? "Connexion en cours..." : "SE CONNECTER"}
+              <Text
+                style={[
+                  styles.errorText,
+                  (usernameError || passwordError) && styles.errorTextVisible,
+                ]}
+              >
+                {usernameError || passwordError || ""}
               </Text>
-            </TouchableOpacity>
 
-            <Text style={styles.Soustitle}>Vous n'avez pas de compte ?</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Inscription")}
-              style={styles.button1}
-            >
-              <Text style={styles.buttonSignin}>S'inscrire</Text>
-            </TouchableOpacity>
-          </ScrollView>
+              <TouchableOpacity
+                onPress={handleSubmit}
+                style={[styles.button, loading && styles.buttonDisabled]}
+                disabled={loading}
+              >
+                <Text style={styles.buttonText}>
+                  {loading ? "Connexion en cours..." : "SE CONNECTER"}
+                </Text>
+              </TouchableOpacity>
+              <View style={styles.connexionContainer}>
+                <Text style={styles.Soustitle}>
+                  Vous n'avez pas de compte ?
+                </Text>
+
+                <TouchableOpacity
+                  onPress={() => navigation.navigate("Inscription")}
+                  style={styles.button1}
+                >
+                  <Text style={styles.buttonSignin}>S'inscrire</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </View>
@@ -158,83 +176,97 @@ export default function LoginScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  inner: { flexGrow: 1, alignItems: "center" },
-  title: {
-    // fontWeight: "bold",
-    marginBottom: 50,
-    color: "#FFFFFF",
+  headerContainer: {
+    alignItems: "center",
+    marginTop: 80,
   },
 
+  container: {
+    flex: 1,
+  },
+
+  inner: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   astrodex: {
-    width: 70,
-    height: 70,
-    marginVertical: 40,
-    marginLeft : 220,
+    width: 55,
+    height: 55,
+    marginRight: 10,
+  },
+  titleAstro: {
+    color: "white",
+  },
+
+  slogan: {
+    fontSize: 16,
+    color: "#ffffff",
+    textAlign: "center",
+  },
+
+  formulaire: {
+    width: "100%",
+    alignItems: "center",
   },
   input: {
-    width: "85%",
+    width: "80%",
     backgroundColor: "#D9DEE3",
     padding: 15,
     borderRadius: 10,
     marginBottom: 20,
     color: "#1A1C20",
   },
+  errorText: {
+    color: "rgb(255, 73, 57)",
+    fontSize: 14,
+    minHeight: 30,
+  },
+
+  errorTextVisible: {
+    backgroundColor: "rgba(8, 0, 0, 0.43)",
+    padding: 4,
+    borderRadius: 6,
+  },
   button: {
     backgroundColor: "#3B6DED",
-    width: "85%",
+    width: "80%",
     padding: 18,
     borderRadius: 10,
     alignItems: "center",
+    marginTop: 12,
   },
-
   buttonText: { color: "#FFFFFF", fontWeight: "bold", fontSize: 16 },
-
+  buttonDisabled: {
+    backgroundColor: "#2a4fa3",
+    opacity: 0.7,
+  },
+  connexionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 15,
+    gap: 10,
+    justifyContent: "center",
+  },
   Soustitle: {
     color: "white",
-    marginVertical: 20,
     fontFamily: "Inter",
-    fontWeight: "bold",
+  },
+  button1: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#2f95dc",
   },
   buttonSignin: {
     color: "#2f95dc",
     fontWeight: "bold",
   },
-  button1: {
-    padding: 10,
-    borderRadius: 10,
-    alignItems: "center",
-    backgroundColor: "transparent",
-    width: "50%",
-    borderWidth: 1,
-    borderColor: "#2f95dc",
-  },
-  Gtitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 40,
-    color: "#FFFFFF",
-    marginTop : 70
-  },
-
-  image: {
-    alignItems: "center",
-    marginTop: 50,
-  },
-  errorText: {
-    color: "rgba(255, 21, 0, 0.53)",
-    fontSize: 13,
-    marginBottom: 12,
-    alignSelf: "flex-start",
-    marginLeft: "7.5%",
-  },
-  buttonDisabled: {
-    backgroundColor: "#2a4fa3",
-    opacity: 0.7,
-  },
-  titleAstro :{
-    color : "white",
-    marginTop : -95,
-    marginRight : 140,
-  }
 });
