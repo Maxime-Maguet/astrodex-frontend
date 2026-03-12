@@ -1,6 +1,6 @@
 import { Modal, View, Image, TouchableOpacity } from "react-native";
-
 import { useState } from "react";
+
 export default function ZoomableImage(props) {
   const [zoomVisible, setZoomVisible] = useState(false);
 
@@ -10,7 +10,7 @@ export default function ZoomableImage(props) {
       <TouchableOpacity onPress={() => setZoomVisible(true)}>
         <Image source={{ uri: props.imageUrl }} style={props.style} />
       </TouchableOpacity>
-      <Modal visible={zoomVisible} animationType="none" transparent>
+      <Modal visible={zoomVisible} animationType="fade" transparent>
         <TouchableOpacity
           onPress={() => setZoomVisible(false)}
           style={{

@@ -7,10 +7,13 @@ import {
   Switch,
   Pressable,
 } from "react-native";
-import Octicons from "@expo/vector-icons/Octicons";
+
 import { useEffect, useState } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
+
 import { setCapturedAstres } from "../reducers/astre";
+
 import AstroCard from "../components/AstroCard";
 import Header from "../components/Header";
 import AstroModal from "../components/AstroModal";
@@ -18,24 +21,27 @@ import AstroModal from "../components/AstroModal";
 import { useRoute, useIsFocused } from "@react-navigation/native";
 import { updateXP } from "../reducers/user";
 import * as Progress from "react-native-progress";
+import Octicons from "@expo/vector-icons/Octicons";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function AstrodexScreen() {
+  //all useState
   const [astres, setAstres] = useState([]); // Tous les astres
   const [showCapturedOnly, setShowCapturedOnly] = useState(false); // Filtre "Mes captures"
   const [selectedAstre, setSelectedAstre] = useState(null); // Astre sélectionné pour la modal
   const [modalVisible, setModalVisible] = useState(false); // Contrôle la visibilité de la modal
   const [captured, setCaptured] = useState(0); // Nombre d'astres capturés par l'utilisateur
   const [nombreAstre, setNombreAstre] = useState(0); // Nombre total d'astres disponibles
-  const [dateCapture, setDateCapture] = useState([]);
+  const [dateCapture, setDateCapture] = useState([]); // date de la capture de l'astre
   const [showXP, setShowXP] = useState(false);
+
   // useIsFocused retourne true quand l'écran est actif — utilisé pour relancer les fetches à chaque visite
   const isFocused = useIsFocused();
+  const dispatch = useDispatch();
 
   // useRoute permet de récupérer les paramètres de navigation (ex: astreName envoyé depuis ObservationScreen)
   const route = useRoute();
-  const dispatch = useDispatch();
 
   // Données utilisateur depuis Redux (token, xp...)
   const user = useSelector((state) => state.user.value);
@@ -223,7 +229,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#0B0F1A",
-    // paddingTop: 20,
   },
   scrollView: {
     flex: 1,
@@ -285,7 +290,6 @@ const styles = StyleSheet.create({
   libelleStat: {
     color: "#AAB3C5",
     fontSize: 11,
-    //marginTop: 2,
   },
   séparateurStat: {
     width: 1,

@@ -4,6 +4,7 @@ import ZoomableImage from "./ZoomableImage";
 
 // Composant carte d'un astre affiché dans l'AstrodexScreen
 // Props : name, imageUrl, type, rarity, isCaptured, onDetails
+
 export default function AstroCard(props) {
   // Associe chaque niveau de rareté à une couleur pour la bordure de l'image
   const rarityStyle = {
@@ -13,7 +14,7 @@ export default function AstroCard(props) {
     Légendaire: "#FACC15",
   };
 
-  // Couleur de bordure dynamique selon la rareté de l'astre
+  // Sélectionne la couleur selon la rareté via une table de correspondance
   const borderColor = rarityStyle[props.rarity];
 
   const date = new Date(props.date).toLocaleDateString("fr-FR", {
@@ -24,7 +25,6 @@ export default function AstroCard(props) {
 
   return (
     <View style={styles.card}>
-      {/* Image de l'astre avec verrou si non capturé */}
       <View>
         <ZoomableImage
           imageUrl={props.imageUrl}
@@ -41,7 +41,6 @@ export default function AstroCard(props) {
         )}
       </View>
 
-      {/* Infos textuelles toujours visibles : nom, type, rareté */}
       <View style={styles.container}>
         <Text style={styles.astreName}>{props.name}</Text>
         <Text style={styles.type}>{props.type}</Text>
