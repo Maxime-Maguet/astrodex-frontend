@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Modal,
   SafeAreaView,
-  Platform,
   StatusBar,
 } from "react-native";
 import { useEffect, useState } from "react";
@@ -15,7 +14,6 @@ import Header from "../components/Header";
 import { useRoute } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import GradientBackground from "../components/GradientBackground";
-import { LinearGradient } from "expo-linear-gradient";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -81,12 +79,6 @@ export default function EquipementSelectionScreen({ navigation }) {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar hidden />
       <Header title="Equipement" />
-      {/* <LinearGradient
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={styles.gradient}
-        colors={["#0B0F1A", "#1E2A44"]}
-      > */}
       <GradientBackground>
         <View style={styles.container}>
           <Text style={styles.choixEquipement}>Quel est ton matériel ?</Text>
@@ -152,7 +144,6 @@ export default function EquipementSelectionScreen({ navigation }) {
           </Modal>
         </View>
       </GradientBackground>
-      {/* </LinearGradient> */}
     </SafeAreaView>
   );
 }
@@ -162,7 +153,6 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: "#0B0F1A",
-    // paddingTop: 20,
   },
   container: {
     flex: 1,

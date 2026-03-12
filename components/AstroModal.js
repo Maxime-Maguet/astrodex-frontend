@@ -3,11 +3,9 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableWithoutFeedback,
   registerCallableModule,
 } from "react-native";
-
 import { Ionicons } from "@expo/vector-icons";
 import {
   ScrollView,
@@ -36,7 +34,7 @@ export default function AstroModal(props) {
 
   return (
     <Modal visible={props.visible} animationType="fade" transparent>
-      {/* GestureHandlerRootView nécessaire pour que le ScrollView imbriqué fonctionne correctement */}
+      {/* GestureHandlerRootView nécessaire pour que le ScrollView imbriqué fonctionne correctement sur android */}
       <GestureHandlerRootView style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={props.closeModale}>
           <View style={styles.overlay} />
@@ -155,13 +153,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 20,
     padding: 25,
-    // shadowColor: "#3B82F6",
     shadowOpacity: 0.5,
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 20,
     // elevation -> Androïde : Définit l'altitude d'une vue à l'aide de l'API d'altitude sous-jacente d'Android .
     //Ceci ajoute une ombre portée à l'élément et modifie l'ordre Z des vues superposées.
-
     elevation: 15,
     gap: 10,
     borderWidth: 0.5,
