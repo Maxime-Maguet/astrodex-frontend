@@ -117,7 +117,10 @@ export default function AstrodexScreen() {
   // Pour chaque astre filtré, vérifie s'il est capturé pour passer isCaptured à AstroCard
   // AstroCard affiche un overlay "NON CAPTURÉ" si isCaptured est false
   const astresList = filteredAstres.map((data, i) => {
+    // Comparaison par _id MongoDB pour éviter les faux positifs sur les noms d'astres
     const isCaptured = capturedAstres.some((astre) => astre._id === data._id);
+
+    // Cherche la date de capture correspondant à cet astre dans le tableau capturedDates
     const capturedDate = dateCapture.find((e) => e.astreId === data._id);
 
     return (
@@ -135,15 +138,17 @@ export default function AstrodexScreen() {
     );
   });
 
-  //calcul du niveau
+  // Calcul du niveau : 1 niveau tous les 250 XP, plafonné à 99
   let xpLimit = 250;
   let xps = user.xp ?? 0;
   let niveau = Math.floor(xps / xpLimit); //on arrondi pour avoir un niveau sans virgule.
   if (niveau >= 100) {
-    niveau = null;
+    niveau = null; // niveau null = niveau max, affiché différemment dans l'UI
   }
 
+  // XP restant dans le niveau actuel (ex: 780 XP → niveau 3, xpSur250 = 30)
   let xpSur250 = xps - niveau * xpLimit;
+  // Ratio 0→1 pour la barre de progression (ex: 30/250 = 0.12)
   let xpDeBarre = xpSur250 / xpLimit;
 
   return (
@@ -158,6 +163,8 @@ export default function AstrodexScreen() {
             <Text style={styles.libelleStat}>Niveau : </Text>
             <Text style={styles.valeurStat}>{niveau}</Text>
           </View>
+
+          {/* Au clic, bascule entre la barre de progression XP et la valeur XP brute avec l'étoile */}
           <Pressable
             onPress={() => setShowXP((prev) => !prev)}
             style={{ paddingTop: 10, height: 45 }}
