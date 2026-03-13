@@ -55,8 +55,10 @@ export default function EquipementSelectionScreen({ navigation }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data) {
+        if (data.result) {
           dispatch(updateEquipement(data.equipement));
+        }
+        if (data.avatar) {
           dispatch(addPhoto(data.avatar));
         }
         const ecranOrigine = route.params?.from;
