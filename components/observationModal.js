@@ -11,7 +11,7 @@ import { Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import { useSelector, useDispatch } from "react-redux";
-import { updateXp } from "../reducers/user";
+import { updateXP } from "../reducers/user";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -53,7 +53,7 @@ export default function ObservationModal(props) {
             .then((res) => res.json())
             .then((data) => {
               setXpGagnee(rarityStyle[astres.rarity_level].xp);
-              dispatch(updateXp(data.xp));
+              dispatch(updateXP(data.xp));
             });
         });
     }

@@ -1,18 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
+  ActivityIndicator,
   StyleSheet,
   View,
   Text,
   SafeAreaView,
   ScrollView,
-  Image,
-  AppState,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
 import { fetchWeather } from "../services/weatherService";
-import * as NavigationBar from "expo-navigation-bar";
+
 import HomeAstresCard from "../components/homeAstresCard";
 import SkyCard from "../components/SkyCard";
 import { AstresVisibles } from "../modules/logiqueAstres";
@@ -21,7 +20,7 @@ import {
   setCapturedAstres,
   setAstreFocus,
 } from "../reducers/astre";
-import { updateXp, setHasLoaded } from "../reducers/user";
+import { updateXP } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingModal from "../components/LoadingModal";
 import { MagnitudeLimite } from "../modules/filtreAstresParEquipement";
@@ -37,37 +36,37 @@ const visibilityToPercent = (meters) =>
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
 export default function HomeScreen() {
-  const [isLoading, setIsLoading] = useState(true);
   const [weather, setWeather] = useState(null);
   const [message, setMessage] = useState("");
   const [astres, setAstres] = useState([]);
   const [visibleAstres, setVisibleAstresState] = useState([]);
-  const dispatch = useDispatch();
   const [astroInfo, setAstroInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   const equipement = useSelector((state) => state.user.value.equipement);
   const user = useSelector((state) => state.user.value);
   const capturedAstres = useSelector((state) => state.astre.value);
-  const hasLoaded = useSelector((state) => state.user.value.hasLoaded);
-  const appState = useRef(AppState.currentState);
 
-  const navigation = useNavigation();
-
+  //  Fetch profil
   useEffect(() => {
-    if (!user.token) {
+    if (user.token) {
       fetch(`${apiUrl}/users/profile/${user.token}`)
         .then((res) => res.json())
         .then((userData) => {
           if (userData.result) {
             dispatch(setCapturedAstres(userData.user.capturedAstres));
-            dispatch(updateXp(userData.user.xp));
+            dispatch(updateXP(userData.user.xp));
           }
-        });
+        })
+        .catch((err) => console.error(err));
     }
   }, []);
 
+  //  Météo inchangée, c'est correct
   useEffect(() => {
     let interval;
-
     const updateWeather = async (coords) => {
       try {
         const data = await fetchWeather(coords.latitude, coords.longitude);
@@ -82,78 +81,53 @@ export default function HomeScreen() {
             : "Ciel dégagé pour l'observation",
         );
       } catch (err) {
-        console.error(err);
         setMessage("Impossible de charger la météo");
       }
     };
-
     const loadWeather = async () => {
       try {
-        // 1. Demander les permissions
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== "granted") {
           setMessage("Permission refusée");
           return;
         }
-        // 2. Fonction pour obtenir la position actuelle et mettre à jour
         const refreshLocation = async () => {
           const location = await Location.getCurrentPositionAsync({
             accuracy: Location.Accuracy.Balanced,
           });
           await updateWeather(location.coords);
         };
-        // 3. Appel initial
         await refreshLocation();
-        // 4. Intervalle qui rafraîchit la position ET la météo
         interval = setInterval(refreshLocation, REFRESH_INTERVAL);
       } catch (err) {
-        console.error(err);
         setMessage("Erreur localisation");
       }
     };
-
     loadWeather();
     return () => {
       if (interval) clearInterval(interval);
     };
   }, []);
 
+  //  NASA image
   useEffect(() => {
     fetch(`${apiUrl}/astres/info`)
-      .then((response) => response.json())
-      .then((data) => {
-        setAstroInfo(data);
-      })
-      .catch((error) => console.log(error));
+      .then((res) => res.json())
+      .then((data) => setAstroInfo(data))
+      .catch((err) => console.error(err));
   }, []);
 
+  //  Fetch astres
   useEffect(() => {
-    if (!hasLoaded) {
-      setIsLoading(true);
-      dispatch(setHasLoaded());
-    }
-    const subscription = AppState.addEventListener(
-      "change",
-      (nextAppState) => {
-        if (
-          appState.current.match(/active/) &&
-          nextAppState.match(/inactive/)
-        ) {
-          setIsLoading(false);
-        }
-      },
-      [hasLoaded],
-    );
-
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
       .then((data) => {
-        if (data.result) {
-          setAstres(data.astres);
-        }
-      });
+        if (data.result) setAstres(data.astres);
+      })
+      .catch((err) => console.error(err));
   }, []);
 
+  //  Calcul astres visibles
   useEffect(() => {
     if (astres.length > 0 && weather?.coords) {
       const allNames = astres.map((a) => a.name);
@@ -161,16 +135,14 @@ export default function HomeScreen() {
         latitude: weather.coords.latitude,
         longitude: weather.coords.longitude,
       });
-
-      const magnitudeMax = MagnitudeLimite[equipement] ?? 0; //filtre par équipement (si pas déquipement on filtre par rapport a la magnitude 0 (oeil nu par défaut))
-
+      const magnitudeMax = MagnitudeLimite[equipement] ?? 0;
       const filteredAstres = astres
         .filter((a) => visibles.includes(a.name))
-        .filter((a) => a.magnitude <= magnitudeMax); //filtre par magnitude
-
+        .filter((a) => a.magnitude <= magnitudeMax);
       setVisibleAstresState(filteredAstres);
       dispatch(setVisibleAstres(filteredAstres.map((a) => a.name)));
-      setIsLoading(false);
+
+      setIsLoading(false); // juste les astres sont prêts
     }
   }, [astres, weather, equipement]);
 
@@ -193,12 +165,12 @@ export default function HomeScreen() {
   return (
     <View style={styles.safeArea}>
       <LoadingModal visible={isLoading} />
-
       <View style={styles.container}>
         <View style={styles.accueil}>
           <Header title="Accueil" />
           <View style={styles.card}>
-            {astroInfo && (
+            {/* NASA image s'affiche dès qu'elle est prête */}
+            {astroInfo ? (
               <View style={styles.imageContainer}>
                 <ZoomableImage
                   imageUrl={astroInfo.image}
@@ -207,29 +179,52 @@ export default function HomeScreen() {
                 <LinearGradient
                   colors={["transparent", "rgba(0,0,0,0.5)"]}
                   style={styles.gradient}
-                ></LinearGradient>
+                />
                 <View style={styles.overlay}>
                   <Text style={styles.nomNasa}>
                     🚀 NASA • Image du jour {astroInfo.title}
                   </Text>
                 </View>
               </View>
+            ) : (
+              <View
+                style={[
+                  styles.imageContainer,
+                  {
+                    height: 200,
+                    backgroundColor: "#1A202C",
+                    borderRadius: 16,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  },
+                ]}
+              >
+                <ActivityIndicator color="#5B8CFF" />
+              </View>
             )}
           </View>
         </View>
+
         <View style={styles.astresSection}>
           <Text style={styles.texteAstres}>Astres visibles maintenant</Text>
           <View style={styles.ScrollView}>
-            <ScrollView
-              horizontal={true} // permet de mettre VieW en scroll horizontale
-              showsHorizontalScrollIndicator={false}
-              style={styles.astresScroll}
-            >
-              {astresList}
-            </ScrollView>
+            {/* Astres s'affichent dès qu'ils sont prêts */}
+            {!isLoading ? (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.astresScroll}
+              >
+                {astresList}
+              </ScrollView>
+            ) : (
+              <ActivityIndicator color="#5B8CFF" style={{ marginTop: 60 }} />
+            )}
           </View>
         </View>
+
         <View style={styles.weatherContainer}>
+          {/* Météo s'affiche dès qu'elle est prête */}
           {weather ? (
             <SkyCard
               temp={weather.temp}
@@ -238,9 +233,7 @@ export default function HomeScreen() {
               message={message}
             />
           ) : (
-            <Text style={{ color: "grey" }}>
-              Impossible d'afficher la météo
-            </Text>
+            <ActivityIndicator color="#5B8CFF" />
           )}
         </View>
       </View>

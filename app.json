@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "astrodex-frontend",
+    "name": "Astrodex",
     "slug": "astrodex-frontend",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,8 +16,9 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.maxwhell.astrodex",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/Logo_icon_only.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true
@@ -29,12 +30,6 @@
       "eas": {
         "projectId": "87f721fd-016e-4a16-b1d8-13a1af8cb00e"
       }
-    },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/87f721fd-016e-4a16-b1d8-13a1af8cb00e"
     }
   }
 }

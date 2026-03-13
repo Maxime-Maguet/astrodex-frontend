@@ -3,11 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Location from "expo-location";
 import { StyleSheet, Text, View } from "react-native";
 import { updateLocation } from "../reducers/user";
-import { setIsAligned } from "../reducers/astre";
+import {
+  setIsAligned,
+  setAstreFocus as setAstreFocusRedux,
+} from "../reducers/astre";
 import CompassBar from "../components/CompassBar";
 import AstreSelector from "../components/AstresVisibles";
 import * as Astronomy from "astronomy-engine";
 import { FIXED_COORDINATES } from "../modules/logiqueAstres";
+
 import { filtrerAstresParEquipement } from "../modules/filtreAstresParEquipement";
 import { useIsFocused, useFocusEffect } from "@react-navigation/native";
 
@@ -134,6 +138,7 @@ export default function BoussoleAndroid() {
         setTarget("...");
         setTargetAzimuth(null);
         dispatch(setIsAligned(false));
+        dispatch(setAstreFocusRedux(null));
       };
     }, []),
   );

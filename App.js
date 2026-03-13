@@ -32,16 +32,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const userPersistConfig = {
+  key: "user",
+  storage: AsyncStorage,
+  whitelist: ["value"],
+};
+
 const reducers = combineReducers({
-  user,
-  weather,
-  astre,
+  user: persistReducer(userPersistConfig, user), // ✅ Seul le user est persisté, et seulement les champs utiles
+  weather, // ❌ Plus persisté
+  astre, // ❌ Plus persisté
 });
 
-const persistConfig = { key: "Astrodex", storage: AsyncStorage };
-
 const store = configureStore({
-  reducer: persistReducer(persistConfig, reducers),
+  reducer: reducers,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),
 });
@@ -101,14 +105,6 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     ShuttleX: require("./assets/fonts/SHUTTLE-X.ttf"),
   });
-
-  useEffect(() => {
-    AsyncStorage.getAllKeys().then((keys) => {
-      AsyncStorage.multiGet(keys).then((values) => {
-        //console.log("AsyncStorage contenu :", values);
-      });
-    });
-  }, []);
 
   if (!fontsLoaded) {
     return null;
