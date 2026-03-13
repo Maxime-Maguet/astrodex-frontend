@@ -24,7 +24,7 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [loading, setLoading] = useState(false); //Chargement
-  const token = useSelector((state) => state.user?.value?.token);
+  const token = useSelector(state => state.user?.value?.token);
   const isFocused = useIsFocused();
   useEffect(() => {
     if (token && isFocused) {
@@ -34,28 +34,29 @@ export default function LoginScreen({ navigation }) {
 
   const handleSubmit = async () => {
     Keyboard.dismiss(); //fermeture du clavier
-    await new Promise((resolve) => setTimeout(resolve, 100)); //temps pour que le clavier se ferme
+    await new Promise(resolve => setTimeout(resolve, 100)); //temps pour que le clavier se ferme
 
     //reset erreurs
 
     setLoginError("");
-
+    // Validation basique : les deux champs doivent être remplis
     if (!username || !password) {
       setLoginError("Veuillez remplir tous les champs");
       return;
     }
     setLoading(true);
-
+    // Appel à l'API de connexion
     fetch(`${apiUrl}/users/signin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: username, password: password }),
     })
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json())
+      .then(data => {
         setLoading(false);
 
         if (data.result) {
+          // Connexion réussie → on stocke les infos dans Redux
           dispatch(
             login({
               token: data.token,
@@ -96,8 +97,7 @@ export default function LoginScreen({ navigation }) {
             style={[
               styles.titleAstro,
               { fontFamily: "ShuttleX", fontSize: 63 },
-            ]}
-          >
+            ]}>
             Astrodex
           </Text>
         </View>
@@ -105,27 +105,28 @@ export default function LoginScreen({ navigation }) {
           Explore le ciel et collecte les astres !
         </Text>
       </View>
-
+ {/* KeyboardAvoidingView : remonte le contenu quand le clavier s'ouvre */}
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
+        behavior={Platform.OS === "ios" ? "padding" : "height"}>
+{/* TouchableWithoutFeedback : ferme le clavier si on tape en dehors des inputs */}
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.inner}>
             <View style={styles.formulaire}>
+   {/* Champ pseudo */}
               <TextInput
                 placeholder="Pseudo"
                 placeholderTextColor="rgba(0, 0, 0, 0.50)"
-                onChangeText={(value) => setUsername(value)}
+                onChangeText={value => setUsername(value)}
                 value={username}
                 style={styles.input}
               />
-
+{/* Champ mot de passe (masqué) */}
               <TextInput
                 placeholder="Mot de passe"
                 placeholderTextColor="rgba(0, 0, 0, 0.50)"
                 secureTextEntry={true}
-                onChangeText={(value) => setPassword(value)}
+                onChangeText={value => setPassword(value)}
                 value={password}
                 style={styles.input}
               />
@@ -134,20 +135,19 @@ export default function LoginScreen({ navigation }) {
                 style={[
                   styles.errorText,
                   loginError && styles.errorTextVisible,
-                ]}
-              >
+                ]}>
                 {loginError || ""}
               </Text>
-
+{/* Bouton de connexion, désactivé pendant le chargement */}
               <TouchableOpacity
                 onPress={handleSubmit}
                 style={[styles.button, loading && styles.buttonDisabled]}
-                disabled={loading}
-              >
+                disabled={loading}>
                 <Text style={styles.buttonText}>
                   {loading ? "Connexion en cours..." : "SE CONNECTER"}
                 </Text>
               </TouchableOpacity>
+{/* Lien vers l'écran d'inscription */}
               <View style={styles.connexionContainer}>
                 <Text style={styles.Soustitle}>
                   Vous n'avez pas de compte ?
@@ -155,8 +155,7 @@ export default function LoginScreen({ navigation }) {
 
                 <TouchableOpacity
                   onPress={() => navigation.navigate("Inscription")}
-                  style={styles.button1}
-                >
+                  style={styles.button1}>
                   <Text style={styles.buttonSignin}>S'inscrire</Text>
                 </TouchableOpacity>
               </View>
