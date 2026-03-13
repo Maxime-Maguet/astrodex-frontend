@@ -16,7 +16,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import GradientImage from "../components/GradientImage";
 import { useFocusEffect } from "@react-navigation/native";
 export default function SignupScreen({ navigation }) {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); // Initialise dispatch pour pouvoir envoyer des actions Redux
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +32,7 @@ export default function SignupScreen({ navigation }) {
 
   const handleSubmit = async () => {
     Keyboard.dismiss(); //fermeture du clavier
-    await new Promise((resolve) => setTimeout(resolve, 100)); //temps pour que le clavier se ferme
+    await new Promise(resolve => setTimeout(resolve, 100)); //temps pour que le clavier se ferme
     // Vérifie si un des champs est vide
     if (email === "" || username === "" || password === "") return;
 
@@ -42,10 +42,11 @@ export default function SignupScreen({ navigation }) {
       return;
     }
 
+    // Appel API vers le backend pour créer le compte
     fetch(`${apiUrl}/users/signup`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json", //  envoie du JSON
       },
       body: JSON.stringify({
         username: username,
@@ -53,9 +54,10 @@ export default function SignupScreen({ navigation }) {
         password: password,
       }),
     })
-      .then((response) => response.json())
-      .then((data) => {
+      .then(response => response.json()) // Convertit la réponse en objet JS
+      .then(data => {
         if (data.token) {
+          // on envoie les données users pour sauvegarder dans le store redux
           dispatch(
             login({
               token: data.token,
@@ -82,6 +84,7 @@ export default function SignupScreen({ navigation }) {
   // pour reset l'écran quand on revient dessus
   useFocusEffect(
     React.useCallback(() => {
+      // permet de reset a chaque fois que l'on revient dessus (sur la page)
       setEmail("");
       setPassword("");
       setUsername("");
@@ -103,23 +106,22 @@ export default function SignupScreen({ navigation }) {
             style={[
               styles.titleAstro,
               { fontFamily: "ShuttleX", fontSize: 63 },
-            ]}
-          >
+            ]}>
             Astrodex
           </Text>
         </View>
       </View>
-
+      {/* gestion du clavier */}
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
+        behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        {/* Champ Email*/}
         <View style={styles.inner}>
           <View style={styles.formContainer}>
             <TextInput
               placeholder="Email"
               placeholderTextColor="rgba(0, 0, 0, 0.50)"
-              onChangeText={(value) => {
+              onChangeText={value => {
                 setEmail(value);
                 if (emailError) {
                   setEmailError("");
@@ -128,10 +130,11 @@ export default function SignupScreen({ navigation }) {
               value={email}
               style={styles.input}
             />
+            {/* Champ Pseudo */}
             <TextInput
               placeholder="Pseudo"
               placeholderTextColor="rgba(0, 0, 0, 0.50)"
-              onChangeText={(value) => {
+              onChangeText={value => {
                 setUsername(value);
                 if (usernameError) {
                   setUsernameError("");
@@ -140,45 +143,45 @@ export default function SignupScreen({ navigation }) {
               value={username}
               style={styles.input}
             />
+            {/* Champ Mot de passe + bouton afficher/masquer */}
             <View style={styles.passwordContainer}>
               <TextInput
                 placeholder="Mot de passe"
-                onChangeText={(value) => setPassword(value)}
+                onChangeText={value => setPassword(value)}
                 placeholderTextColor="rgba(0, 0, 0, 0.50)"
                 secureTextEntry={!passwordVisible}
                 value={password}
                 style={styles.passwordInput}
               />
-
+              {/* Bouton icône œil pour basculer la visibilité du password*/}
               <TouchableOpacity
                 onPress={() => setPasswordVisible(!passwordVisible)}
-                style={{ paddingRight: 15 }}
-              >
+                style={{ paddingRight: 15 }}>
                 <MaterialCommunityIcons
-                  name={getIconName()}
+                  name={getIconName()} // "eye" ou "eye-off" selon l'état
                   size={22}
                   color="#131212"
                 />
               </TouchableOpacity>
             </View>
+            {/* Zone d'affichage des erreurs (email ou username) */}
             <Text
               style={[
                 styles.errorText,
                 (usernameError || emailError) && styles.errorTextVisible,
-              ]}
-            >
+              ]}>
               {usernameError || emailError || ""}
             </Text>
-
+            {/* Bouton S'inscrire */}
             <TouchableOpacity onPress={handleSubmit} style={styles.button}>
               <Text style={styles.textButton}>S'INSCRIRE</Text>
             </TouchableOpacity>
+            {/* Lien retour vers la page Login */}
             <View style={styles.connexionContainer}>
               <Text style={styles.Soustitle}>Vous avez un compte ?</Text>
               <TouchableOpacity
                 onPress={() => navigation.navigate("Login")}
-                style={styles.button1}
-              >
+                style={styles.button1}>
                 <Text style={styles.buttonSigup}>Retour</Text>
               </TouchableOpacity>
             </View>
