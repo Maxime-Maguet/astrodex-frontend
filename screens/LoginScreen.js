@@ -10,7 +10,7 @@ import {
   Image,
   Keyboard,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../reducers/user";
 import { TouchableWithoutFeedback } from "react-native";
@@ -25,12 +25,12 @@ export default function LoginScreen({ navigation }) {
   const [loginError, setLoginError] = useState("");
   const [loading, setLoading] = useState(false); //Chargement
   const token = useSelector((state) => state.user?.value?.token);
-
+  const isFocused = useIsFocused();
   useEffect(() => {
-    if (token) {
+    if (token && isFocused) {
       navigation.replace("TabNavigator");
     }
-  }, []);
+  }, [token]);
 
   const handleSubmit = async () => {
     Keyboard.dismiss(); //fermeture du clavier

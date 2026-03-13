@@ -137,7 +137,7 @@ export default function AstrodexScreen() {
 
   //calcul du niveau
   let xpLimit = 250;
-  let xps = user.xp;
+  let xps = user.xp ?? 0;
   let niveau = Math.floor(xps / xpLimit); //on arrondi pour avoir un niveau sans virgule.
   if (niveau >= 100) {
     niveau = null;

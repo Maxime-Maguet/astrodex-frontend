@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   },
   card: {
     position: "relative",
-    overflow: "hidden",
+    // overflow: "hidden",
     width: "100%",
     flexDirection: "row",
     backgroundColor: "#151C2F",
