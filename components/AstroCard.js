@@ -1,19 +1,19 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import ZoomableImage from "./ZoomableImage";
 
 // Composant carte d'un astre affiché dans l'AstrodexScreen
 // Props : name, imageUrl, type, rarity, isCaptured, onDetails
 
-export default function AstroCard(props) {
-  // Associe chaque niveau de rareté à une couleur pour la bordure de l'image
-  const rarityStyle = {
-    Commune: "#22C55E",
-    Rare: "#3B82F6",
-    Épique: "#A855F7",
-    Légendaire: "#FACC15",
-  };
+// Associe chaque niveau de rareté à une couleur pour la bordure de l'image
+const rarityStyle = {
+  Commune: "#22C55E",
+  Rare: "#3B82F6",
+  Épique: "#A855F7",
+  Légendaire: "#FACC15",
+};
 
+export default function AstroCard(props) {
   // Sélectionne la couleur selon la rareté via une table de correspondance
   const borderColor = rarityStyle[props.rarity];
 

@@ -5,17 +5,40 @@ import {
   StyleSheet,
   Modal,
   SafeAreaView,
-  StatusBar,
 } from "react-native";
 import { useEffect, useState } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
 import { updateEquipement, addPhoto } from "../reducers/user";
-import Header from "../components/Header";
+
 import { useRoute } from "@react-navigation/native";
+
+import Header from "../components/Header";
+
 import Ionicons from "@expo/vector-icons/Ionicons";
 import GradientBackground from "../components/GradientBackground";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+
+// Données statiques des 3 équipements disponibles
+// icon = nom Ionicons, desc = texte affiché dans la modale d'info
+const equipementsData = [
+  {
+    id: "Oeil nu",
+    icon: "eye",
+    desc: "Parfait pour apprendre à lire les constellations et repérer les planètes les plus brillantes.",
+  },
+  {
+    id: "Jumelles",
+    icon: "binoculars",
+    desc: "L'équilibre idéal pour explorer les champs étoilés et les amas ouverts.",
+  },
+  {
+    id: "Telescope",
+    icon: "telescope",
+    desc: "Débusquez les astres les plus sombres et les galaxies les plus lointaines.",
+  },
+];
 
 export default function EquipementSelectionScreen({ navigation }) {
   const route = useRoute();
@@ -25,24 +48,9 @@ export default function EquipementSelectionScreen({ navigation }) {
   const [equipement, setEquipement] = useState("");
   const [infoVisible, setInfoVisible] = useState(null);
 
-  const equipementsData = [
-    {
-      id: "Oeil nu",
-      icon: "eye",
-      desc: "Parfait pour apprendre à lire les constellations et repérer les planètes les plus brillantes.",
-    },
-    {
-      id: "Jumelles",
-      icon: "binoculars",
-      desc: "L'équilibre idéal pour explorer les champs étoilés et les amas ouverts.",
-    },
-    {
-      id: "Telescope",
-      icon: "telescope",
-      desc: "Débusquez les astres les plus sombres et les galaxies les plus lointaines.",
-    },
-  ];
-
+  // Sauvegarde l'équipement choisi en BDD puis redirige selon l'écran d'origine
+  // - depuis "Signup" → première connexion, on va sur l'accueil
+  // - depuis "Profil" → changement d'équipement, on retourne au profil
   const Observation = () => {
     if (equipement === "" || equipement === undefined) {
       return;
@@ -70,6 +78,7 @@ export default function EquipementSelectionScreen({ navigation }) {
       });
   };
 
+  // Pré-sélectionne l'équipement déjà enregistré dans Redux au chargement de l'écran
   useEffect(() => {
     if (user.equipement) {
       setEquipement(user.equipement);
@@ -78,12 +87,13 @@ export default function EquipementSelectionScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar hidden />
       <Header title="Equipement" />
       <GradientBackground>
         <View style={styles.container}>
           <Text style={styles.choixEquipement}>Quel est ton matériel ?</Text>
           <View style={styles.buttoncontainer}>
+            {/* Boucle sur equipementsData pour afficher les 3 boutons de sélection
+    Le bouton sélectionné prend le style buttonSelected (fond bleu) */}
             {equipementsData.map((item) => (
               <View key={item.id} style={styles.allIcons}>
                 <TouchableOpacity
@@ -126,6 +136,9 @@ export default function EquipementSelectionScreen({ navigation }) {
           >
             <Text style={styles.buttonConfirmer}>Confirmer</Text>
           </TouchableOpacity>
+
+          {/* Modale d'info — s'affiche au clic sur l'icône "i" d'un équipement
+    infoVisible contient l'objet équipement complet ou null si fermée */}
           <Modal
             visible={infoVisible !== null}
             transparent

@@ -5,26 +5,29 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
+
 import {
   ScrollView,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
+
 import { LinearGradient } from "expo-linear-gradient";
 import ZoomableImage from "./ZoomableImage";
 
 // Modal de détails d'un astre -> affichée depuis AstrodexScreen au clic sur "Détails"
 // Props : visible, closeModale, infoAstre (objet complet de l'astre)
 
-export default function AstroModal(props) {
-  // Associe chaque rareté à une couleur, un label et un nombre d'étoiles
-  const rarityStyle = {
-    Commune: { color: "#22C55E", label: "COMMUNE", stars: 1 },
-    Rare: { color: "#3B82F6", label: " RARE", stars: 2 },
-    Épique: { color: "#A855F7", label: " ÉPIQUE", stars: 3 },
-    Légendaire: { color: "#FACC15", label: "LÉGENDAIRE", stars: 4 },
-  };
+// Associe chaque rareté à une couleur, un label et un nombre d'étoiles
+const rarityStyle = {
+  Commune: { color: "#22C55E", label: "COMMUNE", stars: 1 },
+  Rare: { color: "#3B82F6", label: " RARE", stars: 2 },
+  Épique: { color: "#A855F7", label: " ÉPIQUE", stars: 3 },
+  Légendaire: { color: "#FACC15", label: "LÉGENDAIRE", stars: 4 },
+};
 
+export default function AstroModal(props) {
   // Récupère le style correspondant à la rareté de l'astre passé en props
   const rarity = rarityStyle[props.infoAstre.rarity_level];
 
