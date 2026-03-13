@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   ActivityIndicator,
@@ -7,13 +7,11 @@ import {
   Text,
   SafeAreaView,
   ScrollView,
-  Image,
-  AppState,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
 import { fetchWeather } from "../services/weatherService";
-import * as NavigationBar from "expo-navigation-bar";
+
 import HomeAstresCard from "../components/homeAstresCard";
 import SkyCard from "../components/SkyCard";
 import { AstresVisibles } from "../modules/logiqueAstres";
@@ -51,7 +49,7 @@ export default function HomeScreen() {
   const user = useSelector((state) => state.user.value);
   const capturedAstres = useSelector((state) => state.astre.value);
 
-  // ✅ Fetch profil corrigé
+  //  Fetch profil
   useEffect(() => {
     if (user.token) {
       fetch(`${apiUrl}/users/profile/${user.token}`)
@@ -59,14 +57,14 @@ export default function HomeScreen() {
         .then((userData) => {
           if (userData.result) {
             dispatch(setCapturedAstres(userData.user.capturedAstres));
-            dispatch(updateXP(userData.user.xp)); // ✅ majuscule
+            dispatch(updateXP(userData.user.xp));
           }
         })
         .catch((err) => console.error(err));
     }
   }, []);
 
-  // ✅ Météo inchangée, c'est correct
+  //  Météo inchangée, c'est correct
   useEffect(() => {
     let interval;
     const updateWeather = async (coords) => {
@@ -111,7 +109,7 @@ export default function HomeScreen() {
     };
   }, []);
 
-  // ✅ NASA image
+  //  NASA image
   useEffect(() => {
     fetch(`${apiUrl}/astres/info`)
       .then((res) => res.json())
@@ -119,7 +117,7 @@ export default function HomeScreen() {
       .catch((err) => console.error(err));
   }, []);
 
-  // ✅ Fetch astres — simplifié, sans hasLoaded
+  //  Fetch astres
   useEffect(() => {
     fetch(`${apiUrl}/astres`)
       .then((res) => res.json())
@@ -129,7 +127,7 @@ export default function HomeScreen() {
       .catch((err) => console.error(err));
   }, []);
 
-  // ✅ Calcul astres visibles
+  //  Calcul astres visibles
   useEffect(() => {
     if (astres.length > 0 && weather?.coords) {
       const allNames = astres.map((a) => a.name);
@@ -144,7 +142,7 @@ export default function HomeScreen() {
       setVisibleAstresState(filteredAstres);
       dispatch(setVisibleAstres(filteredAstres.map((a) => a.name)));
 
-      setIsLoading(false); // ✅ juste les astres sont prêts
+      setIsLoading(false); // juste les astres sont prêts
     }
   }, [astres, weather, equipement]);
 
@@ -171,7 +169,7 @@ export default function HomeScreen() {
         <View style={styles.accueil}>
           <Header title="Accueil" />
           <View style={styles.card}>
-            {/* ✅ NASA image s'affiche dès qu'elle est prête */}
+            {/* NASA image s'affiche dès qu'elle est prête */}
             {astroInfo ? (
               <View style={styles.imageContainer}>
                 <ZoomableImage
@@ -210,7 +208,7 @@ export default function HomeScreen() {
         <View style={styles.astresSection}>
           <Text style={styles.texteAstres}>Astres visibles maintenant</Text>
           <View style={styles.ScrollView}>
-            {/* ✅ Astres s'affichent dès qu'ils sont prêts */}
+            {/* Astres s'affichent dès qu'ils sont prêts */}
             {!isLoading ? (
               <ScrollView
                 horizontal
@@ -226,7 +224,7 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.weatherContainer}>
-          {/* ✅ Météo s'affiche dès qu'elle est prête */}
+          {/* Météo s'affiche dès qu'elle est prête */}
           {weather ? (
             <SkyCard
               temp={weather.temp}
