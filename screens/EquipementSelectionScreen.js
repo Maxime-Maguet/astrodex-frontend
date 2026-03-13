@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateEquipement } from "../reducers/user";
+import { updateEquipement, addPhoto } from "../reducers/user";
 import Header from "../components/Header";
 import { useRoute } from "@react-navigation/native";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -57,6 +57,7 @@ export default function EquipementSelectionScreen({ navigation }) {
       .then((data) => {
         if (data) {
           dispatch(updateEquipement(data.equipement));
+          dispatch(addPhoto(data.avatar));
         }
         const ecranOrigine = route.params?.from;
         if (ecranOrigine === "Profil") {

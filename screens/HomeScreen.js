@@ -20,7 +20,7 @@ import {
   setCapturedAstres,
   setAstreFocus,
 } from "../reducers/astre";
-import { updateXP, addPhoto } from "../reducers/user";
+import { updateXP } from "../reducers/user";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingModal from "../components/LoadingModal";
 import { MagnitudeLimite } from "../modules/filtreAstresParEquipement";
@@ -58,7 +58,6 @@ export default function HomeScreen() {
           if (userData.result) {
             dispatch(setCapturedAstres(userData.user.capturedAstres));
             dispatch(updateXP(userData.user.xp));
-            dispatch(addPhoto(userData.user.avatar));
           }
         })
         .catch((err) => console.error(err));

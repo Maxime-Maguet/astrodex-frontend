@@ -61,7 +61,7 @@ export default function SignupScreen({ navigation }) {
               token: data.token,
               username: username,
               xp: data.xp,
-              avatar: null,
+              avatar: data.avatar,
             }),
           );
           navigation.replace("EquipementSelectionScreen", { from: "Signup" });
