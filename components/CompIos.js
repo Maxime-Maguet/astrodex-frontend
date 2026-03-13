@@ -56,8 +56,8 @@ export default function BoussoleAndroid() {
         subscription = await Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.High, //si on ne met pas ça, Android ou IOS ne met pas en priorité notre app et donc n'actualise pas
-            timeInterval: 10000, // On check toutes les 5 secondes
-            distanceInterval: 5, // Ou dès qu'on bouge d'un mètre
+            timeInterval: 10000, // On check toutes les 10 secondes
+            distanceInterval: 5, // Ou dès qu'on bouge de 5 mètres
           },
           (location) => {
             // 3. À chaque fois que la position change :
@@ -131,21 +131,24 @@ export default function BoussoleAndroid() {
     })();
   }, []);
 
+  // Remet tout à zéro quand on quitte l'écran d'observation
   useFocusEffect(
     useCallback(() => {
       return () => {
-        setAstreFocus(null);
-        setTarget("...");
-        setTargetAzimuth(null);
-        dispatch(setIsAligned(false));
-        dispatch(setAstreFocusRedux(null));
+        setAstreFocus(null); // Vide la sélection de l'astre
+        setTarget("..."); // Remet le message du chaud froid à zéro
+        setTargetAzimuth(null); // Enlève l'icône de l'astre sur la boussole
+        dispatch(setIsAligned(false)); // Désactive l'alignement
+        dispatch(setAstreFocusRedux(null)); // Enlève l'astre focus du "menu déroulant"
       };
     }, []),
   );
 
   useEffect(() => {
+    // On ne calcule rien si on n'a pas de position GPS ou d'astre sélectionné
     if (!currentPosition || !astreFocus || astreFocus === "...") return;
 
+    // On crée un observateur astronomique à notre position GPS (voir la doc de la librairie Astronomy Engine)
     const observer = new Astronomy.Observer(
       currentPosition.latitude,
       currentPosition.longitude,
@@ -155,12 +158,14 @@ export default function BoussoleAndroid() {
 
     let raFocus, decFocus;
 
-    // Utilisation des coordonnées fixes ou calculées
+    // Certains astres ont des coordonnées fixes (Orion, Sirius et Andromede)
+    // Les planètes sont calculées dynamiquement par astronomy-engine
     if (FIXED_COORDINATES[astreFocus]) {
       raFocus = FIXED_COORDINATES[astreFocus].ra;
       decFocus = FIXED_COORDINATES[astreFocus].dec;
     } else {
       try {
+        // Calcul des coordonnées équatoriales de l'astre (planètes du système solaire)(c'est que dans la doc)
         const equ = Astronomy.Equator(astreFocus, date, observer, true, true);
         raFocus = equ.ra;
         decFocus = equ.dec;
@@ -168,7 +173,7 @@ export default function BoussoleAndroid() {
         return;
       }
     }
-
+    // Conversion des coordonnées équatoriales en coordonnées horizontales (azimuth, altitude)
     const horFocus = Astronomy.Horizon(
       date,
       observer,
@@ -176,21 +181,27 @@ export default function BoussoleAndroid() {
       decFocus,
       "normal",
     );
+    // On met à jour la position de l'icône sur la boussole
     setTargetAzimuth(horFocus.azimuth);
 
+    // Calcul de la distance angulaire entre la boussole et l'astre
     const diff = Math.abs(locationHeading - horFocus.azimuth);
-    const distanceHorizontale = Math.min(diff, 360 - diff);
+    const distanceHorizontale = Math.min(diff, 360 - diff); // On prend le chemin le plus court (max 180°)
 
     if (horFocus.altitude > 0) {
-      dispatch(setIsAligned(distanceHorizontale <= 3));
-      if (distanceHorizontale <= 4) setTarget(`⭐ ${astreFocus} en vue !`);
-      else if (distanceHorizontale < 25) setTarget("🥵 C'est chaud...");
-      else if (distanceHorizontale < 50) setTarget("🫠 Tu te rapproches...");
+      // Si l'astre est au dessus de l'horizon
+      dispatch(setIsAligned(distanceHorizontale <= 3)); // Aligné si on est à moins de 3° de l'astre
+      if (distanceHorizontale <= 4)
+        setTarget(`⭐ ${astreFocus} en vue !`); // On affiche le message si on est aligné à 4 degrés
+      else if (distanceHorizontale < 25)
+        setTarget("🥵 C'est chaud..."); // 25degrés
+      else if (distanceHorizontale < 50)
+        setTarget("🫠 Tu te rapproches..."); //50degrés
       else if (distanceHorizontale < 75) setTarget("🥶 C'est froid...");
       else if (distanceHorizontale < 100) setTarget("❄️ C'est glacial...");
-      else setTarget("🧊 Aussi froid que l'espace");
+      else setTarget("🧊 Aussi froid que l'espace"); // si on est au dessus de 100 degrés on affiche ça
     } else {
-      setTarget("L'astre est sous la ligne d'horizon");
+      setTarget("L'astre est sous la ligne d'horizon"); // on prend des précautions car l'astre peux passer en dessous de l'horizon le temps qu'on le cherhce
       dispatch(setIsAligned(false));
     }
   }, [currentPosition, locationHeading, astreFocus]);
