@@ -40,6 +40,7 @@ const userPersistConfig = {
 
 const reducers = combineReducers({
   user: persistReducer(userPersistConfig, user), // ✅ Seul le user est persisté, et seulement les champs utiles
+
   weather, // ❌ Plus persisté
   astre, // ❌ Plus persisté
 });
