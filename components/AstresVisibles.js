@@ -20,7 +20,9 @@ export default function AstreSelector({
   const dispatch = useDispatch();
 
   const handleSelect = (body) => {
+    // On envoie les données de l'astre (body) au composant qui contient celui-ci.
     onSelect(body);
+    // On ferme la fenêtre modale ou la liste déroulante immédiatement après le clic.
     setIsVisible(false);
     dispatch(setAstreFocus(body));
   };
@@ -32,11 +34,14 @@ export default function AstreSelector({
         onPress={() => setIsVisible(!isVisible)}
       >
         <View style={styles.aligner}>
+        {/*SI currentFocus existe ET qu'il n'est pas égal à "..."*/} 
           <Text style={styles.selectedText}>
             {currentFocus && currentFocus !== "..."
               ? currentFocus
               : "Choisissez un astre à viser"}
           </Text>
+          {/* SI la liste est visible (ouverte), on montre la flèche vers le haut ▲ */}
+    {/* SINON (fermée), on montre la flèche vers le bas ▼ */}
           <Text style={styles.arrow}>{isVisible ? "▲" : "▼"}</Text>
         </View>
       </TouchableOpacity>
@@ -49,10 +54,14 @@ export default function AstreSelector({
         >
           <View style={styles.dropdownList}>
             <ScrollView nestedScrollEnabled={true} style={{ maxHeight: 200 }}>
+              {/* VÉRIFICATION : On s'assure que le tableau contient des données avant de mapper */}
               {visibleBodies.length > 0 ? (
+                /* 2. BOUCLE : On parcourt chaque astre (body) du tableau 'visibleBodies' */
                 visibleBodies.map((body) => (
                   <TouchableOpacity
-                    key={body}
+                    key={body} //Identifiant unique pour React (ici le nom de l'astre)
+                    //SI l'astre actuel est celui sélectionné (currentFocus), 
+                    //on ajoute 'styles.activeItem' pour le mettre en surbrillance */
                     style={[
                       styles.item,
                       currentFocus === body && styles.activeItem,
