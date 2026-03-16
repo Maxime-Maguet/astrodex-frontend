@@ -8,7 +8,7 @@
 
 Astrodex transforme l'observation du ciel en expérience interactive et personnalisée. Grâce à la boussole intégrée et aux capteurs du téléphone, l'utilisateur pointe son appareil vers le ciel pour identifier les astres en temps réel — filtrés selon son équipement d'observation.
 
-**Télécharger l'APK Android** → *(lien APK à insérer)*
+**Télécharger l'APK Android** → *[(lien APK)](https://github.com/Maxime-Maguet/astrodex-frontend/releases/tag/v1.0.0)*
 
 ---
 
@@ -110,7 +110,7 @@ astrodex-frontend/
 
 - 🔙 Backend : [astrodex-backend](https://github.com/Maxime-Maguet/astrodex-backend)
 - 🌐 API déployée : [astrodex-backend.vercel.app](https://astrodex-backend.vercel.app)
-- 📦 APK Android : *(lien à insérer)*
+- 📦 APK Android : *[(lien APK)](https://github.com/Maxime-Maguet/astrodex-frontend/releases/tag/v1.0.0)*
 
 ---
 
