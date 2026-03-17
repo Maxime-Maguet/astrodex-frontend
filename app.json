@@ -17,6 +17,11 @@
     },
     "android": {
       "package": "com.maxwhell.astrodex",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/Logo_icon_only.png",
         "backgroundColor": "#ffffff"
