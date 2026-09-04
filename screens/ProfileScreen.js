@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Modal,
+  Alert,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import * as NavigationBar from "expo-navigation-bar";
@@ -14,6 +15,7 @@ import Header from "../components/Header";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import LogoutButton from "../components/LogoutButton";
 import * as ImagePicker from "expo-image-picker";
+import { addPhoto } from "../reducers/user";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -24,6 +26,7 @@ export default function ProfileScreen(route) {
   const [captured, setCaptured] = useState(0);
   const [astreData, setAstreData] = useState(0);
   const user = useSelector((state) => state.user.value);
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const [modalDecoVisible, setModalDecoVisible] = useState(false);
@@ -43,6 +46,9 @@ export default function ProfileScreen(route) {
             setName(name);
             setXp(xp);
             setCaptured(capture);
+            if (userData.user.avatar) {
+              dispatch(addPhoto(userData.user.avatar));
+            }
             if (equip) {
               setEquipement(equip);
             } else {
@@ -120,14 +126,22 @@ export default function ProfileScreen(route) {
     // Ajoute le token utilisateur pour identifier le user
     formData.append("token", user.token);
 
-    // Envoie la photo au backend
-    fetch(`${process.env.EXPO_PUBLIC_API_URL}/users/upload`, {
+    fetch(`${apiUrl}/users/upload`, {
       method: "POST",
       body: formData,
     })
       .then((response) => response.json())
       .then((data) => {
-        dispatch(addPhoto(data.avatar));
+        if (data.result && data.avatar) {
+          dispatch(addPhoto(data.avatar));
+        } else {
+          setImage(null);
+          Alert.alert("Impossible d'enregistrer la photo");
+        }
+      })
+      .catch(() => {
+        setImage(null);
+        Alert.alert("Impossible d'enregistrer la photo");
       });
   };
   // image de l'avatar par défault
