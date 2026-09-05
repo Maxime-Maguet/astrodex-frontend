@@ -106,29 +106,27 @@ export default function ProfileScreen(route) {
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.8,
+      quality: 0.6,
+      base64: true,
     });
-    // Si l'utilisateur annule la prise de photo, on arrête (utilisation de canceled comme vu sur expo)
     if (result.canceled) return;
 
-    // On récupère la photo prise
     const photo = result.assets[0];
+    if (!photo.base64) {
+      Alert.alert("Impossible d'enregistrer la photo");
+      return;
+    }
 
     setImage(photo.uri);
 
-    const formData = new FormData();
-    // Ajoute la photo au FormData
-    formData.append("photoFromFront", {
-      uri: photo.uri,
-      name: "photo.jpg",
-      type: "image/jpeg",
-    });
-    // Ajoute le token utilisateur pour identifier le user
-    formData.append("token", user.token);
-
     fetch(`${apiUrl}/users/upload`, {
       method: "POST",
-      body: formData,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        token: user.token,
+        photo: photo.base64,
+        mimeType: photo.mimeType || "image/jpeg",
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
@@ -136,7 +134,10 @@ export default function ProfileScreen(route) {
           dispatch(addPhoto(data.avatar));
         } else {
           setImage(null);
-          Alert.alert("Impossible d'enregistrer la photo");
+          Alert.alert(
+            "Impossible d'enregistrer la photo",
+            data.error || "Erreur inconnue",
+          );
         }
       })
       .catch(() => {
