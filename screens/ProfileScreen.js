@@ -97,72 +97,82 @@ export default function ProfileScreen(route) {
   }
 
   const takePicture = async () => {
-    // Demande la permission d'utiliser la caméra avec ImagePicker
-    const permission = await ImagePicker.requestCameraPermissionsAsync();
-    // Si l'utilisateur refuse, on arrête
-    if (!permission.granted) {
-      Alert.alert("Permission caméra requise");
-      return;
-    }
-    // Ouvre la caméra du téléphone
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.5,
-    });
-    if (result.canceled) return;
-
-    const photo = result.assets[0];
-    setImage(photo.uri);
-
-    let base64 = photo.base64;
-    if (!base64 && photo.uri?.startsWith("data:")) {
-      base64 = photo.uri.split(",")[1];
-    }
-    if (!base64 && photo.uri) {
-      try {
-        base64 = await FileSystem.readAsStringAsync(photo.uri, {
-          encoding: FileSystem.EncodingType.Base64,
-        });
-      } catch (error) {
-        console.log("Avatar file read failed", error);
+    try {
+      const permission = await ImagePicker.requestCameraPermissionsAsync();
+      if (!permission.granted) {
+        Alert.alert("Permission caméra requise");
+        return;
       }
-    }
-    if (!base64) {
-      setImage(null);
-      Alert.alert("Impossible d'enregistrer la photo");
-      return;
-    }
 
-    setUploading(true);
-    fetch(`${apiUrl}/users/upload`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        token: user.token,
-        photo: base64,
-        mimeType: photo.mimeType || "image/jpeg",
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setUploading(false);
-        if (data.result && data.avatar) {
-          dispatch(addPhoto(data.avatar));
-          setImage(null);
-        } else {
-          setImage(null);
-          Alert.alert(
-            "Impossible d'enregistrer la photo",
-            data.error || "Erreur inconnue",
-          );
-        }
-      })
-      .catch(() => {
-        setUploading(false);
-        setImage(null);
-        Alert.alert("Impossible d'enregistrer la photo");
+      const result = await ImagePicker.launchCameraAsync({
+        quality: 0.4,
+        base64: true,
       });
+      if (result.canceled) {
+        return;
+      }
+
+      const photo = result.assets?.[0];
+      if (!photo?.uri) {
+        Alert.alert("Impossible d'enregistrer la photo", "Aucune image reçue");
+        return;
+      }
+
+      setImage(photo.uri);
+
+      let base64 = photo.base64;
+      if (!base64 && photo.uri.startsWith("data:")) {
+        base64 = photo.uri.split(",")[1];
+      }
+      if (!base64) {
+        base64 = await Promise.race([
+          FileSystem.readAsStringAsync(photo.uri, {
+            encoding: FileSystem.EncodingType.Base64,
+          }),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Lecture de la photo trop longue")), 8000),
+          ),
+        ]);
+      }
+      if (!base64) {
+        Alert.alert("Impossible d'enregistrer la photo", "Image illisible");
+        return;
+      }
+
+      setUploading(true);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
+      const response = await fetch(`${apiUrl}/users/upload`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: user.token,
+          photo: base64,
+          mimeType: photo.mimeType || "image/jpeg",
+        }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      const data = await response.json();
+      setUploading(false);
+
+      if (data.result && data.avatar) {
+        dispatch(addPhoto(data.avatar));
+      } else {
+        Alert.alert(
+          "Impossible d'enregistrer la photo",
+          data.error || "Erreur serveur",
+        );
+      }
+    } catch (error) {
+      setUploading(false);
+      Alert.alert(
+        "Impossible d'enregistrer la photo",
+        error?.message === "Aborted"
+          ? "Le serveur met trop de temps à répondre"
+          : error?.message || "Erreur inconnue",
+      );
+    }
   };
   // image de l'avatar par défault
   const defaultAvatar =
