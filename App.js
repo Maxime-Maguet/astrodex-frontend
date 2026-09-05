@@ -22,6 +22,7 @@ import { useFonts } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as NavigationBar from "expo-navigation-bar";
 import { useEffect } from "react";
+import * as Updates from "expo-updates";
 
 import { persistStore, persistReducer } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -103,6 +104,22 @@ function TabNavigator() {
 }
 
 export default function App() {
+  useEffect(() => {
+    async function applyUpdate() {
+      if (__DEV__) return;
+      try {
+        const update = await Updates.checkForUpdateAsync();
+        if (update.isAvailable) {
+          await Updates.fetchUpdateAsync();
+          await Updates.reloadAsync();
+        }
+      } catch (error) {
+        console.log("Update check failed", error);
+      }
+    }
+    applyUpdate();
+  }, []);
+
   const [fontsLoaded] = useFonts({
     ShuttleX: require("./assets/fonts/SHUTTLE-X.ttf"),
   });
