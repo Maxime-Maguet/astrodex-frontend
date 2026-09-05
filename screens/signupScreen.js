@@ -24,6 +24,7 @@ export default function SignupScreen({ navigation }) {
   const [emailError, setEmailError] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const apiUrl = process.env.EXPO_PUBLIC_API_URL;
 
@@ -31,45 +32,54 @@ export default function SignupScreen({ navigation }) {
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const handleSubmit = async () => {
-    Keyboard.dismiss(); //fermeture du clavier
-    await new Promise(resolve => setTimeout(resolve, 100)); //temps pour que le clavier se ferme
-    // Vérifie si un des champs est vide
-    if (email === "" || username === "" || password === "") return;
+    const payload = {
+      username: username.trim(),
+      email: email.trim(),
+      password: password,
+    };
 
-    // Vérifie si l'email est valide grâce à la REGEX
-    if (!EMAIL_REGEX.test(email)) {
-      setEmailError("Adresse e-mail non valide"); // Active l'état d'erreur pour afficher un message d'erreur dans l'interface
+    Keyboard.dismiss();
+    setEmailError("");
+    setUsernameError("");
+
+    if (!payload.email || !payload.username || !payload.password) {
+      setUsernameError("Veuillez remplir tous les champs");
       return;
     }
 
-    // Appel API vers le backend pour créer le compte
+    if (!EMAIL_REGEX.test(payload.email)) {
+      setEmailError("Adresse e-mail non valide");
+      return;
+    }
+
+    setLoading(true);
     fetch(`${apiUrl}/users/signup`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json", //  envoie du JSON
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        username: username,
-        email: email,
-        password: password,
-      }),
+      body: JSON.stringify(payload),
     })
-      .then(response => response.json()) // Convertit la réponse en objet JS
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
+        setLoading(false);
         if (data.token) {
-          // on envoie les données users pour sauvegarder dans le store redux
           dispatch(
             login({
               token: data.token,
-              username: username,
+              username: payload.username,
               xp: data.xp,
               avatar: data.avatar,
             }),
           );
           navigation.replace("EquipementSelectionScreen", { from: "Signup" });
         } else {
-          setUsernameError("Utilisateur déjà existant");
+          setUsernameError(data.error || "Inscription impossible");
         }
+      })
+      .catch(() => {
+        setLoading(false);
+        setUsernameError("Serveur injoignable, réessaie");
       });
   };
 
@@ -90,6 +100,7 @@ export default function SignupScreen({ navigation }) {
       setUsername("");
       setEmailError("");
       setUsernameError("");
+      setLoading(false);
     }, []),
   );
 
@@ -173,8 +184,13 @@ export default function SignupScreen({ navigation }) {
               {usernameError || emailError || ""}
             </Text>
             {/* Bouton S'inscrire */}
-            <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-              <Text style={styles.textButton}>S'INSCRIRE</Text>
+            <TouchableOpacity
+              onPress={handleSubmit}
+              style={styles.button}
+              disabled={loading}>
+              <Text style={styles.textButton}>
+                {loading ? "Inscription..." : "S'INSCRIRE"}
+              </Text>
             </TouchableOpacity>
             {/* Lien retour vers la page Login */}
             <View style={styles.connexionContainer}>

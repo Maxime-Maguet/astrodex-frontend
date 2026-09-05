@@ -21,7 +21,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useFonts } from "expo-font";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as NavigationBar from "expo-navigation-bar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import * as Updates from "expo-updates";
 
 import { persistStore, persistReducer } from "redux-persist";
@@ -104,27 +104,43 @@ function TabNavigator() {
 }
 
 export default function App() {
+  const [updateReady, setUpdateReady] = useState(__DEV__);
+
   useEffect(() => {
+    let timeoutId;
+
     async function applyUpdate() {
-      if (__DEV__) return;
+      if (__DEV__) {
+        setUpdateReady(true);
+        return;
+      }
+
+      timeoutId = setTimeout(() => setUpdateReady(true), 4000);
+
       try {
         const update = await Updates.checkForUpdateAsync();
         if (update.isAvailable) {
           await Updates.fetchUpdateAsync();
           await Updates.reloadAsync();
+          return;
         }
       } catch (error) {
         console.log("Update check failed", error);
       }
+
+      clearTimeout(timeoutId);
+      setUpdateReady(true);
     }
+
     applyUpdate();
+    return () => clearTimeout(timeoutId);
   }, []);
 
   const [fontsLoaded] = useFonts({
     ShuttleX: require("./assets/fonts/SHUTTLE-X.ttf"),
   });
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || !updateReady) {
     return null;
   }
   return (
