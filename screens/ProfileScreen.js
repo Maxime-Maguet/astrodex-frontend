@@ -15,6 +15,7 @@ import Header from "../components/Header";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import LogoutButton from "../components/LogoutButton";
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system/legacy";
 import { addPhoto } from "../reducers/user";
 
 const apiUrl = process.env.EXPO_PUBLIC_API_URL;
@@ -31,6 +32,7 @@ export default function ProfileScreen(route) {
   const isFocused = useIsFocused();
   const [modalDecoVisible, setModalDecoVisible] = useState(false);
   const [image, setImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (isFocused && user.token) {
@@ -106,32 +108,48 @@ export default function ProfileScreen(route) {
     const result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.6,
-      base64: true,
+      quality: 0.5,
     });
     if (result.canceled) return;
 
     const photo = result.assets[0];
-    if (!photo.base64) {
+    setImage(photo.uri);
+
+    let base64 = photo.base64;
+    if (!base64 && photo.uri?.startsWith("data:")) {
+      base64 = photo.uri.split(",")[1];
+    }
+    if (!base64 && photo.uri) {
+      try {
+        base64 = await FileSystem.readAsStringAsync(photo.uri, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+      } catch (error) {
+        console.log("Avatar file read failed", error);
+      }
+    }
+    if (!base64) {
+      setImage(null);
       Alert.alert("Impossible d'enregistrer la photo");
       return;
     }
 
-    setImage(photo.uri);
-
+    setUploading(true);
     fetch(`${apiUrl}/users/upload`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         token: user.token,
-        photo: photo.base64,
+        photo: base64,
         mimeType: photo.mimeType || "image/jpeg",
       }),
     })
       .then((response) => response.json())
       .then((data) => {
+        setUploading(false);
         if (data.result && data.avatar) {
           dispatch(addPhoto(data.avatar));
+          setImage(null);
         } else {
           setImage(null);
           Alert.alert(
@@ -141,6 +159,7 @@ export default function ProfileScreen(route) {
         }
       })
       .catch(() => {
+        setUploading(false);
         setImage(null);
         Alert.alert("Impossible d'enregistrer la photo");
       });
@@ -163,11 +182,13 @@ export default function ProfileScreen(route) {
   return (
     <View style={styles.safeArea}>
       <Header title="Profil" />
-      <TouchableOpacity onPress={takePicture}>
+      <TouchableOpacity onPress={takePicture} disabled={uploading}>
         <Image style={styles.avatar} source={avatarSource} />
       </TouchableOpacity>
-      <TouchableOpacity onPress={takePicture}>
-        <Text style={styles.imageText}>Changer d'avatar</Text>
+      <TouchableOpacity onPress={takePicture} disabled={uploading}>
+        <Text style={styles.imageText}>
+          {uploading ? "Envoi de la photo..." : "Changer d'avatar"}
+        </Text>
       </TouchableOpacity>
       <View style={styles.card}>
         <View style={styles.container}>
